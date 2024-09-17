@@ -17,14 +17,10 @@ import {
   RESET_FAILURE,
   RESET_INIT,
 } from "../redux/types";
-import { Dispatch } from "redux";
 
 export const signIn = async (data: any, dispatch: any) => {
   try {
     dispatch({ type: LOGIN_INIT });
-    fetch("https://ipapi.co/json/")
-      .then((res) => res.json())
-      .then((res) => console.log(res));
     const response = await apiClient.post("/auth/Sign-in", data);
 
     // If the request was successful

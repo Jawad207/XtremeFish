@@ -226,11 +226,6 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const browserInfo = async (req, res) => {
-  console.log("browser info got called");
-  const ip = requestIp.getClientIp(req);
-  console.log("ip from the browser", ip);
-};
 
 // Parent auth function
 export const auth = {
@@ -239,5 +234,4 @@ export const auth = {
   confirmOtp,
   forgotPassword,
   resetPassword,
-  browserInfo,
 };
