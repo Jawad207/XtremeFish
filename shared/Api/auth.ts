@@ -1,4 +1,5 @@
 import apiClient from "./ApiClient"; // Import the Axios instance
+import axios from "axios";
 import {
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
@@ -21,6 +22,9 @@ import { Dispatch } from "redux";
 export const signIn = async (data: any, dispatch: any) => {
   try {
     dispatch({ type: LOGIN_INIT });
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((res) => console.log(res));
     const response = await apiClient.post("/auth/Sign-in", data);
 
     // If the request was successful

@@ -28,6 +28,7 @@ const connectToMongoDB = async () => {
 connectToMongoDB();
 
 server.use(express.json());
+server.set("trust proxy", true);
 
 // Example: Custom API route in Express
 server.get("/api/custom", (req, res) => {

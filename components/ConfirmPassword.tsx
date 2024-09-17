@@ -145,7 +145,11 @@ const ConfirmPassword: React.FC<ConfirmPasswordtypes> = ({
                     )}
                   </div>
 
-                  {error && <p>{error}</p>}
+                  {error && (
+                    <p className="text-red-400 font-semibold text-center">
+                      {error}
+                    </p>
+                  )}
                   <div className="text-center">
                     <p className="text-muted mt-3 mb-0">
                       Back to home ?{" "}
