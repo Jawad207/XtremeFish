@@ -14,10 +14,7 @@ export default function Home() {
   const [err, setError] = useState("");
   const [ipAddress, setIpAddress] = useState<string>('')
   const [geoInfo, setgeoInfo] = useState<any>()
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
+
   const [showPassword, setShowPassword] = useState(false);
   const loading = useSelector((state: any) => state.auth.loading);
 
