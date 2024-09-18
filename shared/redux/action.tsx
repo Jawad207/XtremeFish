@@ -8,7 +8,6 @@ export const ThemeChanger = (value: any) => async (dispatch: any) => {
 };
 
 export const testreducer = (value: any) => async (dispatch: any) => {
-  console.log("testreducer got called");
   try {
     // Initiate the register process
     dispatch({ type: "REGISTERED_INIT" });

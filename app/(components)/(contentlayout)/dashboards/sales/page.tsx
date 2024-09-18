@@ -39,11 +39,6 @@ const Sales = () => {
     );
     return lastDayOfMonth;
   });
-  const onChange = (dates: any) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  };
   return (
     <Fragment>
       <Seo title={"Sales"} />

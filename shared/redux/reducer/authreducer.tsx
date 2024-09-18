@@ -6,6 +6,7 @@ import {
   REGISTERED_FAILURE,
   LOGIN_INIT,
   REGISTERED_INIT,
+  LOGOUT,
 } from "../types";
 
 interface AuthState {
@@ -40,6 +41,15 @@ export const authReducer = (
         user: action.payload,
         error: null,
       };
+    case LOGOUT:
+      console.log('inside the log out reducer')
+      return {
+        ...state,
+        isAuthenticated: false,
+        loading: false,
+        user: null,
+        error: null
+      };
     case LOGIN_FAILURE:
       return {
         ...state,
@@ -49,14 +59,14 @@ export const authReducer = (
         error: action.payload,
       };
     case REGISTERED_INIT:
-      console.log('registered init got called');
-      
+      console.log("registered init got called");
+
       return {
         ...state,
         loading: true,
       };
     case REGISTERED_SUCCESS:
-      console.log('brother inside reducer', action.payload.data)
+      console.log("brother inside reducer", action.payload.data);
       return {
         ...state,
         isAuthenticated: true,

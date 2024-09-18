@@ -2,6 +2,8 @@ export const LOGIN_INIT = "LOGIN_INIT";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAILURE = "LOGIN_FAILURE";
 
+export const LOGOUT = "LOGOUT";
+
 export const REGISTERED_INIT = "REGISTERED_INIT";
 export const REGISTERED_SUCCESS = "REGISTERED_SUCCESS";
 export const REGISTERED_FAILURE = "REGISTERED_FAILURE";
@@ -24,6 +26,10 @@ export const GET_COUNT_FAILURE = "GET_COUNT_FAILURE";
 
 interface LoginInitAction {
   type: typeof LOGIN_INIT;
+}
+
+interface LogOutAction {
+  type: typeof LOGOUT;
 }
 
 interface LoginSuccessAction {
@@ -91,6 +97,7 @@ interface GetCountFailureAction {
 }
 
 export type AuthActionTypes =
+  | LogOutAction
   | VerifyInitAction
   | LoginInitAction
   | VerifySuccessAction
