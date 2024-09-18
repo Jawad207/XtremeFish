@@ -55,10 +55,7 @@ export const signUp = async (data: any, dispatch: any) => {
     dispatch({ type: REGISTERED_INIT });
     const response = await apiClient.post("/auth/Sign-Up", data);
     if (response.status === 200) {
-      console.log("response in here brother before reducer", response.data);
-
       dispatch({ type: REGISTERED_SUCCESS, payload: response.data });
-      console.log("response in here brother after reducer", response.data);
 
       return response;
     }
