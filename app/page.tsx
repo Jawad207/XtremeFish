@@ -3,7 +3,7 @@ import nextConfig from "@/next.config.mjs";
 import { signIn } from "@/shared/Api/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, useState,useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Alert, Button, Card, Col, Nav, Tab } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
