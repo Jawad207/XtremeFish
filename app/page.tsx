@@ -3,7 +3,7 @@ import nextConfig from "@/next.config.mjs";
 import { signIn } from "@/shared/Api/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState } from "react";
 import { Alert, Button, Card, Col, Nav, Tab } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
@@ -12,8 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 export default function Home() {
   const dispatch = useDispatch();
   const [err, setError] = useState("");
-  const [ipAddress, setIpAddress] = useState('');
-  const [geoInfo, setgeoInfo] = useState({});
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -60,32 +58,6 @@ export default function Home() {
       password: "",
     },
   });
-
-  useEffect(() => {
-    getVisitorIP();
-    fetchIpInfo()
-  }, []);
-  
-  const getVisitorIP = async ()=>{
-    try {
-      const response = await fetch('https://api.ipify.org')
-      const data = await response.text();
-      setIpAddress(data)
-    } catch (error) {
-      console.log(error)
-    }
-  };
-
-  const fetchIpInfo = async () =>{
-    try {
-      const response = await fetch(`http://ip-api.com/json/${ipAddress}`)
-      const data = await response.json();
-      setgeoInfo(data)
-      console.log(data)
-    } catch (error) {
-      console.log(error)
-    }
-  };
 
   const onSubmit = async (data: any) => {
     const response = await signIn(data, dispatch);
