@@ -174,9 +174,9 @@ const SignUp = () => {
                                 </p>
                               )}
                               <div className="mt-2">
-                                <div className="form-check">
+                                <div className="form-check items-center">
                                   <input
-                                    className="form-check-input"
+                                    className="form-check-input border"
                                     type="checkbox"
                                     defaultValue=""
                                     id="defaultCheck1"

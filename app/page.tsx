@@ -3,7 +3,7 @@ import nextConfig from "@/next.config.mjs";
 import { signIn } from "@/shared/Api/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Alert, Button, Card, Col, Nav, Tab } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
@@ -12,10 +12,9 @@ import { useDispatch, useSelector } from "react-redux";
 export default function Home() {
   const dispatch = useDispatch();
   const [err, setError] = useState("");
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
+  const [ipAddress, setIpAddress] = useState<string>('')
+  const [geoInfo, setgeoInfo] = useState<any>()
+
   const [showPassword, setShowPassword] = useState(false);
   const loading = useSelector((state: any) => state.auth.loading);
 
@@ -23,22 +22,6 @@ export default function Home() {
     setShowPassword(!showPassword);
   };
 
-  const changeHandler = (e: any) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-    setError("");
-  };
-  const Login = (e: any) => {
-    e.preventDefault();
-    // auth
-    //   .signInWithEmailAndPassword(email, password)
-    //   .then((user) => {
-    //     console.log(user);
-    //     RouteChange();
-    //   })
-    //   .catch((err) => {
-    //     setError(err.message);
-    //   });
-  };
 
   let { basePath } = nextConfig;
   const router = useRouter();
@@ -59,6 +42,33 @@ export default function Home() {
     },
   });
 
+  useEffect(() => {
+    getVisitorIP();
+    fetchIpInfo()
+  }, []);
+  
+  const getVisitorIP = async ()=>{
+    try {
+      const response = await fetch('https://api.ipify.org')
+      const data = await response.text();
+      setIpAddress(data)
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+  const fetchIpInfo = async () =>{
+    try {
+      const response = await fetch(`http://ip-api.com/json/${ipAddress}`)
+      const data = await response.json();
+      console.log('geo info in here ', geoInfo)
+      setgeoInfo(data)
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
   const onSubmit = async (data: any) => {
     const response = await signIn(data, dispatch);
     if (response.status == 200) {
@@ -68,6 +78,7 @@ export default function Home() {
       setError(response);
     }
   };
+
 
   return (
     <Fragment>

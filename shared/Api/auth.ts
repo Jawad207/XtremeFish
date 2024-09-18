@@ -1,4 +1,5 @@
 import apiClient from "./ApiClient"; // Import the Axios instance
+import axios from "axios";
 import {
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
@@ -16,7 +17,6 @@ import {
   RESET_FAILURE,
   RESET_INIT,
 } from "../redux/types";
-import { Dispatch } from "redux";
 
 export const signIn = async (data: any, dispatch: any) => {
   try {

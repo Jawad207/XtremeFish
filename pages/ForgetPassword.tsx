@@ -125,7 +125,7 @@ const ForgetPassword = () => {
                               onChange={(e) => setEmail(e.target.value)}
                             />
                           </div>
-                          {error && <p>{error}</p>}
+                          {error && <p className="text-red-400 font-semibold text-center">{error}</p>}
                         </Col>
                         <Col xl={12} className="d-grid mt-2">
                           {emailloading ? (

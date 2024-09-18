@@ -160,7 +160,11 @@ const CodeScreen: React.FC<CodeScreenTypes> = ({
                       )}
                     </Col>
 
-                    {error && <p>{error}</p>}
+                    {error && (
+                      <p className="text-red-400 font-semibold text-center">
+                        {error}
+                      </p>
+                    )}
                   </Row>
                   <div className="text-center">
                     <p className="fs-12 text-danger mt-3 mb-0">

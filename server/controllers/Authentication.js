@@ -3,6 +3,7 @@ import User from "../models/Users.js";
 import LoginAttempt from "../models/LoginAttempt.js";
 import { generateToken } from "../helper/index.js";
 import nodemailer from "nodemailer";
+import requestIp from "request-ip";
 
 // Sign-Up Function
 const SignUp = async (req, res) => {
@@ -37,8 +38,8 @@ const SignUp = async (req, res) => {
 // Sign-In Function
 const SignIn = async (req, res) => {
   const { email, password } = req.body;
-
   try {
+    //fb47c4f6c5f35108b65cb90b1c3ddeaa
     const user = await User.findOne({ email });
     if (!user) {
       await new LoginAttempt({
@@ -207,7 +208,6 @@ const resetPassword = async (req, res) => {
     }
 
     // Check if the OTP is valid and not expired
-   
 
     // Hash the new password
     const salt = await bcrypt.genSalt(10);
@@ -225,6 +225,7 @@ const resetPassword = async (req, res) => {
     res.status(500).json({ message: "Error processing request" });
   }
 };
+
 
 // Parent auth function
 export const auth = {

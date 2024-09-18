@@ -3,6 +3,7 @@ import Link from "next/link";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { ThemeChanger } from "../../redux/action";
 import { connect, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import store from "@/shared/redux/store";
 import {
   Button,
@@ -13,10 +14,12 @@ import {
 } from "react-bootstrap";
 import { MenuItems } from "../sidebar/nav";
 import nextConfig from "@/next.config.mjs";
+import { LOGIN_FAILURE, LOGOUT } from "@/shared/redux/types";
 
 const Header = ({ local_varaiable, ThemeChanger }: any) => {
   let { basePath } = nextConfig;
-  const theme = useSelector((state:any) => state.theme)
+  const theme = useSelector((state: any) => state.theme);
+  const dispatch = useDispatch();
 
   const initialNotifications = [
     {
@@ -315,6 +318,10 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
       localStorage.removeItem("mamixMenu");
       localStorage.removeItem("mamixHeader");
     }
+  };
+  const logOut = () => {
+    console.log('brother here',)
+    dispatch({ type: LOGOUT });
   };
   // End Toggle Dark
 
@@ -801,13 +808,13 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                 </li>
                 {/* <li><Link className="dropdown-item d-flex align-items-center" href="#!"><i className="ti ti-headset me-2 fs-18 text-info"></i>Support</Link></li> */}
                 <li>
-                  <Link
-                    className="dropdown-item d-flex align-items-center"
-                    href="#!"
+                  <div
+                    className="dropdown-item d-flex align-items-center cursor-pointer"
+                    onClick={() => logOut()}
                   >
                     <i className="ti ti-logout me-2 fs-18 text-warning"></i>Log
                     Out
-                  </Link>
+                  </div>
                 </li>
               </Dropdown.Menu>
             </Dropdown>

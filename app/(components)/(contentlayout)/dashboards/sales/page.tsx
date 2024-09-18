@@ -3,6 +3,8 @@ import Link from "next/link";
 import React, { Fragment, useEffect, useState } from "react";
 import { Button, Card, Col, Dropdown, Pagination, Row } from "react-bootstrap";
 import dynamic from "next/dynamic";
+import { useDispatch } from "react-redux";
+import { getAlluserCount } from "@/shared/Api/dashboard";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -12,11 +14,21 @@ import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
 const Sales = () => {
   const [startDate, setStartDate] = useState(new Date());
+  const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
-  const [userName, setUserName] = useState<string>('')
+  const [allCounts, setAllcounts] = useState<number>(0);
+  const [userName, setUserName] = useState<string>("");
+
+  const getAllusersCount = async () => {
+    const allUser = await getAlluserCount(dispatch);
+    setAllcounts(allUser);
+  };
   useEffect(() => {
-    console.log('auth in here', auth)
-    setUserName(auth?.user?.userName)
+    getAllusersCount();
+  }, []);
+
+  useEffect(() => {
+    setUserName(auth?.user?.userName);
   }, [auth]);
   const [endDate, setEndDate] = useState<Date | null>(() => {
     const today = new Date();
@@ -27,11 +39,6 @@ const Sales = () => {
     );
     return lastDayOfMonth;
   });
-  const onChange = (dates: any) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  };
   return (
     <Fragment>
       <Seo title={"Sales"} />
@@ -55,7 +62,7 @@ const Sales = () => {
                 <div>
                   <div>
                     <span className="d-block mb-2">Total users</span>
-                    <h5 className="mb-4 fs-4">32,981</h5>
+                    <h5 className="mb-4 fs-4">{allCounts}</h5>
                   </div>
                   <span className="text-success me-2 fw-medium d-inline-block">
                     <i className="ti ti-trending-up fs-5 align-middle me-1 d-inline-block"></i>

@@ -2,6 +2,8 @@ export const LOGIN_INIT = "LOGIN_INIT";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAILURE = "LOGIN_FAILURE";
 
+export const LOGOUT = "LOGOUT";
+
 export const REGISTERED_INIT = "REGISTERED_INIT";
 export const REGISTERED_SUCCESS = "REGISTERED_SUCCESS";
 export const REGISTERED_FAILURE = "REGISTERED_FAILURE";
@@ -18,8 +20,16 @@ export const RESET_INIT = "RESET_INIT";
 export const RESET_SUCCESS = "RESET_SUCCESS";
 export const RESET_FAILURE = "RESET_FAILURE";
 
+export const GET_COUNT_INIT = "GET_COUNT_INIT";
+export const GET_COUNT_SUCCESS = "GET_COUNT_SUCCESS";
+export const GET_COUNT_FAILURE = "GET_COUNT_FAILURE";
+
 interface LoginInitAction {
   type: typeof LOGIN_INIT;
+}
+
+interface LogOutAction {
+  type: typeof LOGOUT;
 }
 
 interface LoginSuccessAction {
@@ -72,7 +82,24 @@ interface SignUpFailureAction {
   payload: any;
 }
 
-export type AuthActionTypes = VerifyInitAction
+interface GetCountInitAction {
+  type: typeof GET_COUNT_INIT;
+}
+
+interface GetCountSuccessAction {
+  type: typeof GET_COUNT_SUCCESS;
+  payload: any;
+}
+
+interface GetCountFailureAction {
+  type: typeof GET_COUNT_FAILURE;
+  payload: any;
+}
+
+export type AuthActionTypes =
+  | LogOutAction
+  | VerifyInitAction
+  | LoginInitAction
   | VerifySuccessAction
   | VerifyFailureAction
   | ForgetInitAction
@@ -83,3 +110,8 @@ export type AuthActionTypes = VerifyInitAction
   | SignUpStartAction
   | SignUpSuccesstAction
   | SignUpFailureAction;
+
+export type DashActionTypes =
+  | GetCountInitAction
+  | GetCountSuccessAction
+  | GetCountFailureAction;

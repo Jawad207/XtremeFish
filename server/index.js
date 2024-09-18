@@ -1,6 +1,7 @@
 // server.js
 import express from "express";
 import authentication from "./routes/authentication.js";
+import dashboard from "./routes/dashboard.js"
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -28,6 +29,7 @@ const connectToMongoDB = async () => {
 connectToMongoDB();
 
 server.use(express.json());
+server.set("trust proxy", true);
 
 // Example: Custom API route in Express
 server.get("/api/custom", (req, res) => {
@@ -35,6 +37,7 @@ server.get("/api/custom", (req, res) => {
 });
 
 server.use("/auth", authentication);
+server.use("/dashboard", dashboard);
 
 server.listen(8080, (err) => {
   if (err) throw err;
