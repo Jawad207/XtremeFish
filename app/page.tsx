@@ -83,33 +83,6 @@ export default function Home() {
   };
 
 
-  
-  useEffect(() => {
-    getVisitorIP();
-    fetchIpInfo()
-  }, []);
-  
-  const getVisitorIP = async ()=>{
-    try {
-      const response = await fetch('https://api.ipify.org')
-      const data = await response.text();
-      setIpAddress(data)
-    } catch (error) {
-      console.log(error)
-    }
-  };
-
-  const fetchIpInfo =async () =>{
-    try {
-      const response = await fetch(`http://ip-api.com/json/${ipAddress}`)
-      const data = await response.json();
-      setgeoInfo(data)
-      // console.log(data)
-    } catch (error) {
-      console.log(error)
-    }
-  };
-
   return (
     <Fragment>
       <html data-theme-mode="dark">
