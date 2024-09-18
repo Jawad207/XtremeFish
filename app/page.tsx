@@ -13,7 +13,7 @@ export default function Home() {
   const dispatch = useDispatch();
   const [err, setError] = useState("");
   const [ipAddress, setIpAddress] = useState<string>('')
-  const [geoInfo, setgeoInfo] = useState<string>('')
+  const [geoInfo, setgeoInfo] = useState<any>()
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -79,6 +79,34 @@ export default function Home() {
     } else {
       reset();
       setError(response);
+    }
+  };
+
+
+  
+  useEffect(() => {
+    getVisitorIP();
+    fetchIpInfo()
+  }, []);
+  
+  const getVisitorIP = async ()=>{
+    try {
+      const response = await fetch('https://api.ipify.org')
+      const data = await response.text();
+      setIpAddress(data)
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+  const fetchIpInfo =async () =>{
+    try {
+      const response = await fetch(`http://ip-api.com/json/${ipAddress}`)
+      const data = await response.json();
+      setgeoInfo(data)
+      // console.log(data)
+    } catch (error) {
+      console.log(error)
     }
   };
 
