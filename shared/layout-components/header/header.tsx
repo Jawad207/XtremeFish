@@ -320,7 +320,6 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
     }
   };
   const logOut = () => {
-    console.log('brother here',)
     dispatch({ type: LOGOUT });
   };
   // End Toggle Dark

@@ -36,7 +36,7 @@ const ForgetPassword = () => {
         case Step.EmailSent:
           setEmailLoading(true);
           const response = await ForgotPassword(email, dispatch);
-          console.log("response in here", response);
+
           if (response.status === 200) {
             setEmailLoading(false);
             setBtnText("Verify");
@@ -65,7 +65,7 @@ const ForgetPassword = () => {
             );
             if (resetResponse.status == 200) {
               setSuccessLoading(false)
-              console.log("Succeeded");
+
               router.push("/"); // Navigate to the sign-in screen
             }
           } else {

@@ -18,6 +18,8 @@ interface LoginAttempt {
 interface DashState {
   userCount: number;
   loading: boolean;
+  totalPages: number,
+  currentPage: number,
   loginAttempts: LoginAttempt[],
   error: string | null;
 }
@@ -25,6 +27,8 @@ interface DashState {
 const initialState: DashState = {
   userCount: 0,
   loginAttempts: [],
+  totalPages: 1,
+  currentPage: 1,
   loading: false,
   error: null,
 };
@@ -61,9 +65,10 @@ export const dashReducer = (
     case GET_LOGINATTEMPT_SUCCESS:
       return {
         ...state,
+        totalPages: action?.payload?.totalPages,
+        currentPage: action?.payload?.currentPage,
         loginAttempts: action.payload?.loginAttempts,
         loading: false,
-
         error: null,
       };
     case GET_LOGINATTEMPT_FAILURE:

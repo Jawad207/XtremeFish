@@ -16,11 +16,10 @@ const Layout = ({ children }: any) => {
   useEffect(() => {
 
     if (!isAuthenticated) {
-      console.log('is authenticated false bro')
+
       // Redirect to login page if not authenticated
       router.push("/");
     } else {
-      console.log('is authenticated undefined -- bro')
       // Allow page to load once auth is confirmed
       setLoading(false);
     }

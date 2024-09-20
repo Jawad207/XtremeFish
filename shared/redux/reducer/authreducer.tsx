@@ -36,7 +36,6 @@ export const authReducer = (
         loading: true,
       };
     case LOGIN_SUCCESS:
-      console.log('login success got called')
       return {
         ...state,
         isAuthenticated: true,

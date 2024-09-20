@@ -3,7 +3,6 @@ import React, { Fragment } from "react";
 import { Breadcrumb } from "react-bootstrap";
 
 const Pageheader = (props: any) => {
-  console.log("props in here ", props);
   return (
     <Fragment>
       <div

@@ -43,7 +43,10 @@ export const getLoginAttempts = async (data: any, dispatch: any) => {
   try {
     dispatch({ type: GET_LOGINATTEMPT_INIT });
     const response = await apiClient.get("/dashboard/getLoginAttempts", {
-      params: { id: data?.id },
+      params: { id: data?.id, 
+        page: data?.page,
+        limit: data?.limit
+       },
     });
 
     // If the request was successful

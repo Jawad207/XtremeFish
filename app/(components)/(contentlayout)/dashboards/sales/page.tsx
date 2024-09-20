@@ -22,9 +22,7 @@ const Sales = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const recordsPerPage = 10;
-  const loginAttemptData = useSelector(
-    (state: any) => state?.dash?.loginAttempts
-  );
+  const loginAttemptData = useSelector((state: any) => state?.dash);
 
   const getAllusersCount = async () => {
     const allUser = await getAlluserCount(dispatch);
@@ -40,14 +38,13 @@ const Sales = () => {
     getAllusersCount();
   }, []);
   useEffect(() => {
-    if (loginAttemptData?.length) {
-      console.log("login attemts data", loginAttemptData);
-      setLoginAttempts(loginAttemptData);
+    if (loginAttemptData?.loginAttempts?.length) {
+      setLoginAttempts(loginAttemptData?.loginAttempts);
+      setTotalPages(loginAttemptData?.totalPages);
     }
   }, [loginAttemptData]);
 
   useEffect(() => {
-    console.log("auth in here", auth);
     getAllLoginAttempts();
     setUserName(auth?.userName);
   }, [auth, currentPage]);
