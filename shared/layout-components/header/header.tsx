@@ -15,6 +15,7 @@ import {
 import { MenuItems } from "../sidebar/nav";
 import nextConfig from "@/next.config.mjs";
 import { LOGIN_FAILURE, LOGOUT } from "@/shared/redux/types";
+import { userInfo } from "os";
 
 const Header = ({ local_varaiable, ThemeChanger }: any) => {
   let { basePath } = nextConfig;

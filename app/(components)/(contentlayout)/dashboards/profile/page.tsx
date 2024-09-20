@@ -5,6 +5,9 @@ import Seo from "@/shared/layout-components/seo/seo";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import React, { Fragment, useState } from "react";
+import { useSelector } from 'react-redux';
+
+
 import {
   Button,
   Card,
@@ -23,7 +26,6 @@ const Profile = () => {
   const components = {
     DropdownIndicator: null,
   };
-
   const createOption = (label: any) => ({
     label,
     value: label,
@@ -54,6 +56,7 @@ const Profile = () => {
         event.preventDefault();
     }
   };
+
   const [isSearchable] = useState(true);
   return (
     <Fragment>
