@@ -6,16 +6,16 @@ import nodemailer from "nodemailer";
 
 // Sign-Up Function
 const SignUp = async (req, res) => {
-  const { userName, email, password } = req.body;
+  const { userName, email, password, rememberMe } = req.body;
 
   try {
     const userLocation = await getCountryFromIp();
     const locationObject = {
-      country: userLocation.country,
-      countryCode: userLocation.countryCode,
-      region: userLocation.regionName,
-      city: userLocation.city,
-      ipAddress: ipAddress,
+      country: userLocation?.country,
+      countryCode: userLocation?.countryCode,
+      region: userLocation?.regionName,
+      city: userLocation?.city,
+      ipAddress: userLocation?.ipAddress,
       lat: "33.7233",
       lon: "73.0435",
     };
@@ -35,8 +35,9 @@ const SignUp = async (req, res) => {
         location: locationObject,
       });
 
+      const token = generateToken(newUser?._id, rememberMe);
       await newUser.save();
-      res.status(200).json({ data: newUser });
+      res.status(200).json({ user: newUser, token });
     } else {
       res.status(400).json({ message: "ALL three fields are required" });
     }
@@ -47,8 +48,8 @@ const SignUp = async (req, res) => {
 
 // Sign-In Function
 const SignIn = async (req, res) => {
-  const { email, password } = req.body;
-  console.log("api hitted");
+  const { email, password, rememberMe } = req.body;
+
   let failUser, LocationObject;
   try {
     const user = await User.findOne({ email });
@@ -57,14 +58,15 @@ const SignIn = async (req, res) => {
     }
     failUser = user;
     const userLocation = await getCountryFromIp();
+    console.log('user location while signing in')
     const locationObject = {
-      country: userLocation.country,
-      countryCode: userLocation.countryCode,
-      region: userLocation.regionName,
-      city: userLocation.city,
-      ipAddress: userLocation.ipAddress,
-      lat: "33.7233",
-      lon: "73.0435",
+      country: userLocation?.country,
+      countryCode: userLocation?.countryCode,
+      region: userLocation?.regionName,
+      city: userLocation?.city,
+      ipAddress: userLocation?.ipAddress,
+      lat: userLocation?.lat,
+      lon: userLocation?.lon,
     };
     LocationObject = locationObject;
     const isMatch = await bcrypt.compare(password, user.password);
@@ -91,7 +93,8 @@ const SignIn = async (req, res) => {
     }).save();
 
     // Generate JWT token
-    const token = generateToken(user._id);
+
+    const token = generateToken(user._id, rememberMe);
     res.status(200).json({ token, user });
   } catch (error) {
     await new LoginAttempt({

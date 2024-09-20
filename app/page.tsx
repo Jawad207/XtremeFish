@@ -14,12 +14,12 @@ export default function Home() {
   const [err, setError] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
   const loading = useSelector((state: any) => state.auth.loading);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
 
   let { basePath } = nextConfig;
   const router = useRouter();
@@ -40,17 +40,27 @@ export default function Home() {
     },
   });
 
-
   const onSubmit = async (data: any) => {
-    const response = await signIn(data, dispatch);
-    if (response.status == 200) {
-      return RouteChange();
-    } else {
-      reset();
-      setError(response);
+    try {
+      const response = await signIn({...data, rememberMe}, dispatch);
+      const token = response.data.token;
+      if (rememberMe) {
+        // Store the token in localStorage for persistent login
+        localStorage.setItem("authToken", token);
+      } else {
+        // Store the token in sessionStorage for temporary login
+        sessionStorage.setItem("authToken", token);
+      }
+      if (response.status == 200) {
+        return RouteChange();
+      } else {
+        reset();
+        setError(response);
+      }
+    } catch (error: any) {
+      setError(error.message);
     }
   };
-
 
   return (
     <Fragment>
@@ -156,12 +166,13 @@ export default function Home() {
                                       type="checkbox"
                                       defaultValue=""
                                       id="defaultCheck1"
+                                      onChange={() => setRememberMe(!rememberMe)}
                                     />
                                     <label
                                       className="form-check-label text-muted fw-normal fs-12"
                                       htmlFor="defaultCheck1"
                                     >
-                                      Remember password ?
+                                      Remember me ?
                                     </label>
                                   </div>
                                 </div>
