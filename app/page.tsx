@@ -12,16 +12,14 @@ import { useDispatch, useSelector } from "react-redux";
 export default function Home() {
   const dispatch = useDispatch();
   const [err, setError] = useState("");
-  const [ipAddress, setIpAddress] = useState<string>('')
-  const [geoInfo, setgeoInfo] = useState<any>()
 
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
   const loading = useSelector((state: any) => state.auth.loading);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
 
   let { basePath } = nextConfig;
   const router = useRouter();
@@ -42,43 +40,27 @@ export default function Home() {
     },
   });
 
-  useEffect(() => {
-    getVisitorIP();
-    fetchIpInfo()
-  }, []);
-  
-  const getVisitorIP = async ()=>{
-    try {
-      const response = await fetch('https://api.ipify.org')
-      const data = await response.text();
-      setIpAddress(data)
-    } catch (error) {
-      console.log(error)
-    }
-  };
-
-  const fetchIpInfo = async () =>{
-    try {
-      const response = await fetch(`http://ip-api.com/json/${ipAddress}`)
-      const data = await response.json();
-      console.log('geo info in here ', geoInfo)
-      setgeoInfo(data)
-      console.log(data)
-    } catch (error) {
-      console.log(error)
-    }
-  };
-
   const onSubmit = async (data: any) => {
-    const response = await signIn(data, dispatch);
-    if (response.status == 200) {
-      return RouteChange();
-    } else {
-      reset();
-      setError(response);
+    try {
+      const response = await signIn({...data, rememberMe}, dispatch);
+      const token = response.data.token;
+      if (rememberMe) {
+        // Store the token in localStorage for persistent login
+        localStorage.setItem("authToken", token);
+      } else {
+        // Store the token in sessionStorage for temporary login
+        sessionStorage.setItem("authToken", token);
+      }
+      if (response.status == 200) {
+        return RouteChange();
+      } else {
+        reset();
+        setError(response);
+      }
+    } catch (error: any) {
+      setError(error.message);
     }
   };
-
 
   return (
     <Fragment>
@@ -184,12 +166,13 @@ export default function Home() {
                                       type="checkbox"
                                       defaultValue=""
                                       id="defaultCheck1"
+                                      onChange={() => setRememberMe(!rememberMe)}
                                     />
                                     <label
                                       className="form-check-label text-muted fw-normal fs-12"
                                       htmlFor="defaultCheck1"
                                     >
-                                      Remember password ?
+                                      Remember me ?
                                     </label>
                                   </div>
                                 </div>

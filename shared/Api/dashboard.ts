@@ -4,6 +4,9 @@ import {
   GET_COUNT_INIT,
   GET_COUNT_SUCCESS,
   GET_COUNT_FAILURE,
+  GET_LOGINATTEMPT_FAILURE,
+  GET_LOGINATTEMPT_SUCCESS,
+  GET_LOGINATTEMPT_INIT,
 } from "../redux/types";
 
 export const getAlluserCount = async (dispatch: any) => {
@@ -13,7 +16,6 @@ export const getAlluserCount = async (dispatch: any) => {
 
     // If the request was successful
     if (response.status === 200) {
-        console.log('response in here brother', response)
       dispatch({ type: GET_COUNT_SUCCESS, payload: response.data });
     }
     return response.data.TotalUser;
@@ -30,6 +32,38 @@ export const getAlluserCount = async (dispatch: any) => {
       console.error("Error:", error.message);
       dispatch({
         type: GET_COUNT_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const getLoginAttempts = async (id: string, dispatch: any) => {
+  try {
+    dispatch({ type: GET_LOGINATTEMPT_INIT });
+    const response = await apiClient.get("/dashboard/getLoginAttempts", {
+      params: { id },
+    });
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: GET_LOGINATTEMPT_SUCCESS, payload: response.data });
+    }
+    return response.data.loginAttempts;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_LOGINATTEMPT_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Login failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_LOGINATTEMPT_FAILURE,
         payload: error.message,
       });
       return error.message;

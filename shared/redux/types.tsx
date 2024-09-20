@@ -24,6 +24,10 @@ export const GET_COUNT_INIT = "GET_COUNT_INIT";
 export const GET_COUNT_SUCCESS = "GET_COUNT_SUCCESS";
 export const GET_COUNT_FAILURE = "GET_COUNT_FAILURE";
 
+export const GET_LOGINATTEMPT_INIT = "GET_LOGINATTEMPT_INIT";
+export const GET_LOGINATTEMPT_SUCCESS = "GET_LOGINATTEMPT_SUCCESS";
+export const GET_LOGINATTEMPT_FAILURE = "GET_LOGINATTEMPT_FAILURE";
+
 interface LoginInitAction {
   type: typeof LOGIN_INIT;
 }
@@ -95,6 +99,19 @@ interface GetCountFailureAction {
   type: typeof GET_COUNT_FAILURE;
   payload: any;
 }
+interface GetLoginAttemptInitAction {
+  type: typeof GET_LOGINATTEMPT_INIT;
+}
+
+interface GetLoginAttemptSuccessAction {
+  type: typeof GET_LOGINATTEMPT_SUCCESS;
+  payload: any;
+}
+
+interface GetLoginAttemptFailureAction {
+  type: typeof GET_LOGINATTEMPT_FAILURE;
+  payload: any;
+}
 
 export type AuthActionTypes =
   | LogOutAction
@@ -114,4 +131,7 @@ export type AuthActionTypes =
 export type DashActionTypes =
   | GetCountInitAction
   | GetCountSuccessAction
-  | GetCountFailureAction;
+  | GetCountFailureAction
+  | GetLoginAttemptFailureAction
+  | GetLoginAttemptSuccessAction
+  | GetLoginAttemptInitAction

@@ -789,7 +789,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                 <li>
                   <Link
                     className="dropdown-item d-flex align-items-center"
-                    href="#!"
+                    href="/dashboards/profile"
                   >
                     <i className="ti ti-user me-2 fs-18 text-primary"></i>
                     Profile

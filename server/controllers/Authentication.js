@@ -1,15 +1,24 @@
 import bcrypt from "bcryptjs";
 import User from "../models/Users.js";
 import LoginAttempt from "../models/LoginAttempt.js";
-import { generateToken } from "../helper/index.js";
+import { generateToken, getCountryFromIp } from "../helper/index.js";
 import nodemailer from "nodemailer";
-import requestIp from "request-ip";
 
 // Sign-Up Function
 const SignUp = async (req, res) => {
-  const { userName, email, password } = req.body;
+  const { userName, email, password, rememberMe } = req.body;
 
   try {
+    const userLocation = await getCountryFromIp();
+    const locationObject = {
+      country: userLocation?.country,
+      countryCode: userLocation?.countryCode,
+      region: userLocation?.regionName,
+      city: userLocation?.city,
+      ipAddress: userLocation?.ipAddress,
+      lat: "33.7233",
+      lon: "73.0435",
+    };
     if (userName && email && password) {
       const user = await User.findOne({ email });
       if (user) {
@@ -23,10 +32,12 @@ const SignUp = async (req, res) => {
         userName,
         email,
         password: hashedPassword,
+        location: locationObject,
       });
 
+      const token = generateToken(newUser?._id, rememberMe);
       await newUser.save();
-      res.status(200).json({ data: newUser });
+      res.status(200).json({ user: newUser, token });
     } else {
       res.status(400).json({ message: "ALL three fields are required" });
     }
@@ -37,26 +48,37 @@ const SignUp = async (req, res) => {
 
 // Sign-In Function
 const SignIn = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe } = req.body;
+
+  let failUser, LocationObject;
   try {
-    //fb47c4f6c5f35108b65cb90b1c3ddeaa
     const user = await User.findOne({ email });
     if (!user) {
-      await new LoginAttempt({
-        status: "failed",
-        description: "Invalid Email",
-        userId: null,
-      }).save();
       return res.status(401).json({ message: "Invalid email or password" });
     }
-
+    failUser = user;
+    const userLocation = await getCountryFromIp();
+    console.log('user location while signing in')
+    const locationObject = {
+      country: userLocation?.country,
+      countryCode: userLocation?.countryCode,
+      region: userLocation?.regionName,
+      city: userLocation?.city,
+      ipAddress: userLocation?.ipAddress,
+      lat: userLocation?.lat,
+      lon: userLocation?.lon,
+    };
+    LocationObject = locationObject;
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       // Record failed login attempt
       await new LoginAttempt({
         status: "failed",
         description: "Invalid Password",
+        location: locationObject,
         userId: user._id,
+        userName: user.userName,
+        email: user.email,
       }).save();
       return res.status(401).json({ message: "Invalid password" });
     }
@@ -64,14 +86,26 @@ const SignIn = async (req, res) => {
     await new LoginAttempt({
       status: "success",
       description: "Login successful",
+      location: locationObject,
       userId: user._id,
+      userName: user.userName,
+      email: user.email,
     }).save();
 
     // Generate JWT token
-    const token = generateToken(user._id);
+
+    const token = generateToken(user._id, rememberMe);
     res.status(200).json({ token, user });
   } catch (error) {
-    res.status(500).json({ message: "Error logging in", error });
+    await new LoginAttempt({
+      status: "failed",
+      description: error.message,
+      location: LocationObject,
+      userId: failUser?._id,
+      userName: failUser?.userName,
+      email: failUser?.email,
+    }).save();
+    res.status(500).json({ message: error.message, error });
   }
 };
 

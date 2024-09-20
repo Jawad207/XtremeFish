@@ -25,10 +25,9 @@ export const signIn = async (data: any, dispatch: any) => {
 
     // If the request was successful
     if (response.status === 200) {
-      console.log("Login successful:", response.data);
       dispatch({ type: LOGIN_SUCCESS, payload: response.data });
     }
-    return response;
+    return response.data;
   } catch (error: any) {
     // Handle server or network errors
     if (error.response) {
@@ -55,10 +54,7 @@ export const signUp = async (data: any, dispatch: any) => {
     dispatch({ type: REGISTERED_INIT });
     const response = await apiClient.post("/auth/Sign-Up", data);
     if (response.status === 200) {
-      console.log("response in here brother before reducer", response.data);
-
       dispatch({ type: REGISTERED_SUCCESS, payload: response.data });
-      console.log("response in here brother after reducer", response.data);
 
       return response;
     }

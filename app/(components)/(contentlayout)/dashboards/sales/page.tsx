@@ -4,7 +4,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Button, Card, Col, Dropdown, Pagination, Row } from "react-bootstrap";
 import dynamic from "next/dynamic";
 import { useDispatch } from "react-redux";
-import { getAlluserCount } from "@/shared/Api/dashboard";
+import { getAlluserCount, getLoginAttempts } from "@/shared/Api/dashboard";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -23,11 +23,15 @@ const Sales = () => {
     const allUser = await getAlluserCount(dispatch);
     setAllcounts(allUser);
   };
+  const getAllLoginAttempts = async () => {
+    const loginAttempt = await getLoginAttempts(auth?.user?._id, dispatch);
+  };
   useEffect(() => {
     getAllusersCount();
   }, []);
 
   useEffect(() => {
+    getAllLoginAttempts()
     setUserName(auth?.user?.userName);
   }, [auth]);
   const [endDate, setEndDate] = useState<Date | null>(() => {

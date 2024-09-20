@@ -17,11 +17,7 @@ export const testreducer = (value: any) => async (dispatch: any) => {
 
     // If the API call is successful, dispatch the success action
     if (response.status === 200) {
-      console.log("response in here brother before reducer", response.data);
-
       dispatch({ type: "REGISTERED_SUCCESS", payload: response.data });
-
-      console.log("response in here brother after reducer", response.data);
 
       return response;
     }
