@@ -1,9 +1,9 @@
 // Helper function to create a JWT token
 import jwt from "jsonwebtoken";
 
-export const generateToken = (userId) => {
+export const generateToken = (userId, rememberMe) => {
   const SECRET_KEY = process.env.SECRET_KEY;
-  return jwt.sign({ userId }, SECRET_KEY, { expiresIn: "1h" });
+  return jwt.sign({ userId }, SECRET_KEY, { expiresIn: rememberMe ? "7h" : "1h" });
 };
 
 export const getCountryFromIp = async (ip) => {

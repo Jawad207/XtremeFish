@@ -13,6 +13,7 @@ interface AuthState {
   isAuthenticated: boolean;
   user: any;
   loading: boolean;
+  token: any;
   error: string | null;
 }
 
@@ -20,6 +21,7 @@ const initialState: AuthState = {
   isAuthenticated: false,
   user: null,
   loading: false,
+  token: null,
   error: null,
 };
 
@@ -38,17 +40,19 @@ export const authReducer = (
         ...state,
         isAuthenticated: true,
         loading: false,
-        user: action.payload,
+        token: action.payload.token,
+        user: action.payload.user,
         error: null,
       };
     case LOGOUT:
-      console.log('inside the log out reducer')
+
       return {
         ...state,
         isAuthenticated: false,
         loading: false,
         user: null,
-        error: null
+        token: null,
+        error: null,
       };
     case LOGIN_FAILURE:
       return {
@@ -59,19 +63,17 @@ export const authReducer = (
         error: action.payload,
       };
     case REGISTERED_INIT:
-      console.log("registered init got called");
-
       return {
         ...state,
         loading: true,
       };
     case REGISTERED_SUCCESS:
-      console.log("brother inside reducer", action.payload.data);
       return {
         ...state,
         isAuthenticated: true,
         loading: false,
-        user: action.payload.data,
+        token: action.payload.token,
+        user: action.payload.user,
         error: null,
       };
     case REGISTERED_FAILURE:

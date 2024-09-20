@@ -25,10 +25,9 @@ export const signIn = async (data: any, dispatch: any) => {
 
     // If the request was successful
     if (response.status === 200) {
-      console.log("Login successful:", response.data);
       dispatch({ type: LOGIN_SUCCESS, payload: response.data });
     }
-    return response;
+    return response.data;
   } catch (error: any) {
     // Handle server or network errors
     if (error.response) {
