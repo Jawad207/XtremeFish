@@ -14,6 +14,9 @@ const Layout = ({ children }: any) => {
   const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated); // Replace with actual auth state
 
   useEffect(() => {
+    if(isAuthenticated == undefined) {
+      console.log('still figuring out')
+    }
 
     if (!isAuthenticated) {
 
