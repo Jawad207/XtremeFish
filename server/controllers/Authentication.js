@@ -6,17 +6,6 @@ import nodemailer from "nodemailer";
 
 // Sign-Up Function
 const SignUp = async (req, res) => {
-<<<<<<< HEAD
-  const { userName, email, password } = req.body;
-  try {
-    const userLocation = await getCountryFromIp();
-    const locationObject = {
-      country: userLocation.country,
-      countryCode: userLocation.countryCode,
-      region: userLocation.regionName,
-      city: userLocation.city,
-      ipAddress: userLocation.ipAddress,
-=======
   const { userName, email, password, rememberMe } = req.body;
 
   try {
@@ -27,7 +16,6 @@ const SignUp = async (req, res) => {
       region: userLocation?.regionName,
       city: userLocation?.city,
       ipAddress: userLocation?.ipAddress,
->>>>>>> de4448c2c1aef3282806c9fb7eef4d23a1d6444a
       lat: "33.7233",
       lon: "73.0435",
     };
@@ -45,11 +33,8 @@ const SignUp = async (req, res) => {
         password: hashedPassword,
         location: locationObject,
       });
-<<<<<<< HEAD
-=======
 
       const token = generateToken(newUser?._id, rememberMe);
->>>>>>> de4448c2c1aef3282806c9fb7eef4d23a1d6444a
       await newUser.save();
       res.status(200).json({ user: newUser, token });
     } else {

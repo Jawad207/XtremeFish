@@ -21,8 +21,23 @@ const Sales = () => {
   const [loginAttempt, setLoginAttempts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(1);
   const recordsPerPage = 10;
   const loginAttemptData = useSelector((state: any) => state?.dash);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredAttempts, setFilteredAttempts] = useState([]);
+
+  useEffect(() => {
+    const results = loginAttempt.filter((attempt: any) => {
+      const userEmail = attempt?.userId?.email.toLowerCase();
+      const userName = attempt?.userId?.userName.toLowerCase();
+      return (
+        userEmail.includes(searchQuery.toLowerCase()) ||
+        userName.includes(searchQuery.toLowerCase())
+      );
+    });
+    setFilteredAttempts(results);
+  }, [searchQuery, loginAttempt]);
 
   const getAllusersCount = async () => {
     const allUser = await getAlluserCount(dispatch);
@@ -39,7 +54,9 @@ const Sales = () => {
   }, []);
   useEffect(() => {
     if (loginAttemptData?.loginAttempts?.length) {
+      setTotalRecords(loginAttemptData?.loginAttempts?.length);
       setLoginAttempts(loginAttemptData?.loginAttempts);
+      setFilteredAttempts(loginAttemptData?.loginAttempts);
       setTotalPages(loginAttemptData?.totalPages);
     }
   }, [loginAttemptData]);
@@ -355,6 +372,8 @@ const Sales = () => {
                     type="text"
                     placeholder="Search Here"
                     aria-label=".form-control-sm example"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
               </div>
@@ -388,7 +407,7 @@ const Sales = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {loginAttempt.map((attempt: any) => (
+                    {filteredAttempts?.map((attempt: any) => (
                       <tr key={attempt._id}>
                         <td className="ps-4">
                           <input
@@ -458,7 +477,7 @@ const Sales = () => {
             </Card.Body>
             <Card.Footer>
               <div className="d-flex align-items-center">
-                <div>Showing {recordsPerPage} Entries</div>
+                <div>Showing {totalRecords} Entries</div>
                 <div className="ms-auto">
                   <nav
                     aria-label="Page navigation"
