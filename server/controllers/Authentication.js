@@ -7,7 +7,6 @@ import nodemailer from "nodemailer";
 // Sign-Up Function
 const SignUp = async (req, res) => {
   const { userName, email, password } = req.body;
-
   try {
     const userLocation = await getCountryFromIp();
     const locationObject = {
@@ -15,7 +14,7 @@ const SignUp = async (req, res) => {
       countryCode: userLocation.countryCode,
       region: userLocation.regionName,
       city: userLocation.city,
-      ipAddress: ipAddress,
+      ipAddress: userLocation.ipAddress,
       lat: "33.7233",
       lon: "73.0435",
     };
@@ -26,7 +25,6 @@ const SignUp = async (req, res) => {
           .status(400)
           .json({ message: "User with the given Email already exist" });
       }
-
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new User({
         userName,
@@ -34,13 +32,13 @@ const SignUp = async (req, res) => {
         password: hashedPassword,
         location: locationObject,
       });
-
       await newUser.save();
       res.status(200).json({ data: newUser });
     } else {
       res.status(400).json({ message: "ALL three fields are required" });
     }
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Error creating user", error });
   }
 };

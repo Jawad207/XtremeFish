@@ -18,7 +18,6 @@ const Sales = () => {
   const auth = useSelector((state: any) => state.auth.user);
   const [allCounts, setAllcounts] = useState<number>(0);
   const [userName, setUserName] = useState<string>("");
-
   const getAllusersCount = async () => {
     const allUser = await getAlluserCount(dispatch);
     setAllcounts(allUser);
@@ -33,6 +32,7 @@ const Sales = () => {
   useEffect(() => {
     getAllLoginAttempts()
     setUserName(auth?.user?.userName);
+    console.log(userName)
   }, [auth]);
   const [endDate, setEndDate] = useState<Date | null>(() => {
     const today = new Date();
