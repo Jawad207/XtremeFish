@@ -43,7 +43,8 @@ export default function Home() {
   const onSubmit = async (data: any) => {
     try {
       const response = await signIn({...data, rememberMe}, dispatch);
-      const token = response.data.token;
+
+      const token = response?.token;
       if (rememberMe) {
         // Store the token in localStorage for persistent login
         localStorage.setItem("authToken", token);
@@ -51,11 +52,12 @@ export default function Home() {
         // Store the token in sessionStorage for temporary login
         sessionStorage.setItem("authToken", token);
       }
-      if (response.status == 200) {
+
+      if (response?.user) {
         return RouteChange();
       } else {
         reset();
-        setError(response);
+        setError('Error loggin in');
       }
     } catch (error: any) {
       setError(error.message);

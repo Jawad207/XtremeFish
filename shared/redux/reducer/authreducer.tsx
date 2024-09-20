@@ -36,16 +36,16 @@ export const authReducer = (
         loading: true,
       };
     case LOGIN_SUCCESS:
+      console.log('login success got called')
       return {
         ...state,
         isAuthenticated: true,
         loading: false,
-        token: action.payload.token,
-        user: action.payload.user,
+        token: action?.payload?.token,
+        user: action?.payload?.user,
         error: null,
       };
     case LOGOUT:
-
       return {
         ...state,
         isAuthenticated: false,
@@ -55,6 +55,7 @@ export const authReducer = (
         error: null,
       };
     case LOGIN_FAILURE:
+
       return {
         ...state,
         isAuthenticated: false,

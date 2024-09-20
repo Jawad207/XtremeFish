@@ -39,11 +39,11 @@ export const getAlluserCount = async (dispatch: any) => {
   }
 };
 
-export const getLoginAttempts = async (id: string, dispatch: any) => {
+export const getLoginAttempts = async (data: any, dispatch: any) => {
   try {
     dispatch({ type: GET_LOGINATTEMPT_INIT });
     const response = await apiClient.get("/dashboard/getLoginAttempts", {
-      params: { id },
+      params: { id: data?.id },
     });
 
     // If the request was successful

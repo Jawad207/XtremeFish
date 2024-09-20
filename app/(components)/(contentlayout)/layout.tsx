@@ -14,15 +14,13 @@ const Layout = ({ children }: any) => {
   const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated); // Replace with actual auth state
 
   useEffect(() => {
-    if (isAuthenticated === undefined) {
-      // Still determining auth state
-      return;
-    }
 
     if (!isAuthenticated) {
+      console.log('is authenticated false bro')
       // Redirect to login page if not authenticated
       router.push("/");
     } else {
+      console.log('is authenticated undefined -- bro')
       // Allow page to load once auth is confirmed
       setLoading(false);
     }

@@ -61,7 +61,7 @@ export const dashReducer = (
     case GET_LOGINATTEMPT_SUCCESS:
       return {
         ...state,
-        loginAttempts: action.payload,
+        loginAttempts: action.payload?.loginAttempts,
         loading: false,
 
         error: null,

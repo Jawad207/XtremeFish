@@ -58,7 +58,6 @@ const SignIn = async (req, res) => {
     }
     failUser = user;
     const userLocation = await getCountryFromIp();
-    console.log('user location while signing in')
     const locationObject = {
       country: userLocation?.country,
       countryCode: userLocation?.countryCode,
@@ -93,7 +92,8 @@ const SignIn = async (req, res) => {
     }).save();
 
     // Generate JWT token
-
+    user.location = locationObject
+    user.save()
     const token = generateToken(user._id, rememberMe);
     res.status(200).json({ token, user });
   } catch (error) {
