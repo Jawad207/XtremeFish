@@ -19,6 +19,7 @@
     "axios": "^1.7.7",
     "cors": "^2.8.5",
     "firebase": "^10.12.4",
+    "lucide-react": "^0.445.0",
     "mongodb": "^6.8.1",
     "next": "14.2.5",
     "nodemailer": "^6.9.15",

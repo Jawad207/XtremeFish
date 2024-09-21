@@ -12,6 +12,8 @@ import * as Salesdata from "@/shared/data/dashboards/salesdata";
 import DatePicker from "react-datepicker";
 import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
+import Popup from "./Popup";
+import { SquarePlus } from 'lucide-react';
 const Sales = () => {
   const [startDate, setStartDate] = useState(new Date());
   const dispatch = useDispatch();
@@ -26,6 +28,15 @@ const Sales = () => {
   const loginAttemptData = useSelector((state: any) => state?.dash);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAttempts, setFilteredAttempts] = useState([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const handleOpenPopup = () => {
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  };
 
   useEffect(() => {
     const results = loginAttempt.filter((attempt: any) => {
@@ -60,11 +71,11 @@ const Sales = () => {
       setTotalPages(loginAttemptData?.totalPages);
     }
   }, [loginAttemptData]);
-
   useEffect(() => {
     getAllLoginAttempts();
     setUserName(auth?.userName);
   }, [auth, currentPage]);
+  console.log(loginAttempt)
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -81,7 +92,6 @@ const Sales = () => {
           </p>
         </div>
       </div>
-
       <Row>
         <Col xxl={3} xl={3} lg={6} md={6} sm={6} className="col-12">
           <Card className="custom-card">
@@ -276,8 +286,10 @@ const Sales = () => {
       <Row>
         <Col xl={3}>
           <Card className="custom-card">
-            <Card.Header>
+            <Card.Header className="flex justify-between">
               <Card.Title>Posts</Card.Title>
+                <button onClick={handleOpenPopup} className="p-1"><SquarePlus/></button>
+                <Popup isOpen={isPopupOpen} onClose={handleClosePopup}/>
             </Card.Header>
             <Card.Body>
               <ul className="list-unstyled recent-activity-list">
