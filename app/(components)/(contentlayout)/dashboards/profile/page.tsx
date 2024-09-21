@@ -4,9 +4,8 @@ import Pageheader from "@/shared/layout-components/page-header/pageheader";
 import Seo from "@/shared/layout-components/seo/seo";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import React, { Fragment, useState } from "react";
-import { useSelector } from 'react-redux';
-
+import React, { Fragment, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import {
   Button,
@@ -32,6 +31,7 @@ const Profile = () => {
   });
 
   const [inputValue, setInputValue] = useState<any>("");
+  const [newUserData, setNewUserData] = useState([])
   const [value, setValue] = useState([
     createOption("Project Management"),
     createOption("Data Analysis"),
@@ -57,6 +57,8 @@ const Profile = () => {
     }
   };
 
+  const userData= useSelector((state:any) => state?.auth);
+  const User = userData.user
   const [isSearchable] = useState(true);
   return (
     <Fragment>
@@ -86,7 +88,7 @@ const Profile = () => {
                 </span>
                 <div className="mt-4 mb-3 d-flex align-items-center flex-wrap gap-3 justify-content-between">
                   <div>
-                    <h5 className="fw-semibold mb-1">Leo Phillips</h5>
+                    <h5 className="fw-semibold mb-1">{User.userName}</h5>
                     <span className="d-block fw-medium text-muted mb-1">
                       Chief Executive Officer (C.E.O)
                     </span>
@@ -94,11 +96,11 @@ const Profile = () => {
                       {" "}
                       <span className="me-3">
                         <i className="ri-building-line me-1 align-middle"></i>
-                        Georgia
+                        {User.location.country}
                       </span>{" "}
                       <span>
                         <i className="ri-map-pin-line me-1 align-middle"></i>
-                        Washington D.C
+                        {User.location.city}
                       </span>{" "}
                     </p>
                   </div>
