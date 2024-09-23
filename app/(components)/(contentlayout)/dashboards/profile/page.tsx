@@ -88,7 +88,7 @@ const Profile = () => {
                 </span>
                 <div className="mt-4 mb-3 d-flex align-items-center flex-wrap gap-3 justify-content-between">
                   <div>
-                    <h5 className="fw-semibold mb-1">{User.userName}</h5>
+                    <h5 className="fw-semibold mb-1">{User?.userName}</h5>
                     <span className="d-block fw-medium text-muted mb-1">
                       Chief Executive Officer (C.E.O)
                     </span>
@@ -96,15 +96,15 @@ const Profile = () => {
                       {" "}
                       <span className="me-3">
                         <i className="ri-building-line me-1 align-middle"></i>
-                        {User.location.country}
+                        {User?.location?.country}
                       </span>{" "}
                       <span>
                         <i className="ri-map-pin-line me-1 align-middle"></i>
-                        {User.location.city}
+                        {User?.location?.city}
                       </span>{" "}
                     </p>
                   </div>
-                  <div className="d-flex mb-0 flex-wrap gap-4">
+                  {/* <div className="d-flex mb-0 flex-wrap gap-4">
                     <div className="p-3 bg-light rounded d-flex align-items-center border gap-3">
                       <div className="main-card-icon primary">
                         <div className="avatar avatar-lg bg-primary-transparent border border-primary border-opacity-10">
@@ -277,7 +277,7 @@ const Profile = () => {
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 <Nav
                   className="nav nav-tabs mb-0 tab-style-8 scaleX"
@@ -386,8 +386,8 @@ const Profile = () => {
                           <span className="me-1">&#10024;</span>ABOUT ME :
                         </span>
                         <p className="text-muted mb-2">
-                          Hey there! I'm [Your Name], a passionate [Your
-                          Profession/Interest] based in [Your Location]. With a
+                          Hey there! I'm {User?.userName}, a passionate [Your
+                          Profession/Interest] based in {User?.location?.city} {User?.location?.country}. With a
                           love for [Your Hobbies/Interests], I find joy in
                           exploring the beauty of [Your Industry/Field]. Whether
                           it's [Specific Skills or Expertise], I'm always eager
@@ -480,7 +480,7 @@ const Profile = () => {
                             <span className="fw-medium text-default">
                               Email :{" "}
                             </span>{" "}
-                            your.email@example.com
+                            {User?.email}
                           </p>
                           <p className="mb-2">
                             <span className="avatar avatar-sm avatar-rounded text-secondary">
@@ -507,7 +507,7 @@ const Profile = () => {
                             <span className="fw-medium text-default">
                               Location :{" "}
                             </span>{" "}
-                            City, Country
+                            {User?.location?.city}, {User?.location?.country}
                           </p>
                         </div>
                       </li>
@@ -1167,13 +1167,13 @@ const Profile = () => {
                   <ListGroup.Item>
                     <div>
                       <span className="fw-medium me-2">Name :</span>
-                      <span className="text-muted">Leo Phillips</span>
+                      <span className="text-muted">{User?.userName}</span>
                     </div>
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <div>
                       <span className="fw-medium me-2">Email :</span>
-                      <span className="text-muted">your.email@example.com</span>
+                      <span className="text-muted">{User?.email}</span>
                     </div>
                   </ListGroup.Item>
                   <ListGroup.Item>
@@ -1203,7 +1203,7 @@ const Profile = () => {
                 </ListGroup>
               </Card.Body>
             </Card>
-            <Card className="custom-card overflow-hidden">
+            {/* <Card className="custom-card overflow-hidden">
               <Card.Header className="justify-content-between">
                 <Card.Title>FOLLOWERS</Card.Title>
                 <Link scroll={false} href="#!" className="fs-12 text-muted">
@@ -1305,7 +1305,7 @@ const Profile = () => {
                   </ListGroup.Item>
                 </ListGroup>
               </Card.Body>
-            </Card>
+            </Card> */}
           </Col>
         </Row>
         {/* End:: row-2 */}

@@ -13,7 +13,7 @@ import DatePicker from "react-datepicker";
 import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
 import Popup from "./Popup";
-import { SquarePlus } from 'lucide-react';
+import { Pencil, SquarePlus, Trash2 } from 'lucide-react';
 const Sales = () => {
   const [startDate, setStartDate] = useState(new Date());
   const dispatch = useDispatch();
@@ -29,6 +29,7 @@ const Sales = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAttempts, setFilteredAttempts] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [newPost, setNewPost] = useState([]);
 
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
@@ -37,7 +38,6 @@ const Sales = () => {
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
-
   useEffect(() => {
     const results = loginAttempt.filter((attempt: any) => {
       const userEmail = attempt?.userId?.email.toLowerCase();
@@ -75,7 +75,10 @@ const Sales = () => {
     getAllLoginAttempts();
     setUserName(auth?.userName);
   }, [auth, currentPage]);
-  console.log(loginAttempt)
+
+  const addPost = ()=>{
+    
+  }
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -289,24 +292,33 @@ const Sales = () => {
             <Card.Header className="flex justify-between">
               <Card.Title>Posts</Card.Title>
                 <button onClick={handleOpenPopup} className="p-1"><SquarePlus/></button>
-                <Popup isOpen={isPopupOpen} onClose={handleClosePopup}/>
+                <Popup isOpen={isPopupOpen} posts={{newPost,setNewPost}} onClose={handleClosePopup} />
             </Card.Header>
             <Card.Body>
               <ul className="list-unstyled recent-activity-list">
-                <li>
+              {newPost&&newPost.map((post)=>{
+                return <li>
                   <div>
                     <h6 className="mb-1 fs-13">
-                      John Doe
                       <span className="fs-11 text-muted float-end">
                         12:47PM
+                      <div className="flex py-2 justify-end gap-2 ">
+                        <button className="text-red-500">
+                          <Trash2 size={14}/>
+                        </button>
+                        <button className="text-blue-500">
+                          <Pencil size={14}/>
+                        </button> 
+                      </div>
                       </span>
                     </h6>
                     <span className="d-block fs-13 text-muted fw-normal">
-                      Updated profile picture
+                      {post.description}
                     </span>
                   </div>
                 </li>
-                <li>
+                })}
+                {/* <li>
                   <div>
                     <h6 className="mb-1 fs-13">
                       Jane Smith
@@ -367,7 +379,7 @@ const Sales = () => {
                       </span>
                     </span>
                   </div>
-                </li>
+                </li> */}
               </ul>
             </Card.Body>
           </Card>
