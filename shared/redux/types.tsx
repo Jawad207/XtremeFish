@@ -24,6 +24,26 @@ export const GET_COUNT_INIT = "GET_COUNT_INIT";
 export const GET_COUNT_SUCCESS = "GET_COUNT_SUCCESS";
 export const GET_COUNT_FAILURE = "GET_COUNT_FAILURE";
 
+export const CREATE_POST_INIT = "CREATE_POST_INIT";
+export const CREATE_POST_SUCCESS = "CREATE_POST_SUCCESS";
+export const CREATE_POST_FAILURE = "CREATE_POST_FAILURE";
+
+export const GET_POSTS_INIT = "GET_POSTS_INIT";
+export const GET_POSTS_SUCCESS = "GET_POSTS_SUCCESS";
+export const GET_POSTS_FAILURE = "GET_POSTS_FAILURE";
+
+export const GET_POST_INIT = "GET_POST_INIT";
+export const GET_POST_SUCCESS = "GET_POST_SUCCESS";
+export const GET_POST_FAILURE = "GET_POST_FAILURE";
+
+export const UPDATE_POST_INIT = "UPDATE_POST_INIT";
+export const UPDATE_POST_SUCCESS = "UPDATE_POST_SUCCESS";
+export const UPDATE_POST_FAILURE = "UPDATE_POST_FAILURE";
+
+export const DELETE_POST_INIT = "DELETE_POST_INIT";
+export const DELETE_POST_SUCCESS = "DELETE_POST_SUCCESS";
+export const DELETE_POST_FAILURE = "DELETE_POST_FAILURE";
+
 export const GET_LOGINATTEMPT_INIT = "GET_LOGINATTEMPT_INIT";
 export const GET_LOGINATTEMPT_SUCCESS = "GET_LOGINATTEMPT_SUCCESS";
 export const GET_LOGINATTEMPT_FAILURE = "GET_LOGINATTEMPT_FAILURE";
@@ -113,6 +133,90 @@ interface GetLoginAttemptFailureAction {
   payload: any;
 }
 
+interface CreatePostInitAction {
+  type: typeof CREATE_POST_INIT;
+}
+
+interface CreatePostSuccessAction {
+  type: typeof CREATE_POST_SUCCESS;
+  payload: any;
+}
+
+interface CreatePostFailureAction {
+  type: typeof CREATE_POST_FAILURE;
+  payload: any;
+}
+
+interface GetPostsInitAction {
+  type: typeof GET_POSTS_INIT;
+}
+
+interface GetPostsSuccessAction {
+  type: typeof GET_POSTS_SUCCESS;
+  payload: any;
+}
+
+interface GetPostsFailureAction {
+  type: typeof GET_POSTS_FAILURE;
+  payload: any;
+}
+
+interface GetPostInitAction {
+  type: typeof GET_POST_INIT;
+}
+
+interface GetPostSuccessAction {
+  type: typeof GET_POST_SUCCESS;
+  payload: any;
+}
+
+interface GetPostFailureAction {
+  type: typeof GET_POST_FAILURE;
+  payload: any;
+}
+
+interface UpdatePostInitAction {
+  type: typeof UPDATE_POST_INIT;
+}
+
+interface UpdatePostSuccessAction {
+  type: typeof UPDATE_POST_SUCCESS;
+  payload: any;
+}
+
+interface UpdatePostFailureAction {
+  type: typeof UPDATE_POST_FAILURE;
+  payload: any;
+}
+
+interface DeletePostInitAction {
+  type: typeof DELETE_POST_INIT;
+}
+
+interface DeletePostSuccessAction {
+  type: typeof DELETE_POST_SUCCESS;
+  payload: any;
+}
+
+interface DeletePostFailureAction {
+  type: typeof DELETE_POST_FAILURE;
+  payload: any;
+}
+
+interface GetLoginAttemptInitAction {
+  type: typeof GET_LOGINATTEMPT_INIT;
+}
+
+interface GetLoginAttemptSuccessAction {
+  type: typeof GET_LOGINATTEMPT_SUCCESS;
+  payload: any;
+}
+
+interface GetLoginAttemptFailureAction {
+  type: typeof GET_LOGINATTEMPT_FAILURE;
+  payload: any;
+}
+
 export type AuthActionTypes =
   | LogOutAction
   | VerifyInitAction
@@ -135,3 +239,21 @@ export type DashActionTypes =
   | GetLoginAttemptFailureAction
   | GetLoginAttemptSuccessAction
   | GetLoginAttemptInitAction
+  | CreatePostInitAction
+  | CreatePostSuccessAction
+  | CreatePostFailureAction
+  | GetPostsInitAction
+  | GetPostsSuccessAction
+  | GetPostsFailureAction
+  | GetPostInitAction
+  | GetPostSuccessAction
+  | GetPostFailureAction
+  | UpdatePostInitAction
+  | UpdatePostSuccessAction
+  | UpdatePostFailureAction
+  | DeletePostInitAction
+  | DeletePostSuccessAction
+  | DeletePostFailureAction
+  | GetLoginAttemptInitAction
+  | GetLoginAttemptSuccessAction
+  | GetLoginAttemptFailureAction

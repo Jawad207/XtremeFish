@@ -1,5 +1,6 @@
 import User from "../models/Users.js";
 import LoginAttempt from "../models/LoginAttempt.js";
+import Post from "../models/Post.js";
 
 // Sign-Up Function
 const getAllUser = async (req, res) => {
@@ -35,7 +36,7 @@ const getAllLoginAttempts = async (req, res) => {
 const createPost = async (req, res) => {
   try {
     const { userId, title, description } = req.body;
-    const newPost = await Post.create({ userId, title, description });
+    const newPost = await Post.create({ user: userId, title, description });
     res.status(201).json(newPost);
   } catch (error) {
     res.status(500).json({ message: "Error creating post", error });
@@ -45,7 +46,7 @@ const createPost = async (req, res) => {
 // Get all posts
 const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().populate("userId", "username"); // Assuming `username` is in your user model
+    const posts = await Post.find().populate("user", "userNname"); // Assuming `username` is in your user model
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: "Error fetching posts", error });
@@ -56,7 +57,7 @@ const getPosts = async (req, res) => {
 const getPostById = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id).populate(
-      "userId",
+      "user",
       "username"
     );
     if (!post) {
