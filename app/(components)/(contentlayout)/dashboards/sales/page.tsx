@@ -31,6 +31,7 @@ const Sales = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [newPost, setNewPost] = useState([]);
 
+
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
   };
@@ -296,10 +297,11 @@ const Sales = () => {
             </Card.Header>
             <Card.Body>
               <ul className="list-unstyled recent-activity-list">
-              {newPost&&newPost.map((post)=>{
+              {newPost.map((post)=>{
                 return <li>
                   <div>
                     <h6 className="mb-1 fs-13">
+                      {post&& <span>{post}</span>}
                       <span className="fs-11 text-muted float-end">
                         12:47PM
                       <div className="flex py-2 justify-end gap-2 ">
@@ -313,7 +315,6 @@ const Sales = () => {
                       </span>
                     </h6>
                     <span className="d-block fs-13 text-muted fw-normal">
-                      {post.description}
                     </span>
                   </div>
                 </li>
