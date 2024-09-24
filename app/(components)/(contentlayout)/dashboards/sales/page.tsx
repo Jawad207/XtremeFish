@@ -13,7 +13,7 @@ import DatePicker from "react-datepicker";
 import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
 import Popup from "./Popup";
-import { Pencil, SquarePlus, Trash2 } from 'lucide-react';
+import { Pencil, SquarePlus, Trash2 } from "lucide-react";
 const Sales = () => {
   const [startDate, setStartDate] = useState(new Date());
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ const Sales = () => {
   const [loginAttempt, setLoginAttempts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalRecords, setTotalRecords] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
   const recordsPerPage = 10;
   const loginAttemptData = useSelector((state: any) => state?.dash);
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,21 +31,24 @@ const Sales = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [newPost, setNewPost] = useState([]);
 
-
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
   };
 
+  const filterPosts = (postToDelete: any) => {
+    const updatedPosts = newPost.filter((post) => post !== postToDelete);
+    setNewPost(updatedPosts); //
+  };
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
   useEffect(() => {
     const results = loginAttempt.filter((attempt: any) => {
-      const userEmail = attempt?.userId?.email.toLowerCase();
-      const userName = attempt?.userId?.userName.toLowerCase();
+      const userEmail = attempt?.userId?.email?.toLowerCase();
+      const userName = attempt?.userId?.userName?.toLowerCase();
       return (
-        userEmail.includes(searchQuery.toLowerCase()) ||
-        userName.includes(searchQuery.toLowerCase())
+        userEmail?.includes(searchQuery?.toLowerCase()) ||
+        userName?.includes(searchQuery?.toLowerCase())
       );
     });
     setFilteredAttempts(results);
@@ -77,9 +80,7 @@ const Sales = () => {
     setUserName(auth?.userName);
   }, [auth, currentPage]);
 
-  const addPost = ()=>{
-    
-  }
+  const addPost = () => {};
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -292,33 +293,48 @@ const Sales = () => {
           <Card className="custom-card">
             <Card.Header className="flex justify-between">
               <Card.Title>Posts</Card.Title>
-                <button onClick={handleOpenPopup} className="p-1"><SquarePlus/></button>
-                <Popup isOpen={isPopupOpen} posts={{newPost,setNewPost}} onClose={handleClosePopup} />
+              <button onClick={handleOpenPopup} className="p-1">
+                <SquarePlus />
+              </button>
+              <Popup
+                isOpen={isPopupOpen}
+                post={newPost}
+                setPost={setNewPost}
+                onClose={handleClosePopup}
+              />
             </Card.Header>
             <Card.Body>
               <ul className="list-unstyled recent-activity-list">
-              {newPost.map((post)=>{
-                return <li>
-                  <div>
-                    <h6 className="mb-1 fs-13">
-                      {post&& <span>{post}</span>}
-                      <span className="fs-11 text-muted float-end">
-                        12:47PM
-                      <div className="flex py-2 justify-end gap-2 ">
-                        <button className="text-red-500">
-                          <Trash2 size={14}/>
-                        </button>
-                        <button className="text-blue-500">
-                          <Pencil size={14}/>
-                        </button> 
-                      </div>
-                      </span>
-                    </h6>
-                    <span className="d-block fs-13 text-muted fw-normal">
-                    </span>
-                  </div>
-                </li>
-                })}
+                {newPost && newPost?.length
+                  ? newPost?.map((post, index) => {
+                      return (
+                        <li>
+                          <div>
+                            <h6 className="mb-1 fs-13">
+                              <div className="flex justify-between">
+                                {post && <span>{post}</span>}
+                                <span className="fs-11 text-muted float-end">
+                                  12:47PM
+                                  <div className="flex py-2 justify-end gap-2 ">
+                                    <button
+                                      className="text-red-500"
+                                      onClick={() => filterPosts(post)}
+                                    >
+                                      <Trash2 size={14} />
+                                    </button>
+                                    {/* <button className="text-blue-500">
+                                      <Pencil size={14} />
+                                    </button> */}
+                                  </div>
+                                </span>
+                              </div>
+                            </h6>
+                            <span className="d-block fs-13 text-muted fw-normal"></span>
+                          </div>
+                        </li>
+                      );
+                    })
+                  : null}
                 {/* <li>
                   <div>
                     <h6 className="mb-1 fs-13">
@@ -432,7 +448,7 @@ const Sales = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredAttempts?.map((attempt: any) => (
+                    {filteredAttempts && filteredAttempts?.length && filteredAttempts?.map((attempt: any) => (
                       <tr key={attempt._id}>
                         <td className="ps-4">
                           <input
@@ -459,8 +475,8 @@ const Sales = () => {
                                 </Link>
                               </p>
                               <p className="fs-12 text-muted mb-0">
-                                {attempt.location.city},{" "}
-                                {attempt.location.region}
+                                {attempt.location?.city},{" "}
+                                {attempt.location?.region}
                               </p>
                             </div>
                           </div>
@@ -480,19 +496,19 @@ const Sales = () => {
                         <td>{attempt.description}</td>
                         <td>
                           <span className="d-block fw-semibold fs-13">
-                            {attempt.location.country}
+                            {attempt.location?.country}
                           </span>
                         </td>
-                        <td>{attempt.location.countryCode}</td>
+                        <td>{attempt.location?.countryCode}</td>
                         <td>
                           {new Date(attempt.timestamp).toLocaleDateString()}
                         </td>
                         <td className="text-center">
-                          {attempt.location.region}
+                          {attempt.location?.region}
                         </td>
-                        <td className="fw-semibold">{attempt.location.city}</td>
+                        <td className="fw-semibold">{attempt.location?.city}</td>
                         <td className="fw-semibold">
-                          {attempt.location.ipAddress}
+                          {attempt.location?.ipAddress}
                         </td>
                       </tr>
                     ))}

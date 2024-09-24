@@ -314,7 +314,7 @@ const Profile = () => {
                       Edit Profile
                     </Nav.Link>
                   </Nav.Item>
-                  <Nav.Item role="presentation">
+                  {/* <Nav.Item role="presentation">
                     <Nav.Link
                       eventKey="third"
                       className=""
@@ -358,7 +358,7 @@ const Profile = () => {
                     >
                       Friends
                     </Nav.Link>
-                  </Nav.Item>
+                  </Nav.Item> */}
                 </Nav>
               </Card.Body>
             </Card>
