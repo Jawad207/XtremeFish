@@ -83,13 +83,15 @@ export const createPost = async (data: any, dispatch: any) => {
     }
   }
 };
-export const getPosts = async (data: any, dispatch: any) => {
+export const getPosts = async (dispatch: any) => {
   try {
     dispatch({ type: GET_POSTS_INIT });
     const response = await apiClient.get("/dashboard/getPosts");
 
     // If the request was successful
+
     if (response.status === 200) {
+
       dispatch({ type: GET_POSTS_SUCCESS, payload: response.data });
     }
     return response.data.loginAttempts;
@@ -180,7 +182,7 @@ export const deletePost = async (data: any, dispatch: any) => {
     const response = await apiClient.delete("/dashboard/deletepost", {
       params: { id: data?.id },
     });
-
+    
     // If the request was successful
     if (response.status === 200) {
       dispatch({ type: DELETE_POST_SUCCESS, payload: response.data });

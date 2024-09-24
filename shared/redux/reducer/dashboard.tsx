@@ -118,7 +118,7 @@ export const dashReducer = (
       return {
         ...state,
         loading: false,
-        posts: action?.payload?.posts,
+        posts: action?.payload,
       };
 
     case GET_POSTS_FAILURE:
@@ -201,10 +201,11 @@ export const dashReducer = (
       };
 
     case DELETE_POST_SUCCESS:
+      console.log('deleted post', action?.payload)
       return {
         ...state,
         loading: false,
-        posts: state.posts.filter(post => post._id !== action.payload._id),
+        posts: state.posts.filter(post => post._id !== action.payload.post._id),
       };
 
     case DELETE_POST_FAILURE:

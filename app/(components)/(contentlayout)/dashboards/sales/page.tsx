@@ -1,23 +1,27 @@
 "use client";
 import Link from "next/link";
 import React, { Fragment, useEffect, useState } from "react";
-import { Button, Card, Col, Dropdown, Pagination, Row } from "react-bootstrap";
+import { Card, Col, Dropdown, Pagination, Row } from "react-bootstrap";
 import dynamic from "next/dynamic";
 import { useDispatch } from "react-redux";
-import { getAlluserCount, getLoginAttempts } from "@/shared/Api/dashboard";
+import {
+  getAlluserCount,
+  getLoginAttempts,
+  getPosts,
+  deletePost
+} from "@/shared/Api/dashboard";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 import * as Salesdata from "@/shared/data/dashboards/salesdata";
-import DatePicker from "react-datepicker";
 import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
 import Popup from "./Popup";
-import { Pencil, SquarePlus, Trash2 } from "lucide-react";
+import { SquarePlus, Trash2 } from "lucide-react";
 const Sales = () => {
-  const [startDate, setStartDate] = useState(new Date());
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
+  const posts = useSelector((state: any) => state.dash.posts);
   const [allCounts, setAllcounts] = useState<number>(0);
   const [userName, setUserName] = useState<string>("");
   const [loginAttempt, setLoginAttempts] = useState([]);
@@ -26,26 +30,24 @@ const Sales = () => {
   const [totalRecords, setTotalRecords] = useState(0);
   const recordsPerPage = 10;
   const loginAttemptData = useSelector((state: any) => state?.dash);
-  const Posts = useSelector((state: any) => state?.dash);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAttempts, setFilteredAttempts] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [newPost, setNewPost] = useState([]);
-
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
   };
 
-  
   const filterPosts = (postToDelete: any) => {
-    const updatedPosts = newPost.filter((post) => post !== postToDelete);
-    setNewPost(updatedPosts); //
+
+    deletePost({id: postToDelete?._id}, dispatch)
   };
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
+
   useEffect(() => {
-    const results = loginAttempt.filter((attempt: any) => {
+    const results = loginAttempt?.filter((attempt: any) => {
       const userEmail = attempt?.userId?.email?.toLowerCase();
       const userName = attempt?.userId?.userName?.toLowerCase();
       return (
@@ -55,10 +57,13 @@ const Sales = () => {
     });
     setFilteredAttempts(results);
   }, [searchQuery, loginAttempt]);
-  
+
   const getAllusersCount = async () => {
     const allUser = await getAlluserCount(dispatch);
     setAllcounts(allUser);
+  };
+  const getAllPosts = async () => {
+    await getPosts(dispatch);
   };
   const getAllLoginAttempts = async () => {
     await getLoginAttempts(
@@ -68,7 +73,9 @@ const Sales = () => {
   };
   useEffect(() => {
     getAllusersCount();
+    getAllPosts();
   }, []);
+
   useEffect(() => {
     if (loginAttemptData?.loginAttempts?.length) {
       setTotalRecords(loginAttemptData?.loginAttempts?.length);
@@ -77,18 +84,15 @@ const Sales = () => {
       setTotalPages(loginAttemptData?.totalPages);
     }
   }, [loginAttemptData]);
+
   useEffect(() => {
     getAllLoginAttempts();
     setUserName(auth?.userName);
   }, [auth, currentPage]);
-  
-  const addPost = () => {};
-  
+
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
-  console.log("Posts:   ",Posts)
-  console.log("loginAttemptData:  ",loginAttemptData)
   return (
     <Fragment>
       <Seo title={"Sales"} />
@@ -309,14 +313,17 @@ const Sales = () => {
             </Card.Header>
             <Card.Body>
               <ul className="list-unstyled recent-activity-list">
-                {newPost && newPost?.length
-                  ? newPost?.map((post, index) => {
+                {posts && posts?.length
+                  ? posts?.map((post: any, index: any) => {
                       return (
-                        <li>
+                        <li key={index}>
                           <div>
                             <h6 className="mb-1 fs-13">
                               <div className="flex justify-between">
-                                {post && <span>{post}</span>}
+                                <div>
+                                  {post && <span>{post?.title}</span>}
+                                  <div className="mt-2">{post?.description}</div>
+                                </div>
                                 <span className="fs-11 text-muted float-end">
                                   12:47PM
                                   <div className="flex py-2 justify-end gap-2 ">
@@ -452,70 +459,74 @@ const Sales = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredAttempts && filteredAttempts?.length && filteredAttempts?.map((attempt: any) => (
-                      <tr key={attempt._id}>
-                        <td className="ps-4">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`checkboxNoLabeljob_${attempt._id}`}
-                            value=""
-                            aria-label="..."
-                          />
-                        </td>
-                        <td>
-                          <div className="d-flex">
-                            <span className="avatar avatar-md">
-                              <img
-                                src="../../assets/images/ecommerce/jpg/1.jpg"
-                                className=""
-                                alt="..."
-                              />
-                            </span>
-                            <div className="ms-2">
-                              <p className="fw-semibold fs-13 mb-0 d-flex align-items-center">
-                                <Link scroll={false} href="#!">
-                                  {attempt.userId?.email}{" "}
-                                </Link>
-                              </p>
-                              <p className="fs-12 text-muted mb-0">
-                                {attempt.location?.city},{" "}
-                                {attempt.location?.region}
-                              </p>
+                    {filteredAttempts &&
+                      filteredAttempts?.length &&
+                      filteredAttempts?.map((attempt: any) => (
+                        <tr key={attempt._id}>
+                          <td className="ps-4">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id={`checkboxNoLabeljob_${attempt._id}`}
+                              value=""
+                              aria-label="..."
+                            />
+                          </td>
+                          <td>
+                            <div className="d-flex">
+                              <span className="avatar avatar-md">
+                                <img
+                                  src="../../assets/images/ecommerce/jpg/1.jpg"
+                                  className=""
+                                  alt="..."
+                                />
+                              </span>
+                              <div className="ms-2">
+                                <p className="fw-semibold fs-13 mb-0 d-flex align-items-center">
+                                  <Link scroll={false} href="#!">
+                                    {attempt.userId?.email}{" "}
+                                  </Link>
+                                </p>
+                                <p className="fs-12 text-muted mb-0">
+                                  {attempt.location?.city},{" "}
+                                  {attempt.location?.region}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td>{attempt.userId?.userName}</td>
-                        <td>
-                          <span
-                            className={`badge ${
-                              attempt?.status == "success"
-                                ? "bg-primary-transparent"
-                                : "bg-red-400"
-                            }`}
-                          >
-                            {attempt.status}
-                          </span>
-                        </td>
-                        <td>{attempt.description}</td>
-                        <td>
-                          <span className="d-block fw-semibold fs-13">
-                            {attempt.location?.country}
-                          </span>
-                        </td>
-                        <td>{attempt.location?.countryCode}</td>
-                        <td>
-                          {new Date(attempt.timestamp).toLocaleDateString()}
-                        </td>
-                        <td className="text-center">
-                          {attempt.location?.region}
-                        </td>
-                        <td className="fw-semibold">{attempt.location?.city}</td>
-                        <td className="fw-semibold">
-                          {attempt.location?.ipAddress}
-                        </td>
-                      </tr>
-                    ))}
+                          </td>
+                          <td>{attempt.userId?.userName}</td>
+                          <td>
+                            <span
+                              className={`badge ${
+                                attempt?.status == "success"
+                                  ? "bg-primary-transparent"
+                                  : "bg-red-400"
+                              }`}
+                            >
+                              {attempt.status}
+                            </span>
+                          </td>
+                          <td>{attempt.description}</td>
+                          <td>
+                            <span className="d-block fw-semibold fs-13">
+                              {attempt.location?.country}
+                            </span>
+                          </td>
+                          <td>{attempt.location?.countryCode}</td>
+                          <td>
+                            {new Date(attempt.timestamp).toLocaleDateString()}
+                          </td>
+                          <td className="text-center">
+                            {attempt.location?.region}
+                          </td>
+                          <td className="fw-semibold">
+                            {attempt.location?.city}
+                          </td>
+                          <td className="fw-semibold">
+                            {attempt.location?.ipAddress}
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>

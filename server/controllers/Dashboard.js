@@ -37,7 +37,7 @@ const createPost = async (req, res) => {
   try {
     const { userId, title, description } = req.body;
     const newPost = await Post.create({ user: userId, title, description });
-    res.status(201).json(newPost);
+    res.status(200).json(newPost);
   } catch (error) {
     res.status(500).json({ message: "Error creating post", error });
   }
@@ -90,11 +90,12 @@ const updatePost = async (req, res) => {
 // Delete a post
 const deletePost = async (req, res) => {
   try {
-    const post = await Post.findByIdAndDelete(req.params.id);
+
+    const post = await Post.findByIdAndDelete(req?.query?.id);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
-    res.status(200).json({ message: "Post deleted successfully" });z
+    res.status(200).json({ message: "Post deleted successfully", post });
   } catch (error) {
     res.status(500).json({ message: "Error deleting post", error });
   }

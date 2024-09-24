@@ -1,7 +1,10 @@
 import { X } from "lucide-react";
 import { useState } from "react";
-
+import { createPost } from "@/shared/Api/dashboard";
+import { useDispatch, useSelector } from "react-redux";
 const Popup = ({ isOpen, onClose, post, setPost }: any) => {
+  const user = useSelector((state: any) => state.auth.user);
+  const dispatch = useDispatch();
   const [val, setVal] = useState("");
   if (!isOpen) return null;
   const handleSubmitPost = () => {
@@ -10,8 +13,12 @@ const Popup = ({ isOpen, onClose, post, setPost }: any) => {
     } else {
       setPost([val]);
     }
-    onClose()
-    setVal("")
+    createPost(
+      { title: val, description: "testing", userId: user?._id },
+      dispatch
+    );
+    onClose();
+    setVal("");
   };
 
   const handleChangePost = (e: any) => {
