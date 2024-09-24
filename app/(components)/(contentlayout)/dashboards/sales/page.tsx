@@ -26,6 +26,7 @@ const Sales = () => {
   const [totalRecords, setTotalRecords] = useState(0);
   const recordsPerPage = 10;
   const loginAttemptData = useSelector((state: any) => state?.dash);
+  const Posts = useSelector((state: any) => state?.dash);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAttempts, setFilteredAttempts] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -35,6 +36,7 @@ const Sales = () => {
     setIsPopupOpen(true);
   };
 
+  
   const filterPosts = (postToDelete: any) => {
     const updatedPosts = newPost.filter((post) => post !== postToDelete);
     setNewPost(updatedPosts); //
@@ -53,7 +55,7 @@ const Sales = () => {
     });
     setFilteredAttempts(results);
   }, [searchQuery, loginAttempt]);
-
+  
   const getAllusersCount = async () => {
     const allUser = await getAlluserCount(dispatch);
     setAllcounts(allUser);
@@ -79,12 +81,14 @@ const Sales = () => {
     getAllLoginAttempts();
     setUserName(auth?.userName);
   }, [auth, currentPage]);
-
+  
   const addPost = () => {};
-
+  
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
+  console.log("Posts:   ",Posts)
+  console.log("loginAttemptData:  ",loginAttemptData)
   return (
     <Fragment>
       <Seo title={"Sales"} />

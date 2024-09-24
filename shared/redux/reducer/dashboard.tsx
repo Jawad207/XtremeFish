@@ -5,7 +5,22 @@ import {
   GET_COUNT_SUCCESS,
   GET_LOGINATTEMPT_FAILURE,
   GET_LOGINATTEMPT_INIT,
-  GET_LOGINATTEMPT_SUCCESS
+  GET_LOGINATTEMPT_SUCCESS,
+  GET_POSTS_INIT,
+  GET_POSTS_SUCCESS,
+  GET_POSTS_FAILURE,
+  CREATE_POST_INIT,
+  CREATE_POST_SUCCESS,
+  CREATE_POST_FAILURE,
+  GET_POST_INIT,
+  GET_POST_SUCCESS,
+  GET_POST_FAILURE,
+  UPDATE_POST_INIT,
+  UPDATE_POST_SUCCESS,
+  UPDATE_POST_FAILURE,
+  DELETE_POST_INIT,
+  DELETE_POST_SUCCESS,
+  DELETE_POST_FAILURE,
 } from "../types";
 
 interface LoginAttempt {
@@ -15,6 +30,13 @@ interface LoginAttempt {
   description: string,
   timestamp: Date
 }
+interface Posts {
+  _id:any;
+  status:string;
+  user:any;
+  description:string;
+  title:string;
+}
 interface DashState {
   userCount: number;
   loading: boolean;
@@ -22,6 +44,8 @@ interface DashState {
   currentPage: number,
   loginAttempts: LoginAttempt[],
   error: string | null;
+  posts: Posts[],
+  post: null,
 }
 
 const initialState: DashState = {
@@ -31,7 +55,11 @@ const initialState: DashState = {
   currentPage: 1,
   loading: false,
   error: null,
+  posts: [],
+  post: null,
 };
+
+
 
 export const dashReducer = (
   state = initialState,
@@ -78,8 +106,113 @@ export const dashReducer = (
         loginAttempts: [],
         error: action.payload,
       };
-      //FROM HERE
-    
+
+    case GET_POSTS_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case GET_POSTS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        posts: action?.payload?.posts,
+      };
+
+    case GET_POSTS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case CREATE_POST_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case CREATE_POST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        posts: [...state.posts, action.payload],
+      };
+
+    case CREATE_POST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case GET_POST_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case GET_POST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        post: action.payload,
+      };
+
+    case GET_POST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case UPDATE_POST_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case UPDATE_POST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        posts: state.posts.map(post =>
+          post._id === action.payload._id ? action.payload : post
+        ),
+      };
+
+    case UPDATE_POST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case DELETE_POST_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case DELETE_POST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        posts: state.posts.filter(post => post._id !== action.payload._id),
+      };
+
+    case DELETE_POST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
 
     default:
       return state;
