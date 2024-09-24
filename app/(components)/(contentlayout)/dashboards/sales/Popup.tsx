@@ -35,12 +35,21 @@ const Popup = ({ isOpen, onClose, post, setPost }: any) => {
           <input
             type="text"
             className="bg-white rounded-sm px-2 py-1 w-4/5"
-            placeholder="Description"
+            placeholder="title"
             value={val}
             onChange={(e) => {
               handleChangePost(e);
             }}
           />
+          {/* <input
+            type="text"
+            className="bg-white rounded-sm px-2 py-1 w-4/5"
+            placeholder="description"
+            value={val}
+            onChange={(e) => {
+              handleChangePost(e);
+            }}
+          /> */}
           <button
             onClick={handleSubmitPost}
             className="text-xs p-2 rounded-sm bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 "
