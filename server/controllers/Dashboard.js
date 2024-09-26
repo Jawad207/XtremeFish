@@ -1,7 +1,9 @@
 import User from "../models/Users.js";
 import LoginAttempt from "../models/LoginAttempt.js";
 import Post from "../models/Post.js";
-
+import Account from "../models/Account.js";
+import Notification from "../models/notification.js";
+import { getCountryFromIp } from "../helper/index.js";
 // Sign-Up Function
 const getAllUser = async (req, res) => {
   try {
@@ -90,7 +92,6 @@ const updatePost = async (req, res) => {
 // Delete a post
 const deletePost = async (req, res) => {
   try {
-
     const post = await Post.findByIdAndDelete(req?.query?.id);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
@@ -101,6 +102,103 @@ const deletePost = async (req, res) => {
   }
 };
 
+const createAccount = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const loggedInUserId = req.userId; // Assume you are getting the logged-in user's ID from middleware
+
+    const userLocation = await getCountryFromIp();
+    const locationObject = {
+      country: userLocation?.country,
+      countryCode: userLocation?.countryCode,
+      region: userLocation?.region,
+      city: userLocation?.city,
+      ipAddress: userLocation?.ipAddress,
+      lat: userLocation?.lat,
+      lon: userLocation?.lon,
+    };
+
+    const newAccount = new Account({
+      email,
+      password, // Hash the password before saving in a real application
+      userId: loggedInUserId,
+      location: locationObject,
+    });
+
+    await newAccount.save();
+
+    // Generate notification
+    const notification = new Notification({
+      message: "A new account has been added.",
+      accountId: newAccount._id,
+    });
+    await notification.save();
+
+    res
+      .status(201)
+      .json({ message: "Account created successfully", account: newAccount });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create account" });
+  }
+};
+
+const getAccounts = async (req, res) => {
+  try {
+    // Fetch the logged-in user's userId
+    const userId = req.user._id;
+
+    // Find all accounts for the user
+    const accounts = await Account.find({ userId });
+
+    return res.status(200).json(accounts);
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching accounts", error });
+  }
+};
+
+const getSingleAccount = async (req, res) => {
+  try {
+    const { accountId } = req.params;
+
+    // Fetch the account by ID
+    const account = await Account.findById(accountId);
+
+    if (!account) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+
+    return res.status(200).json(account);
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching account", error });
+  }
+};
+
+const deleteAccount = async (req, res) => {
+  try {
+    const accountId = req.params.id;
+
+    // Find the account by ID
+    const account = await Account.findById(accountId);
+    if (!account) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+
+    // Delete the account
+    await Account.findByIdAndDelete(accountId);
+
+    // Delete associated notifications
+    await Notification.deleteMany({ accountId });
+
+    res
+      .status(200)
+      .json({
+        message: "Account and associated notifications deleted successfully",
+      });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete account" });
+  }
+};
+
 export const dashboard = {
   getAllUser,
   getAllLoginAttempts,
@@ -108,5 +206,9 @@ export const dashboard = {
   getPostById,
   getPosts,
   updatePost,
+  createAccount,
+  getSingleAccount,
+  getAccounts,
   deletePost,
+  deleteAccount,
 };
