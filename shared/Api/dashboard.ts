@@ -22,6 +22,9 @@ import {
   DELETE_POST_INIT,
   DELETE_POST_SUCCESS,
   DELETE_POST_FAILURE,
+  GET_ACCOUNTS_INIT,
+  GET_ACCOUNTS_SUCCESS,
+  GET_ACCOUNTS_FAILURE,
 } from "../redux/types";
 
 export const getAlluserCount = async (dispatch: any) => {
@@ -91,7 +94,6 @@ export const getPosts = async (dispatch: any) => {
     // If the request was successful
 
     if (response.status === 200) {
-
       dispatch({ type: GET_POSTS_SUCCESS, payload: response.data });
     }
     return response.data.loginAttempts;
@@ -108,6 +110,39 @@ export const getPosts = async (dispatch: any) => {
       console.error("Error:", error.message);
       dispatch({
         type: GET_POSTS_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const getAccounts = async (userId: any, dispatch: any) => {
+  try {
+    dispatch({ type: GET_ACCOUNTS_INIT });
+    const response = await apiClient.get("/dashboard/getAccounts", {
+      params: { id: userId },
+    });
+
+    // If the request was successful
+
+    if (response.status === 200) {
+      dispatch({ type: GET_ACCOUNTS_SUCCESS, payload: response.data });
+    }
+    return response.data.loginAttempts;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_ACCOUNTS_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Login failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_ACCOUNTS_FAILURE,
         payload: error.message,
       });
       return error.message;
@@ -182,7 +217,7 @@ export const deletePost = async (data: any, dispatch: any) => {
     const response = await apiClient.delete("/dashboard/deletepost", {
       params: { id: data?.id },
     });
-    
+
     // If the request was successful
     if (response.status === 200) {
       dispatch({ type: DELETE_POST_SUCCESS, payload: response.data });

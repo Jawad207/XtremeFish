@@ -15,6 +15,8 @@ router.post("/verify-acc-otp", dashboard.verifyOtp);
 router.post("/set-acc-pass", dashboard.setPassword);
 router.get("/getAccount", dashboard.getSingleAccount);
 router.get("/getAccounts", dashboard.getAccounts);
+router.get("/getNotifications", dashboard.getNotifications);
+router.get("/getNotification", dashboard.getNotification);
 router.delete("/deleteAccount", dashboard.deleteAccount);
 
 export default router;

@@ -1,13 +1,16 @@
 // Account.ts (Mongoose Model)
 
-import mongoose, { Schema } from 'mongoose';
-
+import mongoose, { Schema } from "mongoose";
 
 const AccountSchema = new Schema(
   {
-
     email: { type: String, required: true },
     password: { type: String, required: true },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      require: true,
+    },
     otp: { type: String, default: "" },
     location: {
       country: String,
@@ -22,4 +25,4 @@ const AccountSchema = new Schema(
   { timestamps: true }
 );
 
-export default mongoose.model('Account', AccountSchema);
+export default mongoose.model("Account", AccountSchema);

@@ -104,11 +104,13 @@ const deletePost = async (req, res) => {
 
 const generateOtpAndSave = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, userId } = req.body;
 
     const account = await Account.findOne({ email });
     if (account) {
-      res.status(401).json({ message: "Account with the given email already exist" });
+      res
+        .status(401)
+        .json({ message: "Account with the given email already exist" });
       return;
     }
     const userLocation = await getCountryFromIp();
@@ -128,7 +130,7 @@ const generateOtpAndSave = async (req, res) => {
     const newAccount = new Account({
       email,
       otp,
-
+      userId,
       location: locationObject,
     });
 
@@ -183,7 +185,7 @@ const setPassword = async (req, res) => {
 const getAccounts = async (req, res) => {
   try {
     // Fetch the logged-in user's userId
-    const userId = req.user._id;
+    const userId = req.query.id;
 
     // Find all accounts for the user
     const accounts = await Account.find({ userId });
@@ -211,6 +213,30 @@ const getSingleAccount = async (req, res) => {
   }
 };
 
+const getNotifications = async () => {
+  try {
+    const notifications = await Notification.find();
+    if (!notifications) {
+      return res.status(404).json({ message: "No notifications found" });
+    }
+    return res.status(200).json(notifications);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete account" });
+  }
+};
+
+const getNotification = async () => {
+  try {
+    const notification = await Notification.findById(req.query.id);
+
+    if (!notification) {
+      return res.status(404).json({ message: "No notification found" });
+    }
+    return res.status(200).json(notification);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete account" });
+  }
+};
 const deleteAccount = async (req, res) => {
   try {
     const accountId = req.params.id;
@@ -249,4 +275,6 @@ export const dashboard = {
   generateOtpAndSave,
   verifyOtp,
   setPassword,
+  getNotifications,
+  getNotification,
 };

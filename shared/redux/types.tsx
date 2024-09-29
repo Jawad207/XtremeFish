@@ -48,6 +48,20 @@ export const GET_LOGINATTEMPT_INIT = "GET_LOGINATTEMPT_INIT";
 export const GET_LOGINATTEMPT_SUCCESS = "GET_LOGINATTEMPT_SUCCESS";
 export const GET_LOGINATTEMPT_FAILURE = "GET_LOGINATTEMPT_FAILURE";
 
+export const GET_ACCOUNTS_INIT = "GET_ACCOUNTS_INIT";
+export const GET_ACCOUNTS_SUCCESS = "GET_ACCOUNTS_SUCCESS";
+export const GET_ACCOUNTS_FAILURE = "GET_ACCOUNTS_FAILURE";
+
+interface getAccountsInitAction {
+  type: typeof GET_ACCOUNTS_INIT;
+}
+interface getAccountsSuccessAction {
+  type: typeof GET_ACCOUNTS_SUCCESS;
+}
+interface getAccountsFailreAction {
+  type: typeof GET_ACCOUNTS_FAILURE;
+}
+
 interface LoginInitAction {
   type: typeof LOGIN_INIT;
 }
@@ -217,6 +231,17 @@ interface GetLoginAttemptFailureAction {
   payload: any;
 }
 
+interface getAccountsInitAction {
+  type: typeof GET_ACCOUNTS_INIT;
+}
+interface getAccountsSuccessAction {
+  type: typeof GET_ACCOUNTS_SUCCESS;
+  payload: any;
+}
+interface getAccountsFailreAction {
+  type: typeof GET_ACCOUNTS_FAILURE;
+  payload: any;
+}
 export type AuthActionTypes =
   | LogOutAction
   | VerifyInitAction
@@ -257,3 +282,6 @@ export type DashActionTypes =
   | GetLoginAttemptInitAction
   | GetLoginAttemptSuccessAction
   | GetLoginAttemptFailureAction
+  | getAccountsInitAction
+  | getAccountsSuccessAction
+  | getAccountsFailreAction;

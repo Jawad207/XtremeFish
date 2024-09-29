@@ -21,31 +21,35 @@ import {
   DELETE_POST_INIT,
   DELETE_POST_SUCCESS,
   DELETE_POST_FAILURE,
+  GET_ACCOUNTS_FAILURE,
+  GET_ACCOUNTS_INIT,
+  GET_ACCOUNTS_SUCCESS,
 } from "../types";
 
 interface LoginAttempt {
-  _id: any
-  status: string,
-  userId: string,
-  description: string,
-  timestamp: Date
+  _id: any;
+  status: string;
+  userId: string;
+  description: string;
+  timestamp: Date;
 }
 interface Posts {
-  _id:any;
-  status:string;
-  user:any;
-  description:string;
-  title:string;
+  _id: any;
+  status: string;
+  user: any;
+  description: string;
+  title: string;
 }
 interface DashState {
   userCount: number;
   loading: boolean;
-  totalPages: number,
-  currentPage: number,
-  loginAttempts: LoginAttempt[],
+  totalPages: number;
+  currentPage: number;
+  loginAttempts: LoginAttempt[];
   error: string | null;
-  posts: Posts[],
-  post: null,
+  posts: Posts[];
+  post: null;
+  accounts: any;
 }
 
 const initialState: DashState = {
@@ -57,9 +61,8 @@ const initialState: DashState = {
   error: null,
   posts: [],
   post: null,
+  accounts: [],
 };
-
-
 
 export const dashReducer = (
   state = initialState,
@@ -181,7 +184,7 @@ export const dashReducer = (
       return {
         ...state,
         loading: false,
-        posts: state.posts.map(post =>
+        posts: state.posts.map((post) =>
           post._id === action.payload._id ? action.payload : post
         ),
       };
@@ -201,14 +204,36 @@ export const dashReducer = (
       };
 
     case DELETE_POST_SUCCESS:
-      console.log('deleted post', action?.payload)
+      console.log("deleted post", action?.payload);
       return {
         ...state,
         loading: false,
-        posts: state.posts.filter(post => post._id !== action.payload.post._id),
+        posts: state.posts.filter(
+          (post) => post._id !== action.payload.post._id
+        ),
       };
 
     case DELETE_POST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case GET_ACCOUNTS_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case GET_ACCOUNTS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        accounts: action.payload,
+      };
+
+    case GET_ACCOUNTS_FAILURE:
       return {
         ...state,
         loading: false,
