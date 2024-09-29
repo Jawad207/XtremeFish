@@ -102,11 +102,15 @@ const deletePost = async (req, res) => {
   }
 };
 
-const createAccount = async (req, res) => {
+const generateOtpAndSave = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const loggedInUserId = req.userId; // Assume you are getting the logged-in user's ID from middleware
+    const { email } = req.body;
 
+    const account = await Account.findOne({ email });
+    if (account) {
+      res.status(401).json({ message: "Account with the given email already exist" });
+      return;
+    }
     const userLocation = await getCountryFromIp();
     const locationObject = {
       country: userLocation?.country,
@@ -118,28 +122,62 @@ const createAccount = async (req, res) => {
       lon: userLocation?.lon,
     };
 
+    // Generate a 4-6 digit OTP (you can modify this as per your requirements)
+    const otp = Math.floor(100000 + Math.random() * 900000); // Example: 6-digit OTP
+
     const newAccount = new Account({
       email,
-      password, // Hash the password before saving in a real application
-      userId: loggedInUserId,
+      otp,
+
       location: locationObject,
     });
 
     await newAccount.save();
 
-    // Generate notification
-    const notification = new Notification({
-      message: "A new account has been added.",
-      accountId: newAccount._id,
-    });
-    await notification.save();
-
-    res
-      .status(201)
-      .json({ message: "Account created successfully", account: newAccount });
+    res.status(201).json({ message: "OTP generated and account initiated" });
   } catch (error) {
-    res.status(500).json({ error: "Failed to create account" });
+    res.status(500).json({ error: "Failed to generate OTP" });
   }
+};
+
+const verifyOtp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  // Find the account with the email and otp
+  const account = await Account.findOne({ email, otp });
+
+  if (!account) {
+    return res.status(400).json({ error: "Invalid OTP or email" });
+  }
+
+  // Clear OTP after successful verification
+  await account.save();
+
+  res.status(200).json({ message: "OTP verified" });
+};
+
+const setPassword = async (req, res) => {
+  const { email, password } = req.body;
+
+  const account = await Account.findOne({ email });
+
+  if (!account) {
+    return res.status(400).json({ error: "Account not found" });
+  }
+
+  // Hash the password before saving
+  account.password = await bcrypt.hash(password, 10);
+
+  // Create notification after password is set
+  const notification = new Notification({
+    message: "A new account has been created",
+    accountId: account._id,
+  });
+  await notification.save();
+
+  await account.save();
+
+  res.status(200).json({ message: "Password set successfully" });
 };
 
 const getAccounts = async (req, res) => {
@@ -189,11 +227,9 @@ const deleteAccount = async (req, res) => {
     // Delete associated notifications
     await Notification.deleteMany({ accountId });
 
-    res
-      .status(200)
-      .json({
-        message: "Account and associated notifications deleted successfully",
-      });
+    res.status(200).json({
+      message: "Account and associated notifications deleted successfully",
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete account" });
   }
@@ -206,9 +242,11 @@ export const dashboard = {
   getPostById,
   getPosts,
   updatePost,
-  createAccount,
   getSingleAccount,
   getAccounts,
   deletePost,
   deleteAccount,
+  generateOtpAndSave,
+  verifyOtp,
+  setPassword,
 };
