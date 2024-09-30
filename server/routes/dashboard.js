@@ -18,5 +18,6 @@ router.get("/getAccounts", dashboard.getAccounts);
 router.get("/getNotifications", dashboard.getNotifications);
 router.get("/getNotification", dashboard.getNotification);
 router.delete("/deleteAccount", dashboard.deleteAccount);
+router.get("/editProfile", dashboard.editUserProfile);
 
 export default router;
