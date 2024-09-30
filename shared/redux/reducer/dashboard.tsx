@@ -27,6 +27,12 @@ import {
   GET_NOTIFICATIONS_FAILURE,
   GET_NOTIFICATIONS_INIT,
   GET_NOTIFICATIONS_SUCCESS,
+  DELETE_NOTIFICATIONS_INIT,
+  DELETE_NOTIFICATIONS_SUCCESS,
+  DELETE_NOTIFICATIONS_FAILURE,
+  DELETE_ACCOUNTS_INIT,
+  DELETE_ACCOUNTS_SUCCESS,
+  DELETE_ACCOUNTS_FAILURE,
 } from "../types";
 
 interface LoginAttempt {
@@ -45,6 +51,7 @@ interface Posts {
 }
 interface DashState {
   userCount: number;
+  totalAccounts: number;
   loading: boolean;
   totalPages: number;
   currentPage: number;
@@ -67,6 +74,7 @@ const initialState: DashState = {
   post: null,
   accounts: [],
   notifications: [],
+  totalAccounts: 0,
 };
 
 export const dashReducer = (
@@ -209,7 +217,6 @@ export const dashReducer = (
       };
 
     case DELETE_POST_SUCCESS:
-      console.log("deleted post", action?.payload);
       return {
         ...state,
         loading: false,
@@ -232,10 +239,12 @@ export const dashReducer = (
       };
 
     case GET_ACCOUNTS_SUCCESS:
+      console.log('action in here', action?.payload)
       return {
         ...state,
         loading: false,
-        accounts: action.payload,
+        accounts: action?.payload?.accounts,
+        totalAccounts: action?.payload?.accountsCount,
       };
 
     case GET_ACCOUNTS_FAILURE:
@@ -259,6 +268,49 @@ export const dashReducer = (
       };
 
     case GET_NOTIFICATIONS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case DELETE_NOTIFICATIONS_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case DELETE_NOTIFICATIONS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        notifications: state.notifications.filter(
+          (notif: any) => notif._id !== action.payload.post._id
+        ),
+      };
+
+    case DELETE_NOTIFICATIONS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case DELETE_ACCOUNTS_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case DELETE_ACCOUNTS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        accounts: state.accounts.filter(
+          (notif: any) => notif?._id !== action?.payload?.account?._id
+        ),
+      };
+
+    case DELETE_ACCOUNTS_FAILURE:
       return {
         ...state,
         loading: false,

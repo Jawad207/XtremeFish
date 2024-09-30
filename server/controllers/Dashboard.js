@@ -75,10 +75,11 @@ const getPostById = async (req, res) => {
 // Update a post
 const updatePost = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, userId } = req.body;
+
     const post = await Post.findByIdAndUpdate(
-      req.params.id,
-      { title, description, timestamp: Date.now() },
+      req?.query?.id,
+      { title, description, timestamp: Date.now(), user: userId },
       { new: true }
     );
     if (!post) {
@@ -169,7 +170,7 @@ const setPassword = async (req, res) => {
   }
 
   // Hash the password before saving
-  account.password = password
+  account.password = password;
 
   // Create notification after password is set
   const notification = new Notification({
@@ -188,15 +189,55 @@ const getAccounts = async (req, res) => {
     // Fetch the logged-in user's userId
     const userId = req.query.id;
 
-    // Find all accounts for the user
-    const accounts = await Account.find({ userId });
+    // Get pagination parameters from query (default to page 1, limit 10)
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    return res.status(200).json(accounts);
+    // Find all accounts for the user with pagination
+    const accounts = await Account.find({ userId }).skip(skip).limit(limit);
+
+    // Get the total count of accounts without pagination
+    const totalAccounts = await Account.countDocuments({ userId });
+
+    return res.status(200).json({
+      accounts: accounts,
+      totalAccounts: totalAccounts, // Total number of accounts
+      currentPage: page,
+      totalPages: Math.ceil(totalAccounts / limit), // Calculate total pages
+      accountsCount: accounts?.length,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Error fetching accounts", error });
   }
 };
 
+const getAllAccounts = async (req, res) => {
+  try {
+    // Fetch the logged-in user's userId
+
+    // Get pagination parameters from query (default to page 1, limit 10)
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // Find all accounts for the user with pagination
+    const accounts = await Account.find().skip(skip).limit(limit);
+
+    // Get the total count of accounts without pagination
+    const totalAccounts = await Account.countDocuments({});
+
+    return res.status(200).json({
+      accounts: accounts,
+      totalAccounts: totalAccounts, // Total number of accounts
+      currentPage: page,
+      totalPages: Math.ceil(totalAccounts / limit), // Calculate total pages
+      accountsCount: accounts?.length,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching accounts", error });
+  }
+};
 const getSingleAccount = async (req, res) => {
   try {
     const { accountId } = req.params;
@@ -216,7 +257,7 @@ const getSingleAccount = async (req, res) => {
 
 const getNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find();
+    const notifications = await Notification.find({ deleted: false });
     if (!notifications) {
       return res.status(404).json({ message: "No notifications found" });
     }
@@ -238,9 +279,33 @@ const getNotification = async () => {
     res.status(500).json({ error: "Failed to delete account" });
   }
 };
+const deleteNotification = async (req, res) => {
+  try {
+    const notificationId = req.query.id;
+    if (!notificationId) {
+      return res.status(404).json({ message: "notification id is required" });
+    }
+    const notificaion = await Notification.findByIdAndUpdate(
+      notificationId,
+      { deleted: true },
+      { new: true }
+    );
+
+    if (!notificaion) {
+      return res.status(404).json({ message: "notificaion not found" });
+    }
+
+    res.status(200).json({
+      message: "Notification deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete account" });
+  }
+};
+
 const deleteAccount = async (req, res) => {
   try {
-    const accountId = req.params.id;
+    const accountId = req.query.id;
 
     // Find the account by ID
     const account = await Account.findById(accountId);
@@ -256,6 +321,7 @@ const deleteAccount = async (req, res) => {
 
     res.status(200).json({
       message: "Account and associated notifications deleted successfully",
+      account: account,
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete account" });
@@ -264,18 +330,21 @@ const deleteAccount = async (req, res) => {
 const editUserProfile = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({ message: "User profile updated successfully", updatedUser });
+    res
+      .status(200)
+      .json({ message: "User profile updated successfully", updatedUser });
   } catch (error) {
     res.status(500).json({ message: "Error updating user profile", error });
   }
 };
-
 
 export const dashboard = {
   getAllUser,
@@ -294,4 +363,6 @@ export const dashboard = {
   getNotifications,
   getNotification,
   editUserProfile,
+  deleteNotification,
+  getAllAccounts,
 };

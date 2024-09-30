@@ -52,9 +52,43 @@ export const GET_ACCOUNTS_INIT = "GET_ACCOUNTS_INIT";
 export const GET_ACCOUNTS_SUCCESS = "GET_ACCOUNTS_SUCCESS";
 export const GET_ACCOUNTS_FAILURE = "GET_ACCOUNTS_FAILURE";
 
+export const DELETE_ACCOUNTS_INIT = "DELETE_ACCOUNTS_INIT";
+export const DELETE_ACCOUNTS_SUCCESS = "DELETE_ACCOUNTS_SUCCESS";
+export const DELETE_ACCOUNTS_FAILURE = "DELETE_ACCOUNTS_FAILURE";
+
 export const GET_NOTIFICATIONS_INIT = "GET_NOTIFICATIONS_INIT";
 export const GET_NOTIFICATIONS_SUCCESS = "GET_NOTIFICATIONS_SUCCESS";
 export const GET_NOTIFICATIONS_FAILURE = "GET_NOTIFICATIONS_FAILURE";
+
+export const DELETE_NOTIFICATIONS_INIT = "DELETE_NOTIFICATIONS_INIT";
+export const DELETE_NOTIFICATIONS_SUCCESS = "DELETE_NOTIFICATIONS_SUCCESS";
+export const DELETE_NOTIFICATIONS_FAILURE = "DELETE_NOTIFICATIONS_FAILURE";
+
+interface deleteAccountInitAction {
+  type: typeof DELETE_ACCOUNTS_INIT;
+}
+interface deleteAccountSuccessAction {
+  type: typeof DELETE_ACCOUNTS_SUCCESS;
+  payload: any;
+}
+
+interface deleteAccountfailureAction {
+  type: typeof DELETE_ACCOUNTS_FAILURE;
+  payload: any;
+}
+
+interface deleteNotificationsInitAction {
+  type: typeof DELETE_NOTIFICATIONS_INIT;
+}
+interface deleteNotificationsSuccessAction {
+  type: typeof DELETE_NOTIFICATIONS_SUCCESS;
+  payload: any;
+}
+
+interface deleteNotificationsfailureAction {
+  type: typeof DELETE_NOTIFICATIONS_FAILURE;
+  payload: any;
+}
 
 interface getNotificationsInitAction {
   type: typeof GET_NOTIFICATIONS_INIT;
@@ -303,4 +337,10 @@ export type DashActionTypes =
   | getAccountsFailreAction
   | getNotificationsInitAction
   | getNotificationsSuccessAction
-  | getNotificationsfailureAction;
+  | getNotificationsfailureAction
+  | deleteNotificationsInitAction
+  | deleteNotificationsSuccessAction
+  | deleteNotificationsfailureAction
+  | deleteAccountInitAction
+  | deleteAccountSuccessAction
+  | deleteAccountfailureAction;

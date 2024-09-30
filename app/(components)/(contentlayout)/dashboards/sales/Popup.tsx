@@ -1,32 +1,54 @@
 import { X } from "lucide-react";
 import { useState } from "react";
-import { createPost } from "@/shared/Api/dashboard";
+import { createPost, updatePost } from "@/shared/Api/dashboard";
 import { useDispatch, useSelector } from "react-redux";
-const Popup = ({ isOpen, onClose, post, setPost }: any) => {
+const Popup = ({
+  isOpen,
+  onClose,
+  post,
+  setPost,
+  val,
+  setVal,
+  updateId,
+  descVal,
+  setDescVal,
+  setUpdate,
+}: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const dispatch = useDispatch();
-  const [val, setVal] = useState("");
-  const [descVal, setDescVal] = useState("");
   if (!isOpen) return null;
   const handleSubmitPost = () => {
-    // if (post?.length) {
-    //   setPost([...post, val]);
-    // } else {
-    //   setPost([val]);
-    // }
-    createPost(
-      { title: val, description: descVal, userId: user?._id },
-      dispatch
-    );
+    if (post?.length) {
+      setPost([...post, val]);
+    } else {
+      setPost([val]);
+    }
+    if (updateId) {
+      updatePost(
+        {
+          title: val,
+          description: descVal,
+          userId: user?._id,
+          id: updateId,
+        },
+        dispatch
+      );
+    } else {
+      createPost(
+        { title: val, description: "testing", userId: user?._id },
+        dispatch
+      );
+    }
     onClose();
     setVal("");
-    setDescVal("")
+    setDescVal("");
+    setUpdate("");
   };
 
-  const handleChangePost = (e:any) => {
+  const handleChangePost = (e: any) => {
     setVal(e.target.value);
   };
-  const handleChangePostDesc = (e:any) => {
+  const handleChangePostDesc = (e: any) => {
     setDescVal(e.target.value);
   };
   return (

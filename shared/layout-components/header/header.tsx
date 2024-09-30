@@ -16,87 +16,27 @@ import { MenuItems } from "../sidebar/nav";
 import nextConfig from "@/next.config.mjs";
 import { LOGIN_FAILURE, LOGOUT } from "@/shared/redux/types";
 import { userInfo } from "os";
-import { getNotifications } from "@/shared/Api/dashboard";
+import { deleteNotifications, getNotifications } from "@/shared/Api/dashboard";
 const Header = ({ local_varaiable, ThemeChanger }: any) => {
   let { basePath } = nextConfig;
   const theme = useSelector((state: any) => state.theme);
-  const notification = useSelector((state: any) => state.dash.notifications);
+  const notifications = useSelector((state: any) => state.dash.notifications);
+  const [notification, setNotification] = useState<any>([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("notification in here", notification);
-  }, [notification]);
+    setNotification(notifications);
+  }, [notifications]);
 
   const getNotificationslocal = async () => {
-
     await getNotifications(dispatch);
   };
 
-  const initialNotifications = [
-    {
-      id: "1",
-      icon: "ti ti-message-dots fs-5",
-      title: "Messages",
-      text1: "John Doe messaged you.",
-      text2: "",
-      text3: "",
-      color: "primary",
-      class: "",
-    },
-    {
-      id: "2",
-      icon: "ti ti-shopping-cart fs-5",
-      title: "Orders",
-      text1: "Order",
-      text2: " #12345",
-      text3: "confirmed",
-      color: "secondary",
-      class: "text-warning me-1",
-    },
-    {
-      id: "3",
-      icon: "ti ti-user-circle fs-5",
-      title: "Profile",
-      text1: "Complete your profile for offers!",
-      text2: "",
-      text3: "",
-      color: "success",
-      class: "",
-    },
-    {
-      id: "4",
-      icon: "ti ti-gift fs-5",
-      title: "Offers",
-      text1: "20% off electronics!",
-      text2: "",
-      text3: "",
-      color: "orange",
-      class: "",
-    },
-    {
-      id: "5",
-      icon: "ti ti-calendar fs-5",
-      title: "Events",
-      text1: "Webinar in 1 hour!",
-      text2: "",
-      text3: "",
-      color: "info",
-      class: "",
-    },
-  ];
-
-  const [notifications, setNotifications] = useState([...initialNotifications]);
-
-  const handleNotificationClose = (
-    index: number,
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    if (event) {
-      event.stopPropagation();
-    }
-    const updatedNotifications = [...notifications];
-    updatedNotifications.splice(index, 1);
-    setNotifications(updatedNotifications);
+  const handleNotificationClose = async (index: number, event: any) => {
+    console.log("notification id", event?._id);
+    await deleteNotifications({ id: event?._id }, dispatch);
+    const updatedNotifications = notification.splice(index, 1);
+    setNotification(updatedNotifications);
   };
 
   //full screen
@@ -610,16 +550,14 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                             </div>
                           </div>
                           <div>
-                            <Link
-                              scroll={false}
-                              href="#!"
+                            <button
                               className="min-w-fit-content text-muted dropdown-item-close1"
                               onClick={(event) =>
-                                handleNotificationClose(index, event)
+                                handleNotificationClose(index, idx)
                               }
                             >
                               <i className="ri-close-circle-line fs-5"></i>
-                            </Link>
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -628,7 +566,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                 </ul>
                 <div
                   className={`p-3 empty-header-item1 border-top ${
-                    notifications.length === 0 ? "d-none" : "d-block"
+                    notifications?.length === 0 ? "d-none" : "d-block"
                   }`}
                 >
                   <div className="d-grid">
@@ -643,7 +581,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                 </div>
                 <div
                   className={`p-5 empty-item1 ${
-                    notifications.length === 0 ? "d-block" : "d-none"
+                    notifications?.length === 0 ? "d-block" : "d-none"
                   }`}
                 >
                   <div className="text-center">

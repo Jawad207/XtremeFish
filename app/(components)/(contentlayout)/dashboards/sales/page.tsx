@@ -8,8 +8,10 @@ import {
   getAlluserCount,
   getLoginAttempts,
   getPosts,
-  deletePost
+  deletePost,
+  getAccounts,
 } from "@/shared/Api/dashboard";
+import moment from "moment";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -17,30 +19,43 @@ import * as Salesdata from "@/shared/data/dashboards/salesdata";
 import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
 import Popup from "./Popup";
-import { SquarePlus, Trash2 } from "lucide-react";
+import { SquarePlus, Trash2, Pencil } from "lucide-react";
 const Sales = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
   const posts = useSelector((state: any) => state.dash.posts);
+  const accountsCount = useSelector((state: any) => state.dash.totalAccounts);
   const [allCounts, setAllcounts] = useState<number>(0);
   const [userName, setUserName] = useState<string>("");
   const [loginAttempt, setLoginAttempts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [val, setVal] = useState("");
+  const [descVal, setDescVal] = useState("");
   const [totalRecords, setTotalRecords] = useState(0);
   const recordsPerPage = 10;
   const loginAttemptData = useSelector((state: any) => state?.dash);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAttempts, setFilteredAttempts] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  // const [newPost, setNewPost] = useState([]);
+  const [newPost, setNewPost] = useState([]);
+  const [updateId, setUpdate] = useState("");
+
+  useEffect(() => {
+    fetchAccounts(1);
+  }, []);
+
+  // Fetch accounts with pagination
+  const fetchAccounts = async (page: number) => {
+    const response = await getAccounts(auth?._id, page, 10, dispatch);
+  };
+
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
   };
 
   const filterPosts = (postToDelete: any) => {
-
-    deletePost({id: postToDelete?._id}, dispatch)
+    deletePost({ id: postToDelete?._id }, dispatch);
   };
   const handleClosePopup = () => {
     setIsPopupOpen(false);
@@ -92,6 +107,13 @@ const Sales = () => {
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
+  };
+
+  const handleUpdate = (post: any) => {
+    setVal(post?.title);
+    setDescVal(post?.description);
+    setUpdate(post?._id);
+    handleOpenPopup();
   };
   return (
     <Fragment>
@@ -149,7 +171,7 @@ const Sales = () => {
                 <div>
                   <div>
                     <span className="d-block mb-2">Total Accounts</span>
-                    <h5 className="mb-4 fs-4">$645</h5>
+                    <h5 className="mb-4 fs-4">{accountsCount}</h5>
                   </div>
                   <span className="text-success me-2 fw-medium d-inline-block">
                     <i className="ti ti-trending-up fs-5 align-middle me-1 d-inline-block"></i>
@@ -306,9 +328,15 @@ const Sales = () => {
               </button>
               <Popup
                 isOpen={isPopupOpen}
-                // post={newPost}
-                // setPost={setNewPost}
+                post={newPost}
+                setPost={setNewPost}
                 onClose={handleClosePopup}
+                val={val}
+                setVal={setVal}
+                descVal={descVal}
+                setDescVal={setDescVal}
+                updateId={updateId}
+                setUpdate={setUpdate}
               />
             </Card.Header>
             <Card.Body>
@@ -322,10 +350,14 @@ const Sales = () => {
                               <div className="flex justify-between">
                                 <div>
                                   {post && <span>{post?.title}</span>}
-                                  <div className="mt-2">{post?.description}</div>
+                                  <div className="mt-2">
+                                    {post?.description}
+                                  </div>
                                 </div>
-                                <span className="fs-11 text-muted float-end">
-                                  12:47PM
+                                <span className="fs-11 text-muted float-end ">
+                                  <div className="w-14">
+                                    {moment(post?.createdAt).format("hh:mm A")}
+                                  </div>
                                   <div className="flex py-2 justify-end gap-2 ">
                                     <button
                                       className="text-red-500"
@@ -333,9 +365,12 @@ const Sales = () => {
                                     >
                                       <Trash2 size={14} />
                                     </button>
-                                    {/* <button className="text-blue-500">
+                                    <button
+                                      className="text-blue-500"
+                                      onClick={() => handleUpdate(post)}
+                                    >
                                       <Pencil size={14} />
-                                    </button> */}
+                                    </button>
                                   </div>
                                 </span>
                               </div>

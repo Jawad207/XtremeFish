@@ -28,6 +28,12 @@ import {
   GET_NOTIFICATIONS_FAILURE,
   GET_NOTIFICATIONS_INIT,
   GET_NOTIFICATIONS_SUCCESS,
+  DELETE_NOTIFICATIONS_INIT,
+  DELETE_NOTIFICATIONS_SUCCESS,
+  DELETE_NOTIFICATIONS_FAILURE,
+  DELETE_ACCOUNTS_INIT,
+  DELETE_ACCOUNTS_FAILURE,
+  DELETE_ACCOUNTS_SUCCESS,
 } from "../redux/types";
 
 export const getAlluserCount = async (dispatch: any) => {
@@ -89,6 +95,7 @@ export const createPost = async (data: any, dispatch: any) => {
     }
   }
 };
+
 export const getPosts = async (dispatch: any) => {
   try {
     dispatch({ type: GET_POSTS_INIT });
@@ -120,19 +127,67 @@ export const getPosts = async (dispatch: any) => {
   }
 };
 
-export const getAccounts = async (userId: any, dispatch: any) => {
+export const deleteAccounts = async (data: any, dispatch: any) => {
   try {
-    dispatch({ type: GET_ACCOUNTS_INIT });
-    const response = await apiClient.get("/dashboard/getAccounts", {
-      params: { id: userId },
+    dispatch({ type: DELETE_ACCOUNTS_INIT });
+    const response = await apiClient.delete("/dashboard/deleteAccount", {
+      params: { id: data?.id },
     });
 
     // If the request was successful
-
     if (response.status === 200) {
-      dispatch({ type: GET_ACCOUNTS_SUCCESS, payload: response.data });
+      dispatch({ type: DELETE_ACCOUNTS_SUCCESS, payload: response.data });
     }
     return response.data.loginAttempts;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: DELETE_ACCOUNTS_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Login failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: DELETE_ACCOUNTS_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+export const getAccounts = async (
+  userId: any,
+  page: number,
+  limit: number,
+  dispatch: any
+) => {
+  try {
+    dispatch({ type: GET_ACCOUNTS_INIT });
+
+    // Include pagination parameters: page and limit
+    const response = await apiClient.get("/dashboard/getAccounts", {
+      params: {
+        id: userId,
+        page,
+        limit,
+      },
+    });
+
+    // If the request was successful
+    if (response.status === 200) {
+      const { accounts, accountsCount } = response.data;
+
+      // Dispatch success with payload containing accounts and pagination info
+      dispatch({
+        type: GET_ACCOUNTS_SUCCESS,
+        payload: { accounts, accountsCount, currentPage: page },
+      });
+
+      return { accounts, totalAccounts: accountsCount }; // Return necessary data
+    }
   } catch (error: any) {
     // Handle server or network errors
     if (error.response) {
@@ -140,7 +195,7 @@ export const getAccounts = async (userId: any, dispatch: any) => {
         type: GET_ACCOUNTS_FAILURE,
         payload: error.response.data.message,
       });
-      console.error("Login failed:", error.response.data.message);
+      console.error("Failed to fetch accounts:", error.response.data.message);
       return error.response.data.message;
     } else {
       console.error("Error:", error.message);
@@ -152,6 +207,7 @@ export const getAccounts = async (userId: any, dispatch: any) => {
     }
   }
 };
+
 export const getNotifications = async (dispatch: any) => {
   try {
     dispatch({ type: GET_NOTIFICATIONS_INIT });
@@ -176,6 +232,43 @@ export const getNotifications = async (dispatch: any) => {
       console.error("Error:", error.message);
       dispatch({
         type: GET_NOTIFICATIONS_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+export const deleteNotifications = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: DELETE_NOTIFICATIONS_INIT });
+
+    const response = await apiClient.patch(
+      `/dashboard/deleteNotification`,
+      {}, // Empty body since you're passing only params
+      {
+        params: { id: data?.id }, // Params go in the config object
+      }
+    );
+
+    // If the request was successful
+
+    if (response.status === 200) {
+      dispatch({ type: DELETE_NOTIFICATIONS_SUCCESS, payload: response.data });
+    }
+    return response.data.loginAttempts;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: DELETE_NOTIFICATIONS_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Login failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: DELETE_NOTIFICATIONS_FAILURE,
         payload: error.message,
       });
       return error.message;
@@ -216,9 +309,17 @@ export const getPostsById = async (data: any, dispatch: any) => {
 export const updatePost = async (data: any, dispatch: any) => {
   try {
     dispatch({ type: UPDATE_POST_INIT });
-    const response = await apiClient.put("/dashboard/updatePost", {
-      params: { id: data?.id },
-    });
+    const response = await apiClient.patch(
+      `/dashboard/updatePost`,
+      {
+        title: data?.title,
+        description: data?.description,
+        userId: data?.userId,
+      },
+      {
+        params: { id: data?.id }, // Params are passed in the config object, separate from the body
+      }
+    );
 
     // If the request was successful
     if (response.status === 200) {

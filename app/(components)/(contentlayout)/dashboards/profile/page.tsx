@@ -1183,7 +1183,7 @@ const Profile = () => {
                   <ListGroup.Item>
                     <div>
                       <span className="fw-medium me-2">Email :</span>
-                      <span className="text-muted">{User?.email}</span>
+                      <span className="text-muted text-[11px]">{User?.email}</span>
                     </div>
                   </ListGroup.Item>
                   {/* <ListGroup.Item>
