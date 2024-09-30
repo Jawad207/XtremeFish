@@ -218,42 +218,42 @@ interface GetLoginAttemptFailureAction {
 }
 
 export type AuthActionTypes =
-  | LogOutAction
-  | VerifyInitAction
-  | LoginInitAction
-  | VerifySuccessAction
-  | VerifyFailureAction
-  | ForgetInitAction
-  | ForgetSuccessAction
-  | ForgetFailureAction
-  | LoginSuccessAction
-  | LoginFailureAction
-  | SignUpStartAction
-  | SignUpSuccesstAction
-  | SignUpFailureAction;
+| LogOutAction
+| VerifyInitAction
+| LoginInitAction
+| VerifySuccessAction
+| VerifyFailureAction
+| ForgetInitAction
+| ForgetSuccessAction
+| ForgetFailureAction
+| LoginSuccessAction
+| LoginFailureAction
+| SignUpStartAction
+| SignUpSuccesstAction
+| SignUpFailureAction;
 
 export type DashActionTypes =
-  | GetCountInitAction
-  | GetCountSuccessAction
-  | GetCountFailureAction
-  | GetLoginAttemptFailureAction
-  | GetLoginAttemptSuccessAction
-  | GetLoginAttemptInitAction
-  | CreatePostInitAction
-  | CreatePostSuccessAction
-  | CreatePostFailureAction
-  | GetPostsInitAction
-  | GetPostsSuccessAction
-  | GetPostsFailureAction
-  | GetPostInitAction
-  | GetPostSuccessAction
-  | GetPostFailureAction
-  | UpdatePostInitAction
-  | UpdatePostSuccessAction
-  | UpdatePostFailureAction
-  | DeletePostInitAction
-  | DeletePostSuccessAction
-  | DeletePostFailureAction
-  | GetLoginAttemptInitAction
-  | GetLoginAttemptSuccessAction
-  | GetLoginAttemptFailureAction
+| GetCountInitAction
+| GetCountSuccessAction
+| GetCountFailureAction
+| GetLoginAttemptFailureAction
+| GetLoginAttemptSuccessAction
+| GetLoginAttemptInitAction
+| CreatePostInitAction
+| CreatePostSuccessAction
+| CreatePostFailureAction
+| GetPostsInitAction
+| GetPostsSuccessAction
+| GetPostsFailureAction
+| GetPostInitAction
+| GetPostSuccessAction
+| GetPostFailureAction
+| UpdatePostInitAction
+| UpdatePostSuccessAction
+| UpdatePostFailureAction
+| DeletePostInitAction
+| DeletePostSuccessAction
+| DeletePostFailureAction
+| GetLoginAttemptInitAction
+| GetLoginAttemptSuccessAction
+| GetLoginAttemptFailureAction

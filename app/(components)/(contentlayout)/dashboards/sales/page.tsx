@@ -33,7 +33,7 @@ const Sales = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAttempts, setFilteredAttempts] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [newPost, setNewPost] = useState([]);
+  // const [newPost, setNewPost] = useState([]);
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
   };
@@ -306,8 +306,8 @@ const Sales = () => {
               </button>
               <Popup
                 isOpen={isPopupOpen}
-                post={newPost}
-                setPost={setNewPost}
+                // post={newPost}
+                // setPost={setNewPost}
                 onClose={handleClosePopup}
               />
             </Card.Header>

@@ -6,23 +6,28 @@ const Popup = ({ isOpen, onClose, post, setPost }: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const dispatch = useDispatch();
   const [val, setVal] = useState("");
+  const [descVal, setDescVal] = useState("");
   if (!isOpen) return null;
   const handleSubmitPost = () => {
-    if (post?.length) {
-      setPost([...post, val]);
-    } else {
-      setPost([val]);
-    }
+    // if (post?.length) {
+    //   setPost([...post, val]);
+    // } else {
+    //   setPost([val]);
+    // }
     createPost(
-      { title: val, description: "testing", userId: user?._id },
+      { title: val, description: descVal, userId: user?._id },
       dispatch
     );
     onClose();
     setVal("");
+    setDescVal("")
   };
 
-  const handleChangePost = (e: any) => {
+  const handleChangePost = (e:any) => {
     setVal(e.target.value);
+  };
+  const handleChangePostDesc = (e:any) => {
+    setDescVal(e.target.value);
   };
   return (
     <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-full flex justify-center items-center">
@@ -41,15 +46,15 @@ const Popup = ({ isOpen, onClose, post, setPost }: any) => {
               handleChangePost(e);
             }}
           />
-          {/* <input
+          <input
             type="text"
             className="bg-white rounded-sm px-2 py-1 w-4/5"
             placeholder="description"
-            value={val}
+            value={descVal}
             onChange={(e) => {
-              handleChangePost(e);
+              handleChangePostDesc(e);
             }}
-          /> */}
+          />
           <button
             onClick={handleSubmitPost}
             className="text-xs p-2 rounded-sm bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 "

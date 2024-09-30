@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Camera } from 'lucide-react';
 
 import {
   Button,
@@ -29,7 +30,7 @@ const Profile = () => {
     label,
     value: label,
   });
-
+  
   const [inputValue, setInputValue] = useState<any>("");
   const [newUserData, setNewUserData] = useState([])
   const [value, setValue] = useState([
@@ -50,16 +51,17 @@ const Profile = () => {
     if (!inputValue) return;
     switch (event.key) {
       case "Enter":
-      case "Tab":
-        setValue((prev) => [...prev, createOption(inputValue)]);
+        case "Tab":
+          setValue((prev) => [...prev, createOption(inputValue)]);
         setInputValue("");
         event.preventDefault();
     }
   };
-
+  
   const userData= useSelector((state:any) => state?.auth);
   const User = userData.user
   const [isSearchable] = useState(true);
+  console.log(User)
   return (
     <Fragment>
       {/* Page Header */}
@@ -77,14 +79,22 @@ const Profile = () => {
         <Row>
           <Col xl={12}>
             <Card className="custom-card profile-card">
-              <img
-                src="../../assets/images/media/media-3.jpg"
-                className="card-img-top"
-                alt="..."
-              />
+                <span className="group flex justify-end items-end">
+                  <img
+                    src="../../assets/images/media/media-3.jpg"
+                    className="card-img-top "
+                    alt="..."
+                  />
+                  <button className="absolute group flex justify-center mx-4 mb-4">
+                    <Camera className="absolute hidden text-blue-400 group-hover:block"/>
+                  </button>
+                </span>
               <Card.Body className="p-4 pb-0 position-relative">
-                <span className="avatar avatar-xxl avatar-rounded bg-info online">
+                <span className="avatar avatar-xxl avatar-rounded bg-info online group">
                   <img src="../../assets/images/faces/team/7.png" alt="" />
+                <button className="absolute group flex justify-center">
+                  <Camera className="absolute hidden text-blue-400 group-hover:block"/>
+                </button>
                 </span>
                 <div className="mt-4 mb-3 d-flex align-items-center flex-wrap gap-3 justify-content-between">
                   <div>
@@ -482,7 +492,7 @@ const Profile = () => {
                             </span>{" "}
                             {User?.email}
                           </p>
-                          <p className="mb-2">
+                          {/* <p className="mb-2">
                             <span className="avatar avatar-sm avatar-rounded text-secondary">
                               <i className="ri-phone-line align-middle fs-15"></i>
                             </span>
@@ -499,7 +509,7 @@ const Profile = () => {
                               Website :{" "}
                             </span>{" "}
                             www.yourwebsite.com
-                          </p>
+                          </p> */}
                           <p className="mb-0">
                             <span className="avatar avatar-sm avatar-rounded text-orange">
                               <i className="ri-building-line align-middle fs-15"></i>
@@ -603,24 +613,24 @@ const Profile = () => {
                             <Form.Control
                               type="text"
                               className="form-control"
-                              placeholder="Placeholder"
-                              defaultValue="Leo Phillips"
+                              placeholder="user name"
+                              defaultValue={User?.userName}
                             />
                           </Col>
                           <Col xl={3}>
                             <div className="lh-1">
-                              <span className="fw-medium">First Name :</span>
+                              <span className="fw-medium">Full name :</span>
                             </div>
                           </Col>
                           <Col xl={9}>
                             <Form.Control
                               type="text"
                               className="form-control"
-                              placeholder="Placeholder"
-                              defaultValue="Leo"
+                              placeholder="full name"
+                              defaultValue={User?.userName}
                             />
                           </Col>
-                          <Col xl={3}>
+                          {/* <Col xl={3}>
                             <div className="lh-1">
                               <span className="fw-medium">Last Name :</span>
                             </div>
@@ -629,10 +639,10 @@ const Profile = () => {
                             <Form.Control
                               type="text"
                               className="form-control"
-                              placeholder="Placeholder"
+                              placeholder="last name"
                               defaultValue="Phillips"
                             />
-                          </Col>
+                          </Col> */}
                           <Col xl={3}>
                             <div className="lh-1">
                               <span className="fw-medium">Designation :</span>
@@ -642,7 +652,7 @@ const Profile = () => {
                             <Form.Control
                               type="text"
                               className="form-control"
-                              placeholder="Placeholder"
+                              placeholder="designation"
                               defaultValue="Chief Executive Officer (C.E.O)"
                             />
                           </Col>
@@ -662,11 +672,11 @@ const Profile = () => {
                             <Form.Control
                               type="email"
                               className="form-control"
-                              placeholder="Placeholder"
-                              defaultValue="your.email@example.com"
+                              placeholder="email"
+                              defaultValue={User?.email}
                             />
                           </Col>
-                          <Col xl={3}>
+                          {/* <Col xl={3}>
                             <div className="lh-1">
                               <span className="fw-medium">Phone :</span>
                             </div>
@@ -691,7 +701,7 @@ const Profile = () => {
                               placeholder="Placeholder"
                               defaultValue="www.yourwebsite.com"
                             />
-                          </Col>
+                          </Col> */}
                           <Col xl={3}>
                             <div className="lh-1">
                               <span className="fw-medium">Location :</span>
@@ -701,13 +711,13 @@ const Profile = () => {
                             <Form.Control
                               type="text"
                               className="form-control"
-                              placeholder="Placeholder"
-                              defaultValue="City, Country"
+                              placeholder="location"
+                              defaultValue={[User?.location?.city, User?.location?.country]}
                             />
                           </Col>
                         </div>
                       </li>
-                      <li className="list-group-item p-4">
+                      {/* <li className="list-group-item p-4">
                         <span className="fw-medium fs-15 d-block mb-3">
                           SOCIAL INFO :
                         </span>
@@ -765,7 +775,7 @@ const Profile = () => {
                             />
                           </Col>
                         </div>
-                      </li>
+                      </li> */}
                       <li className="list-group-item p-4">
                         <span className="fw-medium fs-15 d-block mb-3">
                           ABOUT :
@@ -1176,7 +1186,7 @@ const Profile = () => {
                       <span className="text-muted">{User?.email}</span>
                     </div>
                   </ListGroup.Item>
-                  <ListGroup.Item>
+                  {/* <ListGroup.Item>
                     <div>
                       <span className="fw-medium me-2">Phone :</span>
                       <span className="text-muted">+1 (555) 123-4567</span>
@@ -1199,7 +1209,7 @@ const Profile = () => {
                       <span className="fw-medium me-2">Experience :</span>
                       <span className="text-muted">12 Years</span>
                     </div>
-                  </ListGroup.Item>
+                  </ListGroup.Item> */}
                 </ListGroup>
               </Card.Body>
             </Card>
