@@ -52,14 +52,30 @@ export const GET_ACCOUNTS_INIT = "GET_ACCOUNTS_INIT";
 export const GET_ACCOUNTS_SUCCESS = "GET_ACCOUNTS_SUCCESS";
 export const GET_ACCOUNTS_FAILURE = "GET_ACCOUNTS_FAILURE";
 
-interface getAccountsInitAction {
-  type: typeof GET_ACCOUNTS_INIT;
+export const GET_NOTIFICATIONS_INIT = "GET_NOTIFICATIONS_INIT";
+export const GET_NOTIFICATIONS_SUCCESS = "GET_NOTIFICATIONS_SUCCESS";
+export const GET_NOTIFICATIONS_FAILURE = "GET_NOTIFICATIONS_FAILURE";
+
+interface getNotificationsInitAction {
+  type: typeof GET_NOTIFICATIONS_INIT;
 }
+interface getNotificationsSuccessAction {
+  type: typeof GET_NOTIFICATIONS_SUCCESS;
+  payload: any;
+}
+
+interface getNotificationsfailureAction {
+  type: typeof GET_NOTIFICATIONS_FAILURE;
+  payload: any;
+}
+
 interface getAccountsSuccessAction {
   type: typeof GET_ACCOUNTS_SUCCESS;
+  payload: any;
 }
 interface getAccountsFailreAction {
   type: typeof GET_ACCOUNTS_FAILURE;
+  payload: any;
 }
 
 interface LoginInitAction {
@@ -284,4 +300,7 @@ export type DashActionTypes =
   | GetLoginAttemptFailureAction
   | getAccountsInitAction
   | getAccountsSuccessAction
-  | getAccountsFailreAction;
+  | getAccountsFailreAction
+  | getNotificationsInitAction
+  | getNotificationsSuccessAction
+  | getNotificationsfailureAction;

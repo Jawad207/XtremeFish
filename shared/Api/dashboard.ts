@@ -25,6 +25,9 @@ import {
   GET_ACCOUNTS_INIT,
   GET_ACCOUNTS_SUCCESS,
   GET_ACCOUNTS_FAILURE,
+  GET_NOTIFICATIONS_FAILURE,
+  GET_NOTIFICATIONS_INIT,
+  GET_NOTIFICATIONS_SUCCESS,
 } from "../redux/types";
 
 export const getAlluserCount = async (dispatch: any) => {
@@ -143,6 +146,36 @@ export const getAccounts = async (userId: any, dispatch: any) => {
       console.error("Error:", error.message);
       dispatch({
         type: GET_ACCOUNTS_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+export const getNotifications = async (dispatch: any) => {
+  try {
+    dispatch({ type: GET_NOTIFICATIONS_INIT });
+    const response = await apiClient.get("/dashboard/getNotifications");
+
+    // If the request was successful
+
+    if (response.status === 200) {
+      dispatch({ type: GET_NOTIFICATIONS_SUCCESS, payload: response.data });
+    }
+    return response.data.loginAttempts;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_NOTIFICATIONS_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Login failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_NOTIFICATIONS_FAILURE,
         payload: error.message,
       });
       return error.message;

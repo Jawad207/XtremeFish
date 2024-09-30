@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
@@ -14,7 +15,7 @@ const userSchema = new mongoose.Schema(
     isOtpVerified: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },
-    location: {type: Object},
+    location: { type: Object },
     timestamp: { type: Date, default: Date.now },
   },
   { timestamps: true }

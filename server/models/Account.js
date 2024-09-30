@@ -5,7 +5,7 @@ import mongoose, { Schema } from "mongoose";
 const AccountSchema = new Schema(
   {
     email: { type: String, required: true },
-    password: { type: String, required: true },
+    password: { type: String },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

@@ -346,68 +346,6 @@ const Sales = () => {
                       );
                     })
                   : null}
-                {/* <li>
-                  <div>
-                    <h6 className="mb-1 fs-13">
-                      Jane Smith
-                      <span className="fs-11 text-muted float-end">
-                        10:22AM
-                      </span>
-                    </h6>
-                    <span className="d-block fs-13 text-muted mb-1 fw-normal">
-                      Posted a{" "}
-                      <span className="text-warning fw-medium">new status</span>
-                    </span>
-                    <div className="p-2 rounded-1 bg-light fs-13">
-                      Enjoying the weekend vibes &#127774;
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div>
-                    <h6 className="mb-1 fs-13">
-                      Alice Johnson
-                      <span className="fs-11 text-muted float-end">
-                        11:45AM
-                      </span>
-                    </h6>
-                    <span className="d-block fs-13 text-muted fw-normal">
-                      Commented on a photo -{" "}
-                      <span className="fw-medium text-success">
-                        "Beautiful"
-                      </span>
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div>
-                    <h6 className="mb-1 fs-13">
-                      Charlie Brown
-                      <span className="fs-11 text-muted float-end">
-                        04:15PM
-                      </span>
-                    </h6>
-                    <span className="d-block fs-13 text-muted fw-normal">
-                      Shared an article
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div>
-                    <h6 className="mb-1 fs-13">
-                      Bob Anderson
-                      <span className="fs-11 text-muted float-end">
-                        10:54AM
-                      </span>
-                    </h6>
-                    <span className="d-block fs-13 text-muted fw-normal">
-                      Liked a post from{" "}
-                      <span className="badge bg-secondary-transparent">
-                        John Doe
-                      </span>
-                    </span>
-                  </div>
-                </li> */}
               </ul>
             </Card.Body>
           </Card>

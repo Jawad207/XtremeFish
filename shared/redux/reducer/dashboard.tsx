@@ -24,6 +24,9 @@ import {
   GET_ACCOUNTS_FAILURE,
   GET_ACCOUNTS_INIT,
   GET_ACCOUNTS_SUCCESS,
+  GET_NOTIFICATIONS_FAILURE,
+  GET_NOTIFICATIONS_INIT,
+  GET_NOTIFICATIONS_SUCCESS,
 } from "../types";
 
 interface LoginAttempt {
@@ -50,6 +53,7 @@ interface DashState {
   posts: Posts[];
   post: null;
   accounts: any;
+  notifications: any;
 }
 
 const initialState: DashState = {
@@ -62,6 +66,7 @@ const initialState: DashState = {
   posts: [],
   post: null,
   accounts: [],
+  notifications: [],
 };
 
 export const dashReducer = (
@@ -234,6 +239,26 @@ export const dashReducer = (
       };
 
     case GET_ACCOUNTS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case GET_NOTIFICATIONS_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case GET_NOTIFICATIONS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        notifications: action.payload,
+      };
+
+    case GET_NOTIFICATIONS_FAILURE:
       return {
         ...state,
         loading: false,

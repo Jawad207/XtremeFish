@@ -4,6 +4,7 @@ import Post from "../models/Post.js";
 import Account from "../models/Account.js";
 import Notification from "../models/notification.js";
 import { getCountryFromIp } from "../helper/index.js";
+import bcrypt from "bcryptjs";
 // Sign-Up Function
 const getAllUser = async (req, res) => {
   try {
@@ -138,7 +139,7 @@ const generateOtpAndSave = async (req, res) => {
 
     res.status(201).json({ message: "OTP generated and account initiated" });
   } catch (error) {
-    res.status(500).json({ error: "Failed to generate OTP" });
+    res.status(500).json({ error: "Failed to generate OTP", error });
   }
 };
 
@@ -168,7 +169,7 @@ const setPassword = async (req, res) => {
   }
 
   // Hash the password before saving
-  account.password = await bcrypt.hash(password, 10);
+  account.password = password
 
   // Create notification after password is set
   const notification = new Notification({
@@ -213,7 +214,7 @@ const getSingleAccount = async (req, res) => {
   }
 };
 
-const getNotifications = async () => {
+const getNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find();
     if (!notifications) {

@@ -42,6 +42,7 @@ const ForgetPassword = () => {
             setBtnText("Verify");
             setStep(Step.CodeSent);
           } else {
+            setEmailLoading(false)
             console.error("Failed to send email. Status:", response.status);
           }
           break;
