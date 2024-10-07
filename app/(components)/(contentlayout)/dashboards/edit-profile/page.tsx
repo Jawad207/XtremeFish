@@ -10,10 +10,12 @@ import { useDispatch } from "react-redux";
 import { Card, Col, Form, Nav, Row, Tab } from "react-bootstrap";
 import { FaSpinner } from "react-icons/fa";
 import { editProfile } from "@/shared/Api/auth";
+import Success from "@/components/SuccessPop";
 const EditProfile = () => {
   const dispatch = useDispatch();
-  const [password, setPassword] = useState<any>();
-  const [confirmPassword, setConfirmPassword] = useState<any>();
+  const [password, setPassword] = useState<any>("");
+  const [open, setOpen] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState<any>("");
   const loading = useSelector((state: any) => state.auth.loading);
   const [error, setError] = useState("");
   const userData = useSelector((state: any) => state?.auth?.user);
@@ -26,13 +28,24 @@ const EditProfile = () => {
     country: userData?.location?.country,
     city: userData?.location?.city,
   });
-  const handleUpdate = async (password?: boolean) => {
-    if (password) {
-      if (password != confirmPassword) {
+  const handleUpdate = async (pass?: boolean) => {
+    let boolError = false
+    if (pass) {
+      if (password != confirmPassword || password == "") {
         setError("passwords doesn't match");
+        boolError = true
       }
     }
-    if (!error) await editProfile(user, dispatch);
+    if (!boolError) {
+      const response = await editProfile({ ...user, password }, dispatch);
+
+      if (response?.status == 200) {
+        setOpen(true);
+        setTimeout(() => {
+          setOpen(false)
+        }, 2000);
+      }
+    }
   };
 
   return (
@@ -45,6 +58,11 @@ const EditProfile = () => {
           { title: "Pages", active: true },
           { title: "Settings", active: false },
         ]}
+      />
+      <Success
+        isOpen={open}
+        title={"Profile Edited"}
+        description={"Your profile has been updated"}
       />
       {/* Page Header Close */}
       <Tab.Container defaultActiveKey="first">

@@ -95,7 +95,6 @@ export const authReducer = (
     case EDIT_PROFILE_SUCCESS:
       return {
         ...state,
-
         loading: false,
         token: action.payload.token,
         user: action.payload.user,

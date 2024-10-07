@@ -263,7 +263,6 @@ const resetPassword = async (req, res) => {
 const editProfile = async (req, res) => {
   try {
     const { email, password, userName, bio } = req.body;
-
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
@@ -277,13 +276,12 @@ const editProfile = async (req, res) => {
         .json({ message: "User with the given email doesn't exist" });
     }
 
-
     if (password) {
       user.password = await bcrypt.hash(password, 10); // Update the password
     }
 
 
-    if (username) {
+    if (userName) {
       user.userName = userName; // Update the username
     }
 
@@ -295,7 +293,7 @@ const editProfile = async (req, res) => {
     const updatedUser = await user.save();
 
     // Generate token
-    const token = generateToken(updatedUser._id, rememberMe);
+    const token = generateToken(updatedUser._id);
 
     res.status(200).json({ user: updatedUser, token });
   } catch (error) {

@@ -73,7 +73,7 @@ export default function Home() {
         return RouteChange();
       } else {
         reset();
-        setError("Error loggin in");
+        setError(response);
       }
     } catch (error: any) {
       setError(error.message);
