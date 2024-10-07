@@ -427,7 +427,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
               </Link>
             </li>
 
-            <li className="header-element header-theme-mode">
+            {/* <li className="header-element header-theme-mode">
               <Link
                 scroll={false}
                 href="#!"
@@ -467,7 +467,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                   </svg>
                 </span>
               </Link>
-            </li>
+            </li> */}
 
             <Dropdown
               className="header-element notifications-dropdown d-xl-block d-none dropdown"

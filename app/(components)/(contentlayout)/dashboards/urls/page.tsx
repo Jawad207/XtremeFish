@@ -16,7 +16,7 @@ function page() {
     const [val, setVal] = useState("");
     const [descVal, setDescVal] = useState("");
     const [updateId, setUpdate] = useState("");
-    const [urls, setUrls] = useState([]);
+    const [urls, setUrls] = useState<any>();
     const Urls = useSelector((state: any) => state.dash.urls);
     const dispatch = useDispatch();
 
@@ -110,7 +110,7 @@ function page() {
                             </td>
                             <td>
                             <div className="btn-list">
-                              {moment(url.createdAt).format('ddd, MMM DD,YYYY')}
+                              {moment(url?.createdAt).format('ddd, MMM DD,YYYY')}
                             </div>
                             </td>
                             <td>
