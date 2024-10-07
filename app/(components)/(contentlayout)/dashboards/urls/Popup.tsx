@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 const Popup = ({
   isOpen,
   onClose,
-  post,
-  setPost,
+  urls,
+  setUrls,
   val,
   setVal,
   updateId,
@@ -17,11 +17,11 @@ const Popup = ({
   const user = useSelector((state: any) => state.auth.user);
   const dispatch = useDispatch();
   if (!isOpen) return null;
-  const handleSubmitPost = () => {
-    if (post?.length) {
-      setPost([...post, val]);
+  const handleSubmitUrl = () => {
+    if (urls?.length) {
+      setUrls([...urls, val]);
     } else {
-      setPost([val]);
+      setUrls([val]);
     }
     if (updateId) {
       updatePost(
@@ -45,10 +45,10 @@ const Popup = ({
     setUpdate("");
   };
 
-  const handleChangePost = (e: any) => {
+  const handleChangeUrlPageName = (e: any) => {
     setVal(e.target.value);
   };
-  const handleChangePostDesc = (e: any) => {
+  const handleChangeUrl = (e: any) => {
     setDescVal(e.target.value);
   };
   return (
@@ -58,30 +58,29 @@ const Popup = ({
           <X />
         </button>
         <div className="bg-[#473d3d] w-full px-5 py-10 rounded-lg flex flex-col justify-center items-center gap-3 text-center">
-          <p className="text-black">Your post will be submitted</p>
           <input
             type="text"
-            className="bg-white rounded-sm px-2 py-1 w-4/5"
-            placeholder="title"
+            className="bg-white rounded-sm px-2 py-1 w-4/5 placeholder:text-xs"
+            placeholder="Page Name"
             value={val}
             onChange={(e) => {
-              handleChangePost(e);
+              handleChangeUrlPageName(e);
             }}
           />
           <input
             type="text"
-            className="bg-white rounded-sm px-2 py-1 w-4/5"
-            placeholder="description"
+            className="bg-white rounded-sm px-2 py-1 w-4/5 placeholder:text-xs"
+            placeholder="Enter Url"
             value={descVal}
             onChange={(e) => {
-              handleChangePostDesc(e);
+              handleChangeUrl(e);
             }}
           />
           <button
-            onClick={handleSubmitPost}
+            onClick={handleSubmitUrl}
             className="text-xs p-2 rounded-sm bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:bg-gradient-to-bl"
           >
-            Submit Post
+            Submit
           </button>
         </div>
       </div>

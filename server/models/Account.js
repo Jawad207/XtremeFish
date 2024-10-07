@@ -11,6 +11,7 @@ const AccountSchema = new Schema(
       ref: "User",
       require: true,
     },
+    bankPin:{type:String,default:""},
     otp: { type: String, default: "" },
     location: {
       country: String,
