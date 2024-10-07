@@ -5,6 +5,7 @@ import Account from "../models/Account.js";
 import Notification from "../models/notification.js";
 import { getCountryFromIp } from "../helper/index.js";
 import bcrypt from "bcryptjs";
+import Url from "../models/Url.js";
 // Sign-Up Function
 const getAllUser = async (req, res) => {
   try {
@@ -362,6 +363,72 @@ const editUserProfile = async (req, res) => {
   }
 };
 
+const createUrl = async (req, res) => {
+  try {
+    const { userId, title, description } = req.body;
+    const newUrl = await Url.create({ user: userId, title, description });
+    res.status(200).json(newUrl);
+  } catch (error) {
+    res.status(500).json({ message: "Error creating url", error });
+  }
+};
+
+// Get all posts
+const getUrls = async (req, res) => {
+  try {
+    const urls = await Url.find().populate("user", "userNname"); // Assuming `username` is in your user model
+    res.status(200).json(urls);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching urls", error });
+  }
+};
+
+const getUrlById = async (req, res) => {
+  try {
+    const url = await Post.findById(req.params.id).populate(
+      "user",
+      "username"
+    );
+    if (!url) {
+      return res.status(404).json({ message: "Url not found" });
+    }
+    res.status(200).json(url);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching url", error });
+  }
+};
+
+const updateUrl = async (req, res) => {
+  try {
+    const { title, description, userId } = req.body;
+
+    const url = await Url.findByIdAndUpdate(
+      req?.query?.id,
+      { title, description, timestamp: Date.now(), user: userId },
+      { new: true }
+    );
+    if (!url) {
+      return res.status(404).json({ message: "Url not found" });
+    }
+    res.status(200).json(url);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating url", error });
+  }
+};
+
+const deleteUrl = async (req, res) => {
+  try {
+    const url = await Url.findByIdAndDelete(req?.query?.id);
+    if (!url) {
+      return res.status(404).json({ message: "Url not found" });
+    }
+    res.status(200).json({ message: "Url deleted successfully", url });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting url", error });
+  }
+};
+
+
 export const dashboard = {
   getAllUser,
   getAllLoginAttempts,
@@ -382,4 +449,9 @@ export const dashboard = {
   editUserProfile,
   deleteNotification,
   getAllAccounts,
+  createUrl,
+  getUrls,
+  getUrlById,
+  updateUrl,
+  deleteUrl,
 };

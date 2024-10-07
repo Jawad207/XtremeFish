@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { useState } from "react";
-import { createPost, updatePost } from "@/shared/Api/dashboard";
+import { createUrl, updateUrl } from "@/shared/Api/dashboard";
 import { useDispatch, useSelector } from "react-redux";
 const Popup = ({
   isOpen,
@@ -24,7 +24,7 @@ const Popup = ({
       setUrls([val]);
     }
     if (updateId) {
-      updatePost(
+      updateUrl(
         {
           title: val,
           description: descVal,
@@ -34,8 +34,8 @@ const Popup = ({
         dispatch
       );
     } else {
-      createPost(
-        { title: val, description: "testing", userId: user?._id },
+      createUrl(
+        { title: val, description:descVal, userId: user?._id },
         dispatch
       );
     }

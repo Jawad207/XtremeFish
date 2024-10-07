@@ -35,7 +35,7 @@ const Popup = ({
       );
     } else {
       createPost(
-        { title: val, description: "testing", userId: user?._id },
+        { title: val, description: descVal, userId: user?._id },
         dispatch
       );
     }

@@ -33,6 +33,21 @@ import {
   DELETE_ACCOUNTS_INIT,
   DELETE_ACCOUNTS_SUCCESS,
   DELETE_ACCOUNTS_FAILURE,
+  CREATE_URL_INIT,
+  CREATE_URL_SUCCESS,
+  CREATE_URL_FAILURE,
+  GET_URLS_INIT,
+  GET_URLS_SUCCESS,
+  GET_URLS_FAILURE,
+  GET_URL_INIT,
+  GET_URL_SUCCESS,
+  GET_URL_FAILURE,
+  UPDATE_URL_INIT,
+  UPDATE_URL_SUCCESS,
+  UPDATE_URL_FAILURE,
+  DELETE_URL_INIT,
+  DELETE_URL_SUCCESS,
+  DELETE_URL_FAILURE,
 } from "../types";
 
 interface LoginAttempt {
@@ -43,6 +58,13 @@ interface LoginAttempt {
   timestamp: Date;
 }
 interface Posts {
+  _id: any;
+  status: string;
+  user: any;
+  description: string;
+  title: string;
+}
+interface Urls {
   _id: any;
   status: string;
   user: any;
@@ -61,6 +83,9 @@ interface DashState {
   post: null;
   accounts: any;
   notifications: any;
+  urls: Urls[],
+  currentUrl:any;
+
 }
 
 const initialState: DashState = {
@@ -75,7 +100,10 @@ const initialState: DashState = {
   accounts: [],
   notifications: [],
   totalAccounts: 0,
+  urls: [],
+  currentUrl: null,
 };
+
 
 export const dashReducer = (
   state = initialState,
@@ -316,7 +344,110 @@ export const dashReducer = (
         error: action.payload,
       };
 
+      case CREATE_URL_INIT:
+        return {
+          ...state,
+          loading: true,
+          error: null,
+        };
+      case CREATE_URL_SUCCESS:
+        return {
+          ...state,
+          urls: [...state.urls, action.payload],
+          loading: false,
+        };
+      case CREATE_URL_FAILURE:
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+        };
+  
+      // Get all URLs
+      case GET_URLS_INIT:
+        return {
+          ...state,
+          loading: true,
+          error: null,
+        };
+      case GET_URLS_SUCCESS:
+        return {
+          ...state,
+          urls: action.payload,
+          loading: false,
+        };
+      case GET_URLS_FAILURE:
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+        };
+  
+      // Get a single URL by ID
+      case GET_URL_INIT:
+        return {
+          ...state,
+          loading: true,
+          error: null,
+        };
+      case GET_URL_SUCCESS:
+        return {
+          ...state,
+          currentUrl: action.payload,
+          loading: false,
+        };
+      case GET_URL_FAILURE:
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+        };
+  
+      // Update URL
+      case UPDATE_URL_INIT:
+        return {
+          ...state,
+          loading: true,
+          error: null,
+        };
+      case UPDATE_URL_SUCCESS:
+        return {
+          ...state,
+          urls: state.urls.map((url) =>
+            url._id === action.payload._id ? action.payload : url
+          ),
+          loading: false,
+        };
+      case UPDATE_URL_FAILURE:
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+        };
+  
+      // Delete URL
+      case DELETE_URL_INIT:
+        return {
+          ...state,
+          loading: true,
+          error: null,
+        };
+      case DELETE_URL_SUCCESS:
+        return {
+          ...state,
+          urls: state.urls.filter((url) => url._id !== action.payload.url._id),
+          loading: false,
+        };
+      case DELETE_URL_FAILURE:
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+        };
+
     default:
       return state;
   }
+  
+  
 };
