@@ -10,6 +10,21 @@ import {
   CREATE_POST_INIT,
   CREATE_POST_FAILURE,
   CREATE_POST_SUCCESS,
+  CREATE_URL_INIT,
+  CREATE_URL_FAILURE,
+  CREATE_URL_SUCCESS,
+  GET_URLS_INIT,
+  GET_URLS_SUCCESS,
+  GET_URLS_FAILURE,
+  GET_URL_INIT,
+  GET_URL_SUCCESS,
+  GET_URL_FAILURE,
+  UPDATE_URL_INIT,
+  UPDATE_URL_SUCCESS,
+  UPDATE_URL_FAILURE,
+  DELETE_URL_INIT,
+  DELETE_URL_SUCCESS,
+  DELETE_URL_FAILURE,
   GET_POST_INIT,
   GET_POST_SUCCESS,
   GET_POST_FAILURE,
@@ -401,6 +416,161 @@ export const getLoginAttempts = async (data: any, dispatch: any) => {
       console.error("Error:", error.message);
       dispatch({
         type: GET_LOGINATTEMPT_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const createUrl = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: CREATE_URL_INIT });
+    const response = await apiClient.post("/dashboard/createUrl", data);
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: CREATE_URL_SUCCESS, payload: response.data });
+    }
+    return response.data.loginAttempts;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: CREATE_URL_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Login failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: CREATE_URL_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+
+export const getUrl = async (urlId: string, dispatch: any) => {
+  try {
+    dispatch({ type: GET_URL_INIT });
+    const response = await apiClient.get(`/dashboard/getUrl/${urlId}`);
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: GET_URL_SUCCESS, payload: response.data });
+    }
+    return response.data; // Return the URL for further use if needed
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_URL_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Get URL failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_URL_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const getUrls = async (dispatch: any) => {
+  try {
+    dispatch({ type: GET_URLS_INIT });
+    const response = await apiClient.get("/dashboard/getUrls");
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: GET_URLS_SUCCESS, payload: response.data });
+    }
+    return response.data; // Return the URLs for further use if needed
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_URLS_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Get URLs failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_URLS_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const updateUrl = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: UPDATE_URL_INIT });
+    const response = await apiClient.patch(`/dashboard/updateUrl`, data, {
+      params: { id: data?.id },
+    });
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: UPDATE_URL_SUCCESS, payload: response.data });
+    }
+    return response.data; // Return the updated URL data for further use if needed
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: UPDATE_URL_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Update URL failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: UPDATE_URL_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const deleteUrl = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: DELETE_URL_INIT });
+    const response = await apiClient.delete("/dashboard/deleteUrl", {
+      params: { id: data?.id },
+    });
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: DELETE_URL_SUCCESS, payload: response.data });
+    }
+    return response.data.loginAttempts; // or whatever relevant data you need
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: DELETE_URL_FAILURE,
+        payload: error.response.data.message || "Error deleting URL",
+      });
+      console.error("Delete URL failed:", error.response.data.message || "Error deleting URL");
+      return error.response.data.message || "Error deleting URL";
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: DELETE_URL_FAILURE,
         payload: error.message,
       });
       return error.message;

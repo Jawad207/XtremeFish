@@ -28,6 +28,10 @@ export const CREATE_POST_INIT = "CREATE_POST_INIT";
 export const CREATE_POST_SUCCESS = "CREATE_POST_SUCCESS";
 export const CREATE_POST_FAILURE = "CREATE_POST_FAILURE";
 
+export const CREATE_URL_INIT = "CREATE_URL_INIT";
+export const CREATE_URL_SUCCESS = "CREATE_URL_SUCCESS";
+export const CREATE_URL_FAILURE = "CREATE_URL_FAILURE";
+
 export const GET_POSTS_INIT = "GET_POSTS_INIT";
 export const GET_POSTS_SUCCESS = "GET_POSTS_SUCCESS";
 export const GET_POSTS_FAILURE = "GET_POSTS_FAILURE";
@@ -43,6 +47,23 @@ export const UPDATE_POST_FAILURE = "UPDATE_POST_FAILURE";
 export const DELETE_POST_INIT = "DELETE_POST_INIT";
 export const DELETE_POST_SUCCESS = "DELETE_POST_SUCCESS";
 export const DELETE_POST_FAILURE = "DELETE_POST_FAILURE";
+
+export const GET_URLS_INIT = "GET_URLS_INIT";
+export const GET_URLS_SUCCESS = "GET_URLS_SUCCESS";
+export const GET_URLS_FAILURE = "GET_URLS_FAILURE";
+
+export const GET_URL_INIT = "GET_URL_INIT";
+export const GET_URL_SUCCESS = "GET_URL_SUCCESS";
+export const GET_URL_FAILURE = "GET_URL_FAILURE";
+
+export const UPDATE_URL_INIT = "UPDATE_URL_INIT";
+export const UPDATE_URL_SUCCESS = "UPDATE_URL_SUCCESS";
+export const UPDATE_URL_FAILURE = "UPDATE_URL_FAILURE";
+
+export const DELETE_URL_INIT = "DELETE_URL_INIT";
+export const DELETE_URL_SUCCESS = "DELETE_URL_SUCCESS";
+export const DELETE_URL_FAILURE = "DELETE_URL_FAILURE";
+
 
 export const GET_LOGINATTEMPT_INIT = "GET_LOGINATTEMPT_INIT";
 export const GET_LOGINATTEMPT_SUCCESS = "GET_LOGINATTEMPT_SUCCESS";
@@ -227,6 +248,80 @@ interface CreatePostFailureAction {
   type: typeof CREATE_POST_FAILURE;
   payload: any;
 }
+interface CreateUrlInitAction {
+  type: typeof CREATE_URL_INIT;
+}
+
+interface CreateUrlSuccessAction {
+  type: typeof CREATE_URL_SUCCESS;
+  payload: any;
+}
+
+interface CreateUrlFailureAction {
+  type: typeof CREATE_URL_FAILURE;
+  payload: any;
+}
+
+// Get URLs
+interface GetUrlsInitAction {
+  type: typeof GET_URLS_INIT;
+}
+
+interface GetUrlsSuccessAction {
+  type: typeof GET_URLS_SUCCESS;
+  payload: any;
+}
+
+interface GetUrlsFailureAction {
+  type: typeof GET_URLS_FAILURE;
+  payload: any;
+}
+
+// Get a single URL
+interface GetUrlInitAction {
+  type: typeof GET_URL_INIT;
+}
+
+interface GetUrlSuccessAction {
+  type: typeof GET_URL_SUCCESS;
+  payload: any;
+}
+
+interface GetUrlFailureAction {
+  type: typeof GET_URL_FAILURE;
+  payload: any;
+}
+
+// Update URL
+interface UpdateUrlInitAction {
+  type: typeof UPDATE_URL_INIT;
+}
+
+interface UpdateUrlSuccessAction {
+  type: typeof UPDATE_URL_SUCCESS;
+  payload: any;
+}
+
+interface UpdateUrlFailureAction {
+  type: typeof UPDATE_URL_FAILURE;
+  payload: any;
+}
+
+// Delete URL
+interface DeleteUrlInitAction {
+  type: typeof DELETE_URL_INIT;
+}
+
+interface DeleteUrlSuccessAction {
+  type: typeof DELETE_URL_SUCCESS;
+  payload: any;
+}
+
+interface DeleteUrlFailureAction {
+  type: typeof DELETE_URL_FAILURE;
+  payload: any;
+}
+
 
 interface GetPostsInitAction {
   type: typeof GET_POSTS_INIT;
@@ -363,4 +458,19 @@ export type DashActionTypes =
   | deleteNotificationsfailureAction
   | deleteAccountInitAction
   | deleteAccountSuccessAction
-  | deleteAccountfailureAction;
+  | deleteAccountfailureAction
+  | CreateUrlInitAction
+  | CreateUrlSuccessAction
+  | CreateUrlFailureAction
+  | GetUrlsInitAction
+  | GetUrlsSuccessAction
+  | GetUrlsFailureAction
+  | GetUrlInitAction
+  | GetUrlSuccessAction
+  | GetUrlFailureAction
+  | UpdateUrlInitAction
+  | UpdateUrlSuccessAction
+  | UpdateUrlFailureAction
+  | DeleteUrlInitAction
+  | DeleteUrlSuccessAction
+  | DeleteUrlFailureAction;

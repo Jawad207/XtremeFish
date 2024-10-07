@@ -4,53 +4,49 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Button, Card, Col, Pagination, Row } from "react-bootstrap";
 import { SquarePlus, Trash2, Pencil } from 'lucide-react';
 import { useSelector, useDispatch } from "react-redux";
+import moment from "moment";
 import {
-  getPosts,
-  deletePost,
+  getUrls,
+  deleteUrl,
 } from "@/shared/Api/dashboard";
 import Popup from "./Popup";
 
 function page() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [urls, setUrls] = useState([
-        {
-            pageName:"Sales",
-            URL:"http://localhost:3000/dashboards/sales"
-        },
-        {
-            pageName:"Urls",
-            URL:"http://localhost:3000/dashboards/urls"
-        },
-        {
-            pageName:"Call Logs",
-            URL:"http://localhost:3000/dashboards/call-logs"
-        },
-    ]);
-
     const [val, setVal] = useState("");
     const [descVal, setDescVal] = useState("");
     const [updateId, setUpdate] = useState("");
-    const posts = useSelector((state: any) => state.dash.posts);
+    const [urls, setUrls] = useState([]);
+    const Urls = useSelector((state: any) => state.dash.urls);
     const dispatch = useDispatch();
+
+    console.log(Urls)
 
     const handleOpenPopup = () => {
         setIsPopupOpen(true);
+      };
+
+      const handleUpdate = (post: any) => {
+        setVal(post?.title);
+        setDescVal(post?.description);
+        setUpdate(post?._id);
+        handleOpenPopup();
       };
 
     const handleClosePopup = () => {
         setIsPopupOpen(false);
     };
 
-    const filterPosts = (postToDelete: any) => {
-      deletePost({ id: postToDelete?._id }, dispatch);
+    const filterUrls = (urlToDelete: any) => {
+      deleteUrl({ id: urlToDelete?._id }, dispatch);
     };
 
-    const getAllPosts = async () => {
-      await getPosts(dispatch);
+    const getAllUrls = async () => {
+      await getUrls(dispatch);
     };
 
     useEffect(() => {
-      getAllPosts();
+      getAllUrls();
     }, [])
     
   return (
@@ -100,23 +96,36 @@ function page() {
                   <thead>
                       <th>Page</th>
                       <th>URL</th>
+                      <th>Date</th>
                   </thead>
                   <tbody>
-                    {urls?.length > 0 &&
-                      urls.map((post: any) => (
-                        <tr key={post._id}>
+                    {Urls?.length > 0 &&
+                      Urls.map((url: any) => (
+                        <tr key={url._id}>
                             <td>
-                                <p>{post.pageName}</p>
+                                <p>{url.title}</p>
                             </td>
                             <td>
-                                <a href={post.URL}>{post.URL}</a>
+                                <a href={url.description}>{url.description}</a>
+                            </td>
+                            <td>
+                            <div className="btn-list">
+                              {moment(url.createdAt).format('ddd, MMM DD,YYYY')}
+                            </div>
                             </td>
                             <td>
                             <button
+                              title="Delete Url"
                               className="text-red-500"
-                              onClick={() => filterPosts(post)}
+                              onClick={() => filterUrls(url)}
                             >
                               <Trash2 size={14} />
+                            </button>
+                            <button
+                              className="text-blue-500 ml-2"
+                              onClick={() => handleUpdate(url)}
+                            >
+                              <Pencil size={14} />
                             </button>
                           </td>
                         </tr>
