@@ -18,7 +18,7 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 import * as Salesdata from "@/shared/data/dashboards/salesdata";
 import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
-import Popup from "./Popup";
+import Popup from "../../../../../components/Popup";
 import { SquarePlus, Trash2, Pencil } from "lucide-react";
 const Sales = () => {
   const dispatch = useDispatch();
@@ -75,7 +75,7 @@ const Sales = () => {
 
   const getAllusersCount = async () => {
     const allUser = await getAlluserCount(dispatch);
-    setAllcounts(allUser);
+    setAllcounts(allUser ?? 0);
   };
   const getAllPosts = async () => {
     await getPosts(dispatch);

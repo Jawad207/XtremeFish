@@ -13,25 +13,25 @@ const Layout = ({ children }: any) => {
   const router = useRouter();
   const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated); // Replace with actual auth state
 
-  useEffect(() => {
-    if(isAuthenticated == undefined) {
-      console.log('still figuring out')
-    }
+  // useEffect(() => {
+  //   if(isAuthenticated == undefined) {
+  //     console.log('still figuring out')
+  //   }
 
-    if (!isAuthenticated) {
+  //   if (!isAuthenticated) {
 
-      // Redirect to login page if not authenticated
-      router.push("/");
-    } else {
-      // Allow page to load once auth is confirmed
-      setLoading(false);
-    }
-  }, [isAuthenticated, router]);
+  //     // Redirect to login page if not authenticated
+  //     router.push("/");
+  //   } else {
+  //     // Allow page to load once auth is confirmed
+  //     setLoading(false);
+  //   }
+  // }, [isAuthenticated, router]);
 
-  if (loading || isAuthenticated === undefined) {
-    // Show a loading spinner or nothing while auth is being checked
-    return <div>Loading...</div>;
-  }
+  // if (loading || isAuthenticated === undefined) {
+  //   // Show a loading spinner or nothing while auth is being checked
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <>

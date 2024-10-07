@@ -64,6 +64,23 @@ export const DELETE_NOTIFICATIONS_INIT = "DELETE_NOTIFICATIONS_INIT";
 export const DELETE_NOTIFICATIONS_SUCCESS = "DELETE_NOTIFICATIONS_SUCCESS";
 export const DELETE_NOTIFICATIONS_FAILURE = "DELETE_NOTIFICATIONS_FAILURE";
 
+export const EDIT_PROFILE_INIT = "EDIT_PROFILE_INIT";
+export const EDIT_PROFILE_SUCCESS = "EDIT_PROFILE_SUCCESS";
+export const EDIT_PROFILE_FAILURE = "EDIT_PROFILE_FAILURE";
+
+interface editProfiletInitAction {
+  type: typeof EDIT_PROFILE_INIT;
+}
+interface editProfileSuccessAction {
+  type: typeof EDIT_PROFILE_SUCCESS;
+  payload: any;
+}
+
+interface editProfilefailureAction {
+  type: typeof EDIT_PROFILE_FAILURE;
+  payload: any;
+}
+
 interface deleteAccountInitAction {
   type: typeof DELETE_ACCOUNTS_INIT;
 }
@@ -305,7 +322,10 @@ export type AuthActionTypes =
   | LoginFailureAction
   | SignUpStartAction
   | SignUpSuccesstAction
-  | SignUpFailureAction;
+  | SignUpFailureAction
+  | editProfiletInitAction
+  | editProfileSuccessAction
+  | editProfilefailureAction;
 
 export type DashActionTypes =
   | GetCountInitAction

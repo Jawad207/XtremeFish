@@ -683,13 +683,10 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                     <i className="ti ti-user me-2 fs-18 text-primary"></i>
                     Profile
                   </Link>
-                </li>
-                {/* <li><Link className="dropdown-item d-flex align-items-center" href="#!"><i className="ti ti-mail me-2 fs-18 text-secondary"></i>Inbox</Link></li> */}
-                {/* <li><Link className="dropdown-item d-flex align-items-center" href="#!"><i className="ti ti-checklist me-2 fs-18 text-success"></i>Task Manager</Link></li> */}
-                <li>
+                </li>   <li>
                   <Link
                     className="dropdown-item d-flex align-items-center"
-                    href="#!"
+                    href="/dashboards/edit-profile"
                   >
                     <i className="ti ti-settings me-2 fs-18 text-orange"></i>
                     Settings

@@ -7,6 +7,9 @@ import {
   LOGIN_INIT,
   REGISTERED_INIT,
   LOGOUT,
+  EDIT_PROFILE_FAILURE,
+  EDIT_PROFILE_INIT,
+  EDIT_PROFILE_SUCCESS,
 } from "../types";
 
 interface AuthState {
@@ -44,6 +47,14 @@ export const authReducer = (
         user: action?.payload?.user,
         error: null,
       };
+    case LOGIN_FAILURE:
+      return {
+        ...state,
+        isAuthenticated: false,
+        loading: false,
+        user: null,
+        error: action.payload,
+      };
     case LOGOUT:
       return {
         ...state,
@@ -53,15 +64,7 @@ export const authReducer = (
         token: null,
         error: null,
       };
-    case LOGIN_FAILURE:
 
-      return {
-        ...state,
-        isAuthenticated: false,
-        loading: false,
-        user: null,
-        error: action.payload,
-      };
     case REGISTERED_INIT:
       return {
         ...state,
@@ -80,6 +83,27 @@ export const authReducer = (
       return {
         ...state,
         isAuthenticated: false,
+        loading: false,
+        user: null,
+        error: action.payload,
+      };
+    case EDIT_PROFILE_INIT:
+      return {
+        ...state,
+        loading: true,
+      };
+    case EDIT_PROFILE_SUCCESS:
+      return {
+        ...state,
+
+        loading: false,
+        token: action.payload.token,
+        user: action.payload.user,
+        error: null,
+      };
+    case EDIT_PROFILE_FAILURE:
+      return {
+        ...state,
         loading: false,
         user: null,
         error: action.payload,

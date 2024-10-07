@@ -13,11 +13,22 @@ const persistConfig = {
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+
+// Configure the store
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
+  // middleware: (getDefaultMiddleware) =>
+  //   getDefaultMiddleware().concat(thunk), 
+  middleware: [thunk],
   devTools: process.env.NODE_ENV !== "production", // Enable DevTools in development
 });
+
+
+// const store = configureStore({
+//   reducer: persistedReducer,
+//   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
+//   devTools: process.env.NODE_ENV !== "production", // Enable DevTools in development
+// });
 
 export const persistor = persistStore(store);
 

@@ -239,7 +239,6 @@ export const dashReducer = (
       };
 
     case GET_ACCOUNTS_SUCCESS:
-      console.log('action in here', action?.payload)
       return {
         ...state,
         loading: false,

@@ -45,7 +45,7 @@ export const getAlluserCount = async (dispatch: any) => {
     if (response.status === 200) {
       dispatch({ type: GET_COUNT_SUCCESS, payload: response.data });
     }
-    return response.data.TotalUser;
+    return response?.data?.TotalUser;
   } catch (error: any) {
     // Handle server or network errors
     if (error.response) {
@@ -61,7 +61,7 @@ export const getAlluserCount = async (dispatch: any) => {
         type: GET_COUNT_FAILURE,
         payload: error.message,
       });
-      return error.message;
+      // return error.message;
     }
   }
 };

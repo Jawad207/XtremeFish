@@ -41,7 +41,7 @@ const SignUp = async (req, res) => {
       res.status(400).json({ message: "ALL three fields are required" });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ message: "Error creating user", error });
   }
 };
@@ -92,8 +92,8 @@ const SignIn = async (req, res) => {
     }).save();
 
     // Generate JWT token
-    user.location = locationObject
-    user.save()
+    user.location = locationObject;
+    user.save();
     const token = generateToken(user._id, rememberMe);
     res.status(200).json({ token, user });
   } catch (error) {
@@ -260,6 +260,49 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const editProfile = async (req, res) => {
+  try {
+    const { email, password, userName, bio } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "User with the given email doesn't exist" });
+    }
+
+
+    if (password) {
+      user.password = await bcrypt.hash(password, 10); // Update the password
+    }
+
+
+    if (username) {
+      user.userName = userName; // Update the username
+    }
+
+    if (bio) {
+      user.bio = bio; // Update the bio
+    }
+
+    // Save the updated user
+    const updatedUser = await user.save();
+
+    // Generate token
+    const token = generateToken(updatedUser._id, rememberMe);
+
+    res.status(200).json({ user: updatedUser, token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating user profile", error });
+  }
+};
 
 // Parent auth function
 export const auth = {
@@ -268,4 +311,5 @@ export const auth = {
   confirmOtp,
   forgotPassword,
   resetPassword,
+  editProfile,
 };

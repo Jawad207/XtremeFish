@@ -16,6 +16,9 @@ import {
   RESET_SUCCESS,
   RESET_FAILURE,
   RESET_INIT,
+  EDIT_PROFILE_FAILURE,
+  EDIT_PROFILE_INIT,
+  EDIT_PROFILE_SUCCESS
 } from "../redux/types";
 
 export const signIn = async (data: any, dispatch: any) => {
@@ -149,6 +152,32 @@ export const ResetPassword = async (data: any, dispatch: any) => {
       console.error("Error:", error.message);
       dispatch({
         type: RESET_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+export const editProfile = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: EDIT_PROFILE_INIT });
+    const response = await apiClient.post("/auth/edit-profile", data);
+    if (response.status === 200) {
+      dispatch({ type: EDIT_PROFILE_SUCCESS, payload: response.data });
+      return response;
+    }
+  } catch (error: any) {
+    console.log("error in here", error);
+    if (error.response) {
+      dispatch({
+        type: EDIT_PROFILE_FAILURE,
+        payload: error.response.data.message,
+      });
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: EDIT_PROFILE_FAILURE,
         payload: error.message,
       });
       return error.message;

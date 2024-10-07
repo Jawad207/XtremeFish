@@ -33,6 +33,7 @@ export default function Home() {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
     defaultValues: {
       email: "",
@@ -40,24 +41,39 @@ export default function Home() {
     },
   });
 
+
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("email");
+    const savedPassword =  localStorage.getItem("password");
+    console.log('savedEmail and password', savedEmail, savedPassword)
+    if (savedEmail) {
+      setValue("email", savedEmail); // Set email value
+    }
+    if (savedPassword) {
+      setValue("password", savedPassword); // Set password value
+    }
+  }, []);
+
   const onSubmit = async (data: any) => {
     try {
-      const response = await signIn({...data, rememberMe}, dispatch);
+      const response = await signIn({ ...data, rememberMe }, dispatch);
 
-      const token = response?.token;
+
       if (rememberMe) {
         // Store the token in localStorage for persistent login
-        localStorage.setItem("authToken", token);
+        localStorage.setItem("email", data?.email);
+        localStorage.setItem("password", data?.password);
       } else {
         // Store the token in sessionStorage for temporary login
-        sessionStorage.setItem("authToken", token);
+        
       }
 
       if (response?.user) {
         return RouteChange();
       } else {
         reset();
-        setError('Error loggin in');
+        setError("Error loggin in");
       }
     } catch (error: any) {
       setError(error.message);
@@ -168,7 +184,9 @@ export default function Home() {
                                       type="checkbox"
                                       defaultValue=""
                                       id="defaultCheck1"
-                                      onChange={() => setRememberMe(!rememberMe)}
+                                      onChange={() =>
+                                        setRememberMe(!rememberMe)
+                                      }
                                     />
                                     <label
                                       className="form-check-label text-muted fw-normal fs-12"

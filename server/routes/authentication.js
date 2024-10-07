@@ -10,5 +10,6 @@ router.post("/Sign-in", auth.SignIn)
 router.post("/verify-otp", auth.confirmOtp)
 router.post("/forgot-password", auth.forgotPassword)
 router.post("/reset-password", auth.resetPassword)
+router.post("/edit-profile", auth.editProfile)
 
 export default router;
