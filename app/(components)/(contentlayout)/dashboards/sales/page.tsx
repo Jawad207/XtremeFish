@@ -20,6 +20,7 @@ import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
 import Popup from "../../../../../components/Popup";
 import { SquarePlus, Trash2, Pencil } from "lucide-react";
+import { Postpone } from "next/dist/server/app-render/dynamic-rendering";
 const Sales = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
@@ -40,6 +41,7 @@ const Sales = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [newPost, setNewPost] = useState([]);
   const [updateId, setUpdate] = useState("");
+  const [postPopup, setPostPopup] = useState(false)
 
   useEffect(() => {
     fetchAccounts(1);
@@ -51,6 +53,7 @@ const Sales = () => {
   };
 
   const handleOpenPopup = () => {
+    setPostPopup(true)
     setIsPopupOpen(true);
   };
 
@@ -330,6 +333,7 @@ const Sales = () => {
                 <SquarePlus />
               </button>
               <Popup
+                postPopup={postPopup}
                 isOpen={isPopupOpen}
                 post={newPost}
                 setPost={setNewPost}

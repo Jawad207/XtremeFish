@@ -9,11 +9,10 @@ import {
   getUrls,
   deleteUrl,
 } from "@/shared/Api/dashboard";
-import Popup from "./Popup";
+import Popup from "@/components/Popup";
 
 function page() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [val, setVal] = useState("");
     const [descVal, setDescVal] = useState("");
     const [updateId, setUpdate] = useState("");
     const [urls, setUrls] = useState<any>();
@@ -27,7 +26,6 @@ function page() {
       };
 
       const handleUpdate = (post: any) => {
-        setVal(post?.title);
         setDescVal(post?.description);
         setUpdate(post?._id);
         handleOpenPopup();
@@ -60,22 +58,20 @@ function page() {
               <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
                     <button 
-                        className="title:rounded-md"
-                        onClick={handleOpenPopup} 
-                        title={"Add Url"}
+                      className="title:rounded-md"
+                      onClick={handleOpenPopup} 
+                      title={"Add Url"}
                     >
-                        <SquarePlus 
-                          size={30} 
-                          className="hover:text-blue-400"
-                          />
+                      <SquarePlus 
+                        size={30} 
+                        className="hover:text-blue-400"
+                      />
                     </button>
                     <Popup
                       isOpen={isPopupOpen}
                       onClose={handleClosePopup}
                       urls={urls}
                       setUrls={setUrls}
-                      val={val}
-                      setVal={setVal}
                       descVal={descVal}
                       setDescVal={setDescVal}
                       updateId={updateId}
@@ -94,17 +90,14 @@ function page() {
               <div className="table-responsive">
                 <table className="table text-nowrap">
                   <thead>
-                      <th>Page</th>
                       <th>URL</th>
                       <th>Date</th>
+                      <th>Actions</th>
                   </thead>
                   <tbody>
                     {Urls?.length > 0 &&
                       Urls.map((url: any) => (
                         <tr key={url._id}>
-                            <td>
-                                <p>{url.title}</p>
-                            </td>
                             <td>
                                 <a href={url.description}>{url.description}</a>
                             </td>
@@ -122,7 +115,7 @@ function page() {
                               <Trash2 size={14} />
                             </button>
                             <button
-                              className="text-blue-500 ml-2"
+                              className="text-blue-500 ml-4"
                               onClick={() => handleUpdate(url)}
                             >
                               <Pencil size={14} />
