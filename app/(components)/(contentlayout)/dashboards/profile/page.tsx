@@ -51,11 +51,18 @@ const Profile = () => {
     createOption("Team Collaboration"),
     createOption("Adaptability"),
   ]);
- 
+
   const userData = useSelector((state: any) => state?.auth);
   const user = userData.user;
 
-
+  const [profileImage, setProfileImage] = useState(
+    user?.profileImage ??
+      "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
+  );
+  const [coverImage, setCoverImage] = useState(
+    user?.coverImage ??
+      "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Fcoveravatar.webp?alt=media&token=4e68f36e-5f29-453c-a333-f4c68452f9d3"
+  );
 
   return (
     <Fragment>
@@ -73,8 +80,8 @@ const Profile = () => {
             <Card className="custom-card profile-card">
               <span className="group flex justify-end items-end">
                 <img
-                  src="../../assets/images/media/media-3.jpg"
-                  className="card-img-top "
+                  src={coverImage}
+                  className="card-img-top max-h-[200px] object-cover "
                   alt="..."
                 />
                 {/* <button className="absolute group flex justify-center mx-4 mb-4">
@@ -83,10 +90,7 @@ const Profile = () => {
               </span>
               <Card.Body className="p-4 pb-0 position-relative">
                 <span className="avatar avatar-xxl avatar-rounded bg-info online group">
-                  <img src="../../assets/images/faces/team/7.png" alt="" />
-                  {/* <button className="absolute group flex justify-center">
-                    <Camera className="absolute hidden text-blue-400 group-hover:block" />
-                  </button> */}
+                  <img src={profileImage} alt="" />
                 </span>
                 <div className="mt-4 mb-3 d-flex align-items-center flex-wrap gap-3 justify-content-between">
                   <div>
@@ -313,10 +317,8 @@ const Profile = () => {
                 </ListGroup>
               </Card.Body>
             </Card>
-            
           </Col>
         </Row>
-
       </Tab.Container>
     </Fragment>
   );

@@ -24,10 +24,12 @@ const EditProfile = () => {
   const userData = useSelector((state: any) => state?.auth?.user);
 
   const [profileImage, setProfileImage] = useState(
-    "../../assets/images/faces/team/7.png"
+    userData?.profileImage ??
+      "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
   );
   const [coverImage, setCoverImage] = useState(
-    "../../assets/images/media/media-3.jpg"
+    userData?.coverImage ??
+      "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Fcoveravatar.webp?alt=media&token=4e68f36e-5f29-453c-a333-f4c68452f9d3"
   );
 
   const [user, setUser] = useState<any>({
