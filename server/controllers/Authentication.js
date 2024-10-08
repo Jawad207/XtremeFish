@@ -262,7 +262,7 @@ const resetPassword = async (req, res) => {
 
 const editProfile = async (req, res) => {
   try {
-    const { email, password, userName, bio } = req.body;
+    const { email, password, userName, bio, coverImage, profileImage } = req.body;
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
@@ -289,9 +289,16 @@ const editProfile = async (req, res) => {
       user.bio = bio; // Update the bio
     }
 
+    if(coverImage) {
+      user.coverImage = coverImage
+    }
+
+    if(profileImage) {
+      user.profileImage = profileImage
+    }
     // Save the updated user
     const updatedUser = await user.save();
-
+    console.log('updated user in here', updatedUser)
     // Generate token
     const token = generateToken(updatedUser._id);
 

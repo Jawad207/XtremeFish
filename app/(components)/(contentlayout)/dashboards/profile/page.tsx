@@ -59,7 +59,6 @@ const Profile = () => {
 
   return (
     <Fragment>
-      {/* Page Header */}
       <Seo title={"Profile"} />
       <Pageheader
         Heading="Profile"
@@ -68,9 +67,7 @@ const Profile = () => {
           { title: "Profile", active: false },
         ]}
       />
-      {/* Page Header Close */}
       <Tab.Container defaultActiveKey="first">
-        {/* Start:: row-1 */}
         <Row>
           <Col xl={12}>
             <Card className="custom-card profile-card">
@@ -80,23 +77,20 @@ const Profile = () => {
                   className="card-img-top "
                   alt="..."
                 />
-                <button className="absolute group flex justify-center mx-4 mb-4">
+                {/* <button className="absolute group flex justify-center mx-4 mb-4">
                   <Camera className="absolute hidden text-blue-400 group-hover:block" />
-                </button>
+                </button> */}
               </span>
               <Card.Body className="p-4 pb-0 position-relative">
                 <span className="avatar avatar-xxl avatar-rounded bg-info online group">
                   <img src="../../assets/images/faces/team/7.png" alt="" />
-                  <button className="absolute group flex justify-center">
+                  {/* <button className="absolute group flex justify-center">
                     <Camera className="absolute hidden text-blue-400 group-hover:block" />
-                  </button>
+                  </button> */}
                 </span>
                 <div className="mt-4 mb-3 d-flex align-items-center flex-wrap gap-3 justify-content-between">
                   <div>
                     <h5 className="fw-semibold mb-1">{user?.userName}</h5>
-                    {/* <span className="d-block fw-medium text-muted mb-1">
-                      Chief Executive Officer (C.E.O)
-                    </span> */}
                     <p className="fs-12 mb-0 fw-medium text-muted">
                       {" "}
                       <span className="me-3">
@@ -130,74 +124,11 @@ const Profile = () => {
                       About
                     </Nav.Link>
                   </Nav.Item>
-                  {/* <Nav.Item role="presentation">
-                    <Nav.Link
-                      eventKey="second"
-                      className=""
-                      id="edit-profile-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#edit-profile-tab-pane"
-                      type="button"
-                      role="tab"
-                      aria-controls="edit-profile-tab-pane"
-                      aria-selected="true"
-                    >
-                      Edit Profile
-                    </Nav.Link>
-                  </Nav.Item> */}
-                  {/* <Nav.Item role="presentation">
-                    <Nav.Link
-                      eventKey="third"
-                      className=""
-                      id="timeline-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#timeline-tab-pane"
-                      type="button"
-                      role="tab"
-                      aria-controls="timeline-tab-pane"
-                      aria-selected="false"
-                    >
-                      Timeline
-                    </Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item role="presentation">
-                    <Nav.Link
-                      eventKey="fourth"
-                      className=""
-                      id="gallery-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#gallery-tab-pane"
-                      type="button"
-                      role="tab"
-                      aria-controls="gallery-tab-pane"
-                      aria-selected="false"
-                    >
-                      Gallery
-                    </Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item role="presentation">
-                    <Nav.Link
-                      eventKey="fifth"
-                      className=""
-                      id="friends-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#friends-tab-pane"
-                      type="button"
-                      role="tab"
-                      aria-controls="friends-tab-pane"
-                      aria-selected="false"
-                    >
-                      Friends
-                    </Nav.Link>
-                  </Nav.Item> */}
                 </Nav>
               </Card.Body>
             </Card>
           </Col>
         </Row>
-        {/* End:: row-1 */}
-
-        {/* Start:: row-2 */}
         <Row>
           <Col xl={9}>
             <Tab.Content className="" id="profile-tabs">

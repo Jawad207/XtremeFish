@@ -5,7 +5,8 @@ import bcrypt from "bcryptjs";
 const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: false, unique: false, sparse: true },
-    profileUrl: { type: String },
+    profileImage: { type: String },
+    coverImage: { type: String },
     userName: { type: String, required: false },
     password: { type: String, required: false, default: null },
     role: {type: String, default: "basic"},//we can have multiple roles here basic, premium ,admin

@@ -21,9 +21,21 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
   let { basePath } = nextConfig;
   const theme = useSelector((state: any) => state.theme);
   const notifications = useSelector((state: any) => state.dash.notifications);
+  const user = useSelector((state: any) => state.auth.user);
   const [notification, setNotification] = useState<any>([]);
-  const dispatch = useDispatch();
+  const [show, setShow] = useState(false);
+  const [profileShow, setProfileShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const handleToggle = () => {
+    setProfileShow(!show); // Toggle the dropdown state
+  };
 
+  const handleDropdownClose = () => {
+    setProfileShow(false); // Close the dropdown
+  };
+
+  const dispatch = useDispatch();
   useEffect(() => {
     setNotification(notifications);
   }, [notifications]);
@@ -38,7 +50,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
     const updatedNotifications = notification.splice(index, 1);
     setNotification(updatedNotifications);
   };
-
+  console.log("user information in here", user);
   //full screen
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -238,38 +250,6 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
   };
 
   // Toggle Dark
-  const ToggleDark = () => {
-    ThemeChanger({
-      ...local_varaiable,
-      dataThemeMode: local_varaiable.dataThemeMode == "dark" ? "light" : "dark",
-      dataHeaderStyles: "transparent",
-      dataMenuStyles:
-        local_varaiable.dataThemeMode == "dark" ? "light" : "dark",
-    });
-    const theme = useSelector((state: any) => state.theme);
-
-    if (theme.dataThemeMode != "dark") {
-      ThemeChanger({
-        ...theme,
-        bodyBg1: "",
-        bodyBg2: "",
-        Light: "",
-        Formcontrol: "",
-        Graycolor: "",
-        inputBorder: "",
-        dataMenuStyles: "",
-      });
-      localStorage.setItem("mamixlighttheme", "light");
-      localStorage.removeItem("mamixdarktheme");
-      localStorage.removeItem("mamixMenu");
-      localStorage.removeItem("mamixHeader");
-    } else {
-      localStorage.setItem("mamixdarktheme", "dark");
-      localStorage.removeItem("mamixlighttheme");
-      localStorage.removeItem("mamixMenu");
-      localStorage.removeItem("mamixHeader");
-    }
-  };
   const logOut = () => {
     dispatch({ type: LOGOUT });
   };
@@ -316,10 +296,6 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
 
   //Media screen Modal
 
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   //End Media screen Modal
   return (
     <Fragment>
@@ -643,33 +619,34 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
             {/* End::header-element */}
 
             {/* Start::header-element */}
-            <Dropdown className="header-element dropdown custom-dropdown">
-              {/* Start::header-link|dropdown-toggle */}
+            <Dropdown
+              className="header-element dropdown custom-dropdown"
+              show={profileShow} // Control the visibility with state
+              onToggle={handleToggle} // Toggle visibility on click
+            >
               <Dropdown.Toggle
                 variant=""
                 href="#!"
                 className="header-link dropdown-toggle no-caret"
                 id="mainHeaderProfile"
-                data-bs-toggle="dropdown"
                 data-bs-auto-close="outside"
-                aria-expanded="false"
+                aria-expanded={show}
+                onClick={handleToggle} // Toggle the dropdown manually
               >
                 <div className="d-flex align-items-center">
                   <div className="me-xl-2 me-0">
                     <img
-                      src={`${
-                        process.env.NODE_ENV === "production" ? basePath : ""
-                      }/assets/images/faces/14.jpg`}
+                      src={user?.profileImage}
                       alt="img"
                       className="avatar avatar-sm avatar-rounded"
                     />
                   </div>
                   <div className="d-xl-block d-none lh-1">
-                    <span className="fw-medium lh-1">userName</span>
+                    <span className="fw-medium lh-1">{user?.userName}</span>
                   </div>
                 </div>
               </Dropdown.Toggle>
-              {/* End::header-link|dropdown-toggle */}
+
               <Dropdown.Menu
                 as="ul"
                 className="main-header-dropdown pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end"
@@ -679,24 +656,29 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                   <Link
                     className="dropdown-item d-flex align-items-center"
                     href="/dashboards/profile"
+                    onClick={handleDropdownClose} // Close the dropdown on link click
                   >
                     <i className="ti ti-user me-2 fs-18 text-primary"></i>
                     Profile
                   </Link>
-                </li>   <li>
+                </li>
+                <li>
                   <Link
                     className="dropdown-item d-flex align-items-center"
                     href="/dashboards/edit-profile"
+                    onClick={handleDropdownClose} // Close the dropdown on link click
                   >
                     <i className="ti ti-settings me-2 fs-18 text-orange"></i>
                     Settings
                   </Link>
                 </li>
-                {/* <li><Link className="dropdown-item d-flex align-items-center" href="#!"><i className="ti ti-headset me-2 fs-18 text-info"></i>Support</Link></li> */}
                 <li>
                   <div
                     className="dropdown-item d-flex align-items-center cursor-pointer"
-                    onClick={() => logOut()}
+                    onClick={() => {
+                      logOut();
+                      handleDropdownClose(); // Close the dropdown after logout
+                    }}
                   >
                     <i className="ti ti-logout me-2 fs-18 text-warning"></i>Log
                     Out

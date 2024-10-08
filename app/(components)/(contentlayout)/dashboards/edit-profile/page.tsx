@@ -11,6 +11,9 @@ import { Card, Col, Form, Nav, Row, Tab } from "react-bootstrap";
 import { FaSpinner } from "react-icons/fa";
 import { editProfile } from "@/shared/Api/auth";
 import Success from "@/components/SuccessPop";
+import { storage } from "@/shared/Api/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { v4 } from "uuid";
 const EditProfile = () => {
   const dispatch = useDispatch();
   const [password, setPassword] = useState<any>("");
@@ -20,6 +23,13 @@ const EditProfile = () => {
   const [error, setError] = useState("");
   const userData = useSelector((state: any) => state?.auth?.user);
 
+  const [profileImage, setProfileImage] = useState(
+    "../../assets/images/faces/team/7.png"
+  );
+  const [coverImage, setCoverImage] = useState(
+    "../../assets/images/media/media-3.jpg"
+  );
+
   const [user, setUser] = useState<any>({
     userName: userData?.userName,
     password: "",
@@ -28,21 +38,56 @@ const EditProfile = () => {
     country: userData?.location?.country,
     city: userData?.location?.city,
   });
+
+  const handleImageChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setImage: React.Dispatch<React.SetStateAction<string>>,
+    status: "cover" | "profile"
+  ) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      // Create a storage reference
+      const imageRef = ref(storage, `images/${file.name + v4()}`);
+
+      try {
+        // Upload the file to Firebase Storage
+        await uploadBytes(imageRef, file);
+
+        // Get the download URL
+        const imageUrl = await getDownloadURL(imageRef);
+
+        // Conditional logic based on status
+        if (status === "cover") {
+          setCoverImage(imageUrl); // Assuming you have a setCoverImage function
+        } else {
+          setProfileImage(imageUrl); // Assuming you have a setProfileImage function
+        }
+      } catch (error) {
+        console.error("Error uploading the image:", error);
+        // Handle the error (e.g., show a message to the user)
+      }
+    }
+  };
+
   const handleUpdate = async (pass?: boolean) => {
-    let boolError = false
+    let boolError = false;
     if (pass) {
       if (password != confirmPassword || password == "") {
         setError("passwords doesn't match");
-        boolError = true
+        boolError = true;
       }
     }
     if (!boolError) {
-      const response = await editProfile({ ...user, password }, dispatch);
+      const response = await editProfile(
+        { ...user, password, profileImage, coverImage },
+        dispatch
+      );
 
       if (response?.status == 200) {
         setOpen(true);
         setTimeout(() => {
-          setOpen(false)
+          setOpen(false);
         }, 2000);
       }
     }
@@ -70,23 +115,45 @@ const EditProfile = () => {
         <Row>
           <Col xl={12}>
             <Card className="custom-card profile-card">
-              <span className="group flex justify-end items-end">
+              <div className="relative group flex justify-end items-end">
                 <img
-                  src="../../assets/images/media/media-3.jpg"
-                  className="card-img-top "
-                  alt="..."
+                  src={coverImage}
+                  className="card-img-top max-h-[200px] object-cover"
+                  alt="Cover Image"
                 />
-                <button className="absolute group flex justify-center mx-4 mb-4">
-                  <Camera className="absolute hidden text-blue-400 group-hover:block" />
-                </button>
-              </span>
+                <label className="absolute bottom-4 right-4 cursor-pointer">
+                  <Camera className="text-blue-400 group-hover:block" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) =>
+                      handleImageChange(e, setCoverImage, "cover")
+                    }
+                  />
+                </label>
+              </div>
+
               <Card.Body className="p-4 pb-0 position-relative">
                 <span className="avatar avatar-xxl avatar-rounded bg-info online group">
-                  <img src="../../assets/images/faces/team/7.png" alt="" />
-                  <button className="absolute group flex justify-center">
+                  <img
+                    src={profileImage}
+                    className="card-img-top"
+                    alt="Cover Image"
+                  />
+                  <label className="absolute group flex justify-center cursor-pointer">
                     <Camera className="absolute hidden text-blue-400 group-hover:block" />
-                  </button>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) =>
+                        handleImageChange(e, setProfileImage, "profile")
+                      }
+                    />
+                  </label>
                 </span>
+
                 <div className="mt-4 mb-3 d-flex align-items-center flex-wrap gap-3 justify-content-between">
                   <div>
                     <h5 className="fw-semibold mb-1">{user?.userName}</h5>
