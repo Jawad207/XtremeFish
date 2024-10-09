@@ -26040,7 +26040,7 @@ ul .handle, ol .handle {
 }
 
 .sales-statistics-card .card-body {
-  padding-top: 6.8rem !important;
+  padding-top: 1rem !important;
 }
 
 #top-categories .apexcharts-xaxis line,
@@ -26049,7 +26049,7 @@ ul .handle, ol .handle {
 }
 
 #sales-statistics {
-  margin-top: 3rem;
+  margin-top: 1rem;
 }
 
 #top-categories .apexcharts-legend.apx-legend-position-bottom.apexcharts-align-center,

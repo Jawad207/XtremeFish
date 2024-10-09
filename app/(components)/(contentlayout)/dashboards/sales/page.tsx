@@ -41,7 +41,7 @@ const Sales = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [newPost, setNewPost] = useState([]);
   const [updateId, setUpdate] = useState("");
-  const [postPopup, setPostPopup] = useState(false)
+  const [postPopup, setPostPopup] = useState(false);
 
   useEffect(() => {
     fetchAccounts(1);
@@ -53,7 +53,7 @@ const Sales = () => {
   };
 
   const handleOpenPopup = () => {
-    setPostPopup(true)
+    setPostPopup(true);
     setIsPopupOpen(true);
   };
 
@@ -102,7 +102,7 @@ const Sales = () => {
       setTotalPages(loginAttemptData?.totalPages);
     }
   }, [loginAttemptData]);
-  
+
   useEffect(() => {
     getAllLoginAttempts();
     setUserName(auth?.userName);
@@ -118,6 +118,133 @@ const Sales = () => {
     setUpdate(post?._id);
     handleOpenPopup();
   };
+
+  const chartData = {
+    series: [
+      {
+        name: "Accounts Registered",
+        data: [25, 40],
+      },
+    ],
+    // options: {
+    //   chart: {
+    //     type: "bar",
+    //     height: 350,
+    //   },
+    //   plotOptions: {
+    //     bar: {
+    //       horizontal: false,
+    //       columnWidth: "55%",
+    //     },
+    //   },
+    //   xaxis: {
+    //     categories: ["Last Month", "This Month"],
+    //   },
+    //   dataLabels: {
+    //     enabled: false,
+    //   },
+    //   fill: {
+    //     opacity: 1,
+    //   },
+    // },
+    options: {
+      chart: {
+        height: 220,
+        toolbar: {
+          show: false,
+        },
+        events: {
+          mounted: (chart: any) => {
+            chart.windowResizeHandler();
+          },
+        },
+        zoom: {
+          enabled: false,
+        },
+        sparkline: {
+          enabled: true,
+        },
+      },
+      colors: ["rgba(12, 215, 177, 0.8)", "var(--primary07)"],
+      fill: {
+        type: "solid",
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      legend: {
+        show: false,
+        position: "top",
+        offsetX: 0,
+        offsetY: 8,
+        markers: {
+          width: 10,
+          height: 4,
+          strokeWidth: 0,
+          strokeColor: "#fff",
+          fillColors: undefined,
+          radius: 5,
+          customHTML: undefined,
+          onClick: undefined,
+          offsetX: 0,
+          offsetY: 0,
+        },
+      },
+      stroke: {
+        curve: "smooth",
+        width: [1, 1],
+        lineCap: "round",
+      },
+      grid: {
+        borderColor: "#edeef1",
+        strokeDashArray: 2,
+      },
+      yaxis: {
+        axisBorder: {
+          show: false,
+          color: "rgba(119, 119, 142, 0.05)",
+          offsetX: 0,
+          offsetY: 0,
+        },
+        axisTicks: {
+          show: false,
+          color: "rgba(119, 119, 142, 0.05)",
+          width: 6,
+          offsetX: 0,
+          offsetY: 0,
+        },
+        labels: {
+          show: false,
+          formatter: function (y: any) {
+            return y.toFixed(0) + "";
+          },
+        },
+      },
+      xaxis: {
+        axisBorder: {
+          show: false,
+          color: "rgba(119, 119, 142, 0.05)",
+          offsetX: 0,
+          offsetY: 0,
+        },
+        axisTicks: {
+          show: false,
+          borderType: "solid",
+          color: "rgba(119, 119, 142, 0.05)",
+          offsetX: 0,
+          offsetY: 0,
+        },
+        labels: {
+          show: false,
+          rotate: -90,
+        },
+      },
+      tooltip: {
+        enabled: false,
+      },
+    },
+  };
+
   return (
     <Fragment>
       <Seo title={"Sales"} />
@@ -270,23 +397,15 @@ const Sales = () => {
                 </Dropdown.Menu>
               </Dropdown>
             </Card.Header>
+
             <Card.Body className="position-relative p-0">
               <div id="sales-statistics">
-                <ReactApexChart
-                  options={Salesdata.Statistics1.options}
-                  series={Salesdata.Statistics1.series}
-                  type="area"
-                  width={"100%"}
-                  height={220}
-                />
-              </div>
-              <div id="sales-statistics1">
                 <ReactApexChart
                   options={Salesdata.Statistics2.options}
                   series={Salesdata.Statistics2.series}
                   type="line"
                   width={"100%"}
-                  height={280}
+                  height={300}
                 />
               </div>
             </Card.Body>
@@ -326,10 +445,11 @@ const Sales = () => {
           <Card className="custom-card">
             <Card.Header className="flex justify-between">
               <Card.Title>Posts</Card.Title>
-              <button 
+              <button
                 title="Add Post"
-                onClick={handleOpenPopup} 
-                className="p-1 hover:text-blue-400">
+                onClick={handleOpenPopup}
+                className="p-1 hover:text-blue-400"
+              >
                 <SquarePlus />
               </button>
               <Popup

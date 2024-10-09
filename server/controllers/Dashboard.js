@@ -149,16 +149,15 @@ const generateOtpAndSave = async (req, res) => {
 
 const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
-  
 
   // Find the account with the email and otp
-  const account = await Account.findOne({ email, otp});
+  const account = await Account.findOne({ email, otp });
 
   if (!account) {
     return res.status(400).json({ error: "Invalid OTP or email" });
   }
 
-  if(account.otp===otp){
+  if (account.otp === otp) {
     res.status(200).json({ message: "OTP verified" });
   }
   // Clear OTP after successful verification
@@ -225,6 +224,56 @@ const getAccounts = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: "Error fetching accounts", error });
+  }
+};
+
+const getAccountsStatistics = async (req, res) => {
+  try {
+    // Get the first and last day of the current and last month
+    const startOfCurrentMonth = moment().startOf("month").toDate();
+    const startOfLastMonth = moment()
+      .subtract(1, "month")
+      .startOf("month")
+      .toDate();
+    const endOfLastMonth = moment()
+      .subtract(1, "month")
+      .endOf("month")
+      .toDate();
+
+    // Get the start and end of the current week and last week
+    const startOfCurrentWeek = moment().startOf("week").toDate();
+    const startOfLastWeek = moment()
+      .subtract(1, "week")
+      .startOf("week")
+      .toDate();
+    const endOfLastWeek = moment().subtract(1, "week").endOf("week").toDate();
+
+    // Query for users created this month, last month, this week, and last week
+    const currentMonthCount = await User.countDocuments({
+      createdAt: { $gte: startOfCurrentMonth },
+    });
+
+    const lastMonthCount = await User.countDocuments({
+      createdAt: { $gte: startOfLastMonth, $lte: endOfLastMonth },
+    });
+
+    const currentWeekCount = await User.countDocuments({
+      createdAt: { $gte: startOfCurrentWeek },
+    });
+
+    const lastWeekCount = await User.countDocuments({
+      createdAt: { $gte: startOfLastWeek, $lte: endOfLastWeek },
+    });
+
+    // Respond with the counts for each time period
+    res.json({
+      thisMonth: currentMonthCount,
+      lastMonth: lastMonthCount,
+      thisWeek: currentWeekCount,
+      lastWeek: lastWeekCount,
+    });
+  } catch (error) {
+    res.status;
   }
 };
 
@@ -343,7 +392,7 @@ const deleteAccount = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to delete account" });
   }
-}; 
+};
 const editUserProfile = async (req, res) => {
   try {
     const { id } = req.params;
@@ -385,10 +434,7 @@ const getUrls = async (req, res) => {
 
 const getUrlById = async (req, res) => {
   try {
-    const url = await Post.findById(req.params.id).populate(
-      "user",
-      "username"
-    );
+    const url = await Post.findById(req.params.id).populate("user", "username");
     if (!url) {
       return res.status(404).json({ message: "Url not found" });
     }
@@ -428,7 +474,6 @@ const deleteUrl = async (req, res) => {
   }
 };
 
-
 export const dashboard = {
   getAllUser,
   getAllLoginAttempts,
@@ -454,4 +499,5 @@ export const dashboard = {
   getUrlById,
   updateUrl,
   deleteUrl,
+  getAccountsStatistics,
 };

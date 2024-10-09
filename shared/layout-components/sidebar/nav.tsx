@@ -271,9 +271,9 @@ export const MenuItems: any = [
     ],
   },
 
-  {
-    menutitle: "WEB APPS",
-  },
+  // {
+  //   menutitle: "WEB APPS",
+  // },
 
   {
     icon: NestedmenuIcon,
@@ -301,43 +301,43 @@ export const MenuItems: any = [
     ],
   },
 
-  {
-    menutitle: "PAGES",
-  },
+  // {
+  //   menutitle: "PAGES",
+  // },
   // Authentication
-  {
-    icon: ErrorIcon,
-    title: "Error",
-    badgetxt: badge3,
-    type: "sub",
-    active: false,
-    selected: false,
-    dirchange: false,
-    children: [
-      {
-        path: "/error/error401",
-        type: "link",
-        active: false,
-        selected: false,
-        dirchange: false,
-        title: "401-Error",
-      },
-      {
-        path: "/error/error404",
-        type: "link",
-        active: false,
-        selected: false,
-        dirchange: false,
-        title: "404-Error",
-      },
-      {
-        path: "/error/error500",
-        type: "link",
-        active: false,
-        selected: false,
-        dirchange: false,
-        title: "500-Error",
-      },
-    ],
-  },
+  // {
+  //   icon: ErrorIcon,
+  //   title: "Error",
+  //   badgetxt: badge3,
+  //   type: "sub",
+  //   active: false,
+  //   selected: false,
+  //   dirchange: false,
+  //   children: [
+  //     {
+  //       path: "/error/error401",
+  //       type: "link",
+  //       active: false,
+  //       selected: false,
+  //       dirchange: false,
+  //       title: "401-Error",
+  //     },
+  //     {
+  //       path: "/error/error404",
+  //       type: "link",
+  //       active: false,
+  //       selected: false,
+  //       dirchange: false,
+  //       title: "404-Error",
+  //     },
+  //     {
+  //       path: "/error/error500",
+  //       type: "link",
+  //       active: false,
+  //       selected: false,
+  //       dirchange: false,
+  //       title: "500-Error",
+  //     },
+  //   ],
+  // },
 ];

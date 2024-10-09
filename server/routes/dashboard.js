@@ -26,5 +26,6 @@ router.get("/getNotification", dashboard.getNotification);
 router.patch("/deleteNotification", dashboard.deleteNotification);
 router.delete("/deleteAccount", dashboard.deleteAccount);
 router.get("/editProfile", dashboard.editUserProfile);
+router.get("/getaccountstatistics", dashboard.getAccountsStatistics);
 
 export default router;

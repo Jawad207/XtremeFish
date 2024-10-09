@@ -298,7 +298,6 @@ const editProfile = async (req, res) => {
     }
     // Save the updated user
     const updatedUser = await user.save();
-    console.log('updated user in here', updatedUser)
     // Generate token
     const token = generateToken(updatedUser._id);
 
