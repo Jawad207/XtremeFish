@@ -298,6 +298,14 @@ export const MenuItems: any = [
         dirchange: false,
         title: "URLS",
       },
+      {
+        path: "/dashboards/high-scores",
+        type: "link",
+        active: false,
+        selected: false,
+        dirchange: false,
+        title: "High Scores",
+      },
     ],
   },
 

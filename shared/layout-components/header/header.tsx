@@ -362,9 +362,9 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
             {/* End::header-element */}
 
             {/* Start::header-element */}
-            <div className="header-element autoComplete_wrapper header-search d-md-block d-none my-auto">
+            {/* <div className="header-element autoComplete_wrapper header-search d-md-block d-none my-auto"> */}
               {/* Start::header-link */}
-              <input
+              {/* <input
                 type="text"
                 className="header-search-bar form-control"
                 id="header-search"
@@ -380,7 +380,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
               >
                 <i className="bi bi-search"></i>
               </Link>
-            </div>
+            </div> */}
 
             {/* End::header-element */}
           </div>

@@ -366,6 +366,42 @@ const Sales = () => {
             </Card.Body>
           </Card>
         </Col>
+        <Col xxl={3} xl={3} lg={6} md={6} sm={6} className="col-12">
+          <Card className="custom-card main-card">
+            <Card.Body className="p-4">
+              <div className="d-flex align-items-start justify-content-between">
+                <div>
+                  <div>
+                    <span className="d-block mb-2">Subscription expiry</span>
+                    <h5 className="mb-4 fs-4">3 months</h5>
+                  </div>
+                  <span className="text-success me-2 fw-medium d-inline-block">
+                    <i className="ti ti-trending-up fs-5 align-middle me-1 d-inline-block"></i>
+                    0.29%
+                  </span>
+                  <span className="text-muted">Since last month</span>
+                </div>
+                <div>
+                  <div className="main-card-icon success">
+                    <div className="avatar avatar-lg bg-success-transparent border border-success border-opacity-10">
+                      <div className="avatar avatar-sm svg-white">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="32"
+                          height="32"
+                          fill="#000000"
+                          viewBox="0 0 256 256"
+                        >
+                          <path d="M200,168a48.05,48.05,0,0,1-48,48H136v16a8,8,0,0,1-16,0V216H104a48.05,48.05,0,0,1-48-48,8,8,0,0,1,16,0,32,32,0,0,0,32,32h48a32,32,0,0,0,0-64H112a48,48,0,0,1,0-96h8V24a8,8,0,0,1,16,0V40h8a48.05,48.05,0,0,1,48,48,8,8,0,0,1-16,0,32,32,0,0,0-32-32H112a32,32,0,0,0,0,64h40A48.05,48.05,0,0,1,200,168Z"></path>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
       </Row>
       <Row>
         <Col xl={9}>
