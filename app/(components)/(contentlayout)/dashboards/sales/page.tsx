@@ -247,7 +247,7 @@ const Sales = () => {
 
   return (
     <Fragment>
-      <Seo title={"Sales"} />
+      <Seo title={"SignIn"} />
       {/*  Start::page-header */}
       <div className="d-flex align-items-center justify-content-between my-4 page-header-breadcrumb flex-wrap gap-2">
         <div>

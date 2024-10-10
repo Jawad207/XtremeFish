@@ -1,7 +1,7 @@
 "use client";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
-import { Button, Card, Col, Pagination, Row } from "react-bootstrap";
+import { Card, Col, Row } from "react-bootstrap";
 import { SquarePlus, Trash2, Pencil } from 'lucide-react';
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
@@ -13,6 +13,7 @@ import Popup from "@/components/Popup";
 
 function page() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const user = useSelector((state: any) => state.auth.user);
     const [descVal, setDescVal] = useState("");
     const [updateId, setUpdate] = useState("");
     const [urls, setUrls] = useState<any>();
@@ -46,7 +47,6 @@ function page() {
     useEffect(() => {
       getAllUrls();
     }, [])
-    
   return (
     <Fragment>
       <Seo title={"urls"} />
@@ -99,7 +99,7 @@ function page() {
                       Urls.map((url: any) => (
                         <tr key={url._id}>
                             <td>
-                                <a href={url.description}>{url.description}</a>
+                                <a href={url.description + `${user?._id}`} target="_blank">{url.description}</a>
                             </td>
                             <td>
                             <div className="btn-list">

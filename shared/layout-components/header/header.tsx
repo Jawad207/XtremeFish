@@ -50,7 +50,6 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
     const updatedNotifications = notification.splice(index, 1);
     setNotification(updatedNotifications);
   };
-  console.log("user information in here", user);
   //full screen
   const [isFullscreen, setIsFullscreen] = useState(false);
 

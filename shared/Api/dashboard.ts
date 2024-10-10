@@ -193,7 +193,7 @@ export const getAccounts = async (
 
     // If the request was successful
     if (response.status === 200) {
-      const { accounts, accountsCount } = response.data;
+      const { accounts, accountsCount, totalPages } = response.data;
 
       // Dispatch success with payload containing accounts and pagination info
       dispatch({
@@ -201,7 +201,7 @@ export const getAccounts = async (
         payload: { accounts, accountsCount, currentPage: page },
       });
 
-      return { accounts, totalAccounts: accountsCount }; // Return necessary data
+      return { accounts, totalAccounts: accountsCount, totalPages }; // Return necessary data
     }
   } catch (error: any) {
     // Handle server or network errors

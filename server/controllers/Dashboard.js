@@ -108,14 +108,13 @@ const deletePost = async (req, res) => {
 const generateOtpAndSave = async (req, res) => {
   try {
     const { email, userId } = req.body;
-
     const account = await Account.findOne({ email });
     if (account) {
-      res
+      return res
         .status(401)
         .json({ message: "Account with the given email already exist" });
-      return;
     }
+
     const userLocation = await getCountryFromIp();
     const locationObject = {
       country: userLocation?.country,
@@ -143,6 +142,7 @@ const generateOtpAndSave = async (req, res) => {
 
     res.status(201).json({ message: "OTP generated and account initiated" });
   } catch (error) {
+    console.log("inside error");
     res.status(500).json({ error: "Failed to generate OTP", error });
   }
 };
@@ -201,24 +201,19 @@ const setPassword = async (req, res) => {
 
 const getAccounts = async (req, res) => {
   try {
-    // Fetch the logged-in user's userId
     const userId = req.query.id;
 
-    // Get pagination parameters from query (default to page 1, limit 10)
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    // Find all accounts for the user with pagination
     const accounts = await Account.find({ userId }).skip(skip).limit(limit);
 
-    // Get the total count of accounts without pagination
     const totalAccounts = await Account.countDocuments({ userId });
-
+    const total = totalAccounts / limit
+    console.log('total bro ', Math.ceil(total))
     return res.status(200).json({
       accounts: accounts,
-      totalAccounts: totalAccounts, // Total number of accounts
-      currentPage: page,
       totalPages: Math.ceil(totalAccounts / limit), // Calculate total pages
       accountsCount: accounts?.length,
     });
@@ -380,7 +375,7 @@ const deleteAccount = async (req, res) => {
 
     // Delete the account
     await Account.findByIdAndDelete(accountId);
-    await Account.deleteMany(accountId);
+    await Account.deleteMany({_id: accountId});
 
     // Delete associated notifications
     await Notification.deleteMany({ accountId });
@@ -390,6 +385,7 @@ const deleteAccount = async (req, res) => {
       account: account,
     });
   } catch (error) {
+    console.log('error in here', error)
     res.status(500).json({ error: "Failed to delete account" });
   }
 };
