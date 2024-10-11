@@ -501,34 +501,36 @@ const deleteIp = async (req, res) => {
   }
 };
 
-async function getTopUsersWithMostAccounts(limit = 10) {
-    try {
-        const topUsers = await User.aggregate([
-            {
-                $lookup: {
-                    from: 'accounts', // Collection name for accounts
-                    localField: '_id',
-                    foreignField: 'userId',
-                    as: 'accounts',
-                },
-            },
-            {
-                $project: {
-                    _id: 1,
-                    userName: 1,
-                    numberOfAccounts: { $size: '$accounts' },
-                },
-            },
-            { $sort: { numberOfAccounts: -1 } },
-            { $limit: limit },
-        ]);
+const getTopUsersWithMostAccounts = async (req, res) => {
+  try {
+    const limit = 10;
+    const topUsers = await User.aggregate([
+      {
+        $lookup: {
+          from: "accounts", // Collection name for accounts
+          localField: "_id",
+          foreignField: "userId",
+          as: "accounts",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          userName: 1,
+          numberOfAccounts: { $size: "$accounts" },
+        },
+      },
+      { $sort: { numberOfAccounts: -1 } },
+      { $limit: limit },
+    ]);
 
-        return topUsers;
-    } catch (error) {
-        console.error('Error fetching top users:', error);
-        throw error;
-    }
-}
+    res.status(200).json({ message: "top users successfully", topUsers });
+    return topUsers;
+  } catch (error) {
+    console.error("Error fetching top users:", error);
+    throw error;
+  }
+};
 
 export const dashboard = {
   getAllUser,
@@ -559,5 +561,5 @@ export const dashboard = {
   postIp,
   getIps,
   deleteIp,
-  getTopUsersWithMostAccounts
+  getTopUsersWithMostAccounts,
 };

@@ -2,37 +2,43 @@
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
 import { Card, Col, Row } from "react-bootstrap";
-import { SquarePlus, Trash2, Pencil } from 'lucide-react';
+import { SquarePlus, Trash2, Pencil } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
+import { getTopUser } from "@/shared/Api/dashboard";
 const page = () => {
-
-  
   const topUser = useSelector((state: any) => state.dash.topUsers);
-  console.log(topUser)
+
+  console.log(topUser);
   const dispatch = useDispatch();
+  const fetchAccounts = async () => {
+    return await getTopUser(dispatch);
+  };
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
   const [accounts, setaccounts] = useState([
     {
-      _id:1,
-      name:"Imran Ali",
-      accounts:10,
+      _id: 1,
+      name: "Imran Ali",
+      accounts: 10,
     },
     {
-      _id:2,
-      name:"Imran Ali",
-      accounts:10,
+      _id: 2,
+      name: "Imran Ali",
+      accounts: 10,
     },
     {
-      _id:3,
-      name:"Imran Ali",
-      accounts:10,
+      _id: 3,
+      name: "Imran Ali",
+      accounts: 10,
     },
     {
-      _id:4,
-      name:"Imran Ali",
-      accounts:10,
+      _id: 4,
+      name: "Imran Ali",
+      accounts: 10,
     },
-  ])
+  ]);
   return (
     <Fragment>
       <Seo title={"urls"} />
@@ -76,29 +82,25 @@ const page = () => {
               <div className="table-responsive">
                 <table className="table text-nowrap">
                   <thead>
-                      <th>Name</th>
-                      <th>Accounts</th>
-                      <th>Actions</th>
+                    <th>Name</th>
+                    <th>Accounts</th>
+                    <th>Actions</th>
                   </thead>
                   <tbody>
                     {accounts?.length > 0 &&
                       accounts.map((account: any) => (
                         <tr key={account._id}>
-                          <td>
-                            {account.name}
-                          </td>
-                          <td>
-                            {account.accounts}
-                          </td>
-                            {/* <td>
+                          <td>{account.name}</td>
+                          <td>{account.accounts}</td>
+                          {/* <td>
                                 <a href={url.description + `${user?._id}`} target="_blank">{url.description}</a>
                             </td> */}
-                            {/* <td>
+                          {/* <td>
                             <div className="btn-list">
                               {moment(url?.createdAt).format('ddd, MMM DD,YYYY')}
                             </div>
                             </td> */}
-                            <td>
+                          <td>
                             <button
                               className="text-red-500"
                               // onClick={() => filterUrls(url)}
@@ -120,15 +122,15 @@ const page = () => {
             </Card.Body>
             <Card.Footer>
               <div className="d-flex align-items-center">
-                <div>{" "}
+                <div>
+                  {" "}
                   <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
                 </div>
                 <div className="ms-auto">
                   <nav
                     aria-label="Page navigation"
                     className="pagination-style-4"
-                  >
-                  </nav>
+                  ></nav>
                 </div>
               </div>
             </Card.Footer>
@@ -136,7 +138,7 @@ const page = () => {
         </Col>
       </Row>
     </Fragment>
-  )
-}
+  );
+};
 
-export default page
+export default page;

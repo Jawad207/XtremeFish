@@ -696,7 +696,7 @@ export const getTopUser = async (dispatch: any) => {
     if (response.status === 200) {
       dispatch({ type: GET_TOPUSER_SUCCESS, payload: response.data });
     }
-    console.log(response.data)
+
     return response.data; 
   } catch (error: any) {
     // Handle server or network errors
