@@ -480,22 +480,24 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
               <Dropdown.Menu
                 align="end"
                 as="ul"
-                className="main-header-dropdown  dropdown-menu-end"
+                className="main-header-dropdown dropdown-menu-end"
                 data-popper-placement="none"
               >
                 <div className="p-3">
                   <div className="d-flex align-items-center justify-content-between">
                     <p className="mb-0 fs-16">Notifications</p>
-                    {/* <span
-                      className="badge bg-secondary-transparent"
-                      id="notifiation-data"
-                    >{`${notification?.length} Unread`}</span> */}
                   </div>
                 </div>
                 <div className="dropdown-divider"></div>
+
+                {/* Add max-height and overflow-y for scroll */}
                 <ul
                   className="list-unstyled mb-0"
                   id="header-notification-scroll"
+                  style={{
+                    maxHeight: '300px',  // Adjust the height as needed
+                    overflowY: 'auto'    // Enable vertical scrolling
+                  }}
                 >
                   {notification?.map((idx: any, index: any) => (
                     <Dropdown.Item
@@ -539,6 +541,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                     </Dropdown.Item>
                   ))}
                 </ul>
+
                 <div
                   className={`p-3 empty-header-item1 border-top ${
                     notifications?.length === 0 ? "d-none" : "d-block"
@@ -554,6 +557,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                     </Link>
                   </div>
                 </div>
+
                 <div
                   className={`p-5 empty-item1 ${
                     notifications?.length === 0 ? "d-block" : "d-none"
@@ -567,8 +571,8 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                   </div>
                 </div>
               </Dropdown.Menu>
-              {/* End::main-header-dropdown */}
             </Dropdown>
+
             {/* End::header-element */}
 
             {/* Start::header-element */}

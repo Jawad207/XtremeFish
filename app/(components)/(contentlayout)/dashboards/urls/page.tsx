@@ -20,7 +20,7 @@ function page() {
     const Urls = useSelector((state: any) => state.dash.urls);
     const dispatch = useDispatch();
 
-    console.log(Urls)
+    
 
     const handleOpenPopup = () => {
         setIsPopupOpen(true);

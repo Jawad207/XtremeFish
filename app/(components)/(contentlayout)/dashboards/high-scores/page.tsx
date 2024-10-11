@@ -7,6 +7,10 @@ import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 const page = () => {
 
+  
+  const topUser = useSelector((state: any) => state.dash.topUsers);
+  console.log(topUser)
+  const dispatch = useDispatch();
   const [accounts, setaccounts] = useState([
     {
       _id:1,
