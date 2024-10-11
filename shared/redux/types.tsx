@@ -64,7 +64,6 @@ export const DELETE_URL_INIT = "DELETE_URL_INIT";
 export const DELETE_URL_SUCCESS = "DELETE_URL_SUCCESS";
 export const DELETE_URL_FAILURE = "DELETE_URL_FAILURE";
 
-
 export const GET_LOGINATTEMPT_INIT = "GET_LOGINATTEMPT_INIT";
 export const GET_LOGINATTEMPT_SUCCESS = "GET_LOGINATTEMPT_SUCCESS";
 export const GET_LOGINATTEMPT_FAILURE = "GET_LOGINATTEMPT_FAILURE";
@@ -89,6 +88,74 @@ export const EDIT_PROFILE_INIT = "EDIT_PROFILE_INIT";
 export const EDIT_PROFILE_SUCCESS = "EDIT_PROFILE_SUCCESS";
 export const EDIT_PROFILE_FAILURE = "EDIT_PROFILE_FAILURE";
 
+export const CREATE_IP_INIT = "CREATE_IP_INIT";
+export const CREATE_IP_SUCCESS = "CREATE_IP_SUCCESS";
+export const CREATE_IP_FAILURE = "CREATE_IP_FAILURE";
+
+export const GET_IP_INIT = "GET_IP_INIT";
+export const GET_IP_SUCCESS = "GET_IP_SUCCESS";
+export const GET_IP_FAILURE = "GET_IP_FAILURE";
+
+export const DELETE_IP_INIT = "DELETE_IP_INIT";
+export const DELETE_IP_SUCCESS = "DELETE_IP_SUCCESS";
+export const DELETE_IP_FAILURE = "DELETE_IP_FAILURE";
+
+export const GET_TOPUSER_INIT = "GET_TOPUSER_INIT";
+export const GET_TOPUSER_SUCCESS = "GET_TOPUSER_SUCCESS";
+export const GET_TOPUSER_FAILURE = "GET_TOPUSER_FAILURE";
+
+interface getTopAccountInitAction {
+  type: typeof GET_TOPUSER_INIT;
+}
+interface getTopAccountSuccessAction {
+  type: typeof GET_TOPUSER_SUCCESS;
+  payload: any;
+}
+
+interface getTopAccountFailureAction {
+  type: typeof GET_TOPUSER_FAILURE;
+  payload: any;
+}
+
+interface createIpInitAction {
+  type: typeof CREATE_IP_INIT;
+}
+interface createIpSuccessAction {
+  type: typeof CREATE_IP_SUCCESS;
+  payload: any;
+}
+
+interface createIpfailureAction {
+  type: typeof CREATE_IP_FAILURE;
+  payload: any;
+}
+
+interface deleteIpInitAction {
+  type: typeof DELETE_IP_INIT;
+}
+interface deleteIpSuccessAction {
+  type: typeof DELETE_IP_SUCCESS;
+  payload: any;
+}
+
+interface deleteIpfailureAction {
+  type: typeof DELETE_IP_FAILURE;
+  payload: any;
+}
+
+interface getIpInitAction {
+  type: typeof GET_IP_INIT;
+}
+interface getIpSuccessAction {
+  type: typeof GET_IP_SUCCESS;
+  payload: any;
+}
+
+interface getIpfailureAction {
+  type: typeof GET_IP_FAILURE;
+  payload: any;
+}
+/////done
 interface editProfiletInitAction {
   type: typeof EDIT_PROFILE_INIT;
 }
@@ -322,7 +389,6 @@ interface DeleteUrlFailureAction {
   payload: any;
 }
 
-
 interface GetPostsInitAction {
   type: typeof GET_POSTS_INIT;
 }
@@ -473,4 +539,16 @@ export type DashActionTypes =
   | UpdateUrlFailureAction
   | DeleteUrlInitAction
   | DeleteUrlSuccessAction
-  | DeleteUrlFailureAction;
+  | DeleteUrlFailureAction
+  | createIpInitAction
+  | createIpSuccessAction
+  | createIpfailureAction
+  | getIpInitAction
+  | getIpSuccessAction
+  | getIpfailureAction
+  | deleteIpInitAction
+  | deleteIpSuccessAction
+  | deleteIpfailureAction
+  | getTopAccountFailureAction
+  | getTopAccountInitAction
+  | getTopAccountSuccessAction;

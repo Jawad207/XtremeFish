@@ -48,6 +48,18 @@ import {
   DELETE_URL_INIT,
   DELETE_URL_SUCCESS,
   DELETE_URL_FAILURE,
+  DELETE_IP_INIT,
+  DELETE_IP_SUCCESS,
+  DELETE_IP_FAILURE,
+  GET_IP_INIT,
+  GET_IP_SUCCESS,
+  GET_IP_FAILURE,
+  CREATE_IP_INIT,
+  CREATE_IP_SUCCESS,
+  CREATE_IP_FAILURE,
+  GET_TOPUSER_INIT,
+  GET_TOPUSER_SUCCESS,
+  GET_TOPUSER_FAILURE,
 } from "../types";
 
 interface LoginAttempt {
@@ -83,9 +95,10 @@ interface DashState {
   post: null;
   accounts: any;
   notifications: any;
-  urls: Urls[],
-  currentUrl:any;
-
+  urls: Urls[];
+  currentUrl: any;
+  ips: any;
+  topUsers: any;
 }
 
 const initialState: DashState = {
@@ -101,9 +114,10 @@ const initialState: DashState = {
   notifications: [],
   totalAccounts: 0,
   urls: [],
+  ips: [],
   currentUrl: null,
+  topUsers: [],
 };
-
 
 export const dashReducer = (
   state = initialState,
@@ -344,110 +358,184 @@ export const dashReducer = (
         error: action.payload,
       };
 
-      case CREATE_URL_INIT:
-        return {
-          ...state,
-          loading: true,
-          error: null,
-        };
-      case CREATE_URL_SUCCESS:
-        return {
-          ...state,
-          urls: [...state.urls, action.payload],
-          loading: false,
-        };
-      case CREATE_URL_FAILURE:
-        return {
-          ...state,
-          loading: false,
-          error: action.payload,
-        };
-  
-      // Get all URLs
-      case GET_URLS_INIT:
-        return {
-          ...state,
-          loading: true,
-          error: null,
-        };
-      case GET_URLS_SUCCESS:
-        return {
-          ...state,
-          urls: action.payload,
-          loading: false,
-        };
-      case GET_URLS_FAILURE:
-        return {
-          ...state,
-          loading: false,
-          error: action.payload,
-        };
-  
-      // Get a single URL by ID
-      case GET_URL_INIT:
-        return {
-          ...state,
-          loading: true,
-          error: null,
-        };
-      case GET_URL_SUCCESS:
-        return {
-          ...state,
-          currentUrl: action.payload,
-          loading: false,
-        };
-      case GET_URL_FAILURE:
-        return {
-          ...state,
-          loading: false,
-          error: action.payload,
-        };
-  
-      // Update URL
-      case UPDATE_URL_INIT:
-        return {
-          ...state,
-          loading: true,
-          error: null,
-        };
-      case UPDATE_URL_SUCCESS:
-        return {
-          ...state,
-          urls: state.urls.map((url) =>
-            url._id === action.payload._id ? action.payload : url
-          ),
-          loading: false,
-        };
-      case UPDATE_URL_FAILURE:
-        return {
-          ...state,
-          loading: false,
-          error: action.payload,
-        };
-  
-      // Delete URL
-      case DELETE_URL_INIT:
-        return {
-          ...state,
-          loading: true,
-          error: null,
-        };
-      case DELETE_URL_SUCCESS:
-        return {
-          ...state,
-          urls: state.urls.filter((url) => url._id !== action.payload.url._id),
-          loading: false,
-        };
-      case DELETE_URL_FAILURE:
-        return {
-          ...state,
-          loading: false,
-          error: action.payload,
-        };
+    case CREATE_URL_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case CREATE_URL_SUCCESS:
+      return {
+        ...state,
+        urls: [...state.urls, action.payload],
+        loading: false,
+      };
+    case CREATE_URL_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    // Get all URLs
+    case GET_URLS_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case GET_URLS_SUCCESS:
+      return {
+        ...state,
+        urls: action.payload,
+        loading: false,
+      };
+    case GET_URLS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    // Get a single URL by ID
+    case GET_URL_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case GET_URL_SUCCESS:
+      return {
+        ...state,
+        currentUrl: action.payload,
+        loading: false,
+      };
+    case GET_URL_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    // Update URL
+    case UPDATE_URL_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case UPDATE_URL_SUCCESS:
+      return {
+        ...state,
+        urls: state.urls.map((url) =>
+          url._id === action.payload._id ? action.payload : url
+        ),
+        loading: false,
+      };
+    case UPDATE_URL_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    // Delete URL
+    case DELETE_URL_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case DELETE_URL_SUCCESS:
+      return {
+        ...state,
+        urls: state.urls.filter((url) => url._id !== action.payload.url._id),
+        loading: false,
+      };
+    case DELETE_URL_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case CREATE_IP_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case CREATE_IP_SUCCESS:
+      return {
+        ...state,
+        ips: [...state.ips, action.payload],
+        loading: false,
+      };
+    case CREATE_IP_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    // Get all ips
+    case GET_IP_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case GET_IP_SUCCESS:
+      return {
+        ...state,
+        ips: action.payload,
+        loading: false,
+      };
+    case GET_IP_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case DELETE_IP_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case DELETE_IP_SUCCESS:
+      return {
+        ...state,
+        ips: state.ips.filter((ip: any) => ip._id !== action.payload.ip._id),
+        loading: false,
+      };
+    case DELETE_IP_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case GET_TOPUSER_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case GET_TOPUSER_SUCCESS:
+      return {
+        ...state,
+        topUsers: action.payload,
+        loading: false,
+      };
+    case GET_TOPUSER_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
 
     default:
       return state;
   }
-  
-  
 };

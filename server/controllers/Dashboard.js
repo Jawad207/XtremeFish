@@ -6,6 +6,8 @@ import Notification from "../models/notification.js";
 import { getCountryFromIp } from "../helper/index.js";
 import bcrypt from "bcryptjs";
 import Url from "../models/Url.js";
+import IpBlock from "../models/IpBlock.js";
+
 // Sign-Up Function
 const getAllUser = async (req, res) => {
   try {
@@ -210,8 +212,7 @@ const getAccounts = async (req, res) => {
     const accounts = await Account.find({ userId }).skip(skip).limit(limit);
 
     const totalAccounts = await Account.countDocuments({ userId });
-    const total = totalAccounts / limit
-    console.log('total bro ', Math.ceil(total))
+    const total = totalAccounts / limit;
     return res.status(200).json({
       accounts: accounts,
       totalPages: Math.ceil(totalAccounts / limit), // Calculate total pages
@@ -375,7 +376,7 @@ const deleteAccount = async (req, res) => {
 
     // Delete the account
     await Account.findByIdAndDelete(accountId);
-    await Account.deleteMany({_id: accountId});
+    await Account.deleteMany({ _id: accountId });
 
     // Delete associated notifications
     await Notification.deleteMany({ accountId });
@@ -385,7 +386,7 @@ const deleteAccount = async (req, res) => {
       account: account,
     });
   } catch (error) {
-    console.log('error in here', error)
+    console.log("error in here", error);
     res.status(500).json({ error: "Failed to delete account" });
   }
 };
@@ -470,6 +471,65 @@ const deleteUrl = async (req, res) => {
   }
 };
 
+const postIp = async (req, res) => {
+  try {
+    const { blockerId, ip } = req.body;
+    const newIp = await IpBlock.create({ blockerId, ip });
+    res.status(200).json({ ip: newIp });
+  } catch (error) {
+    res.status(500).json({ message: "Error creating ip", error });
+  }
+};
+const getIps = async (req, res) => {
+  try {
+    const ips = await IpBlock.find();
+    res.status(200).json(ips);
+  } catch (error) {
+    res.status(500).json({ message: "Error creating ip", error });
+  }
+};
+
+const deleteIp = async (req, res) => {
+  try {
+    const ip = await IpBlock.findByIdAndDelete(req?.query?.id);
+    if (!ip) {
+      return res.status(404).json({ message: "Ip not found" });
+    }
+    res.status(200).json({ message: "Ip deleted successfully", ip });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting ip", error });
+  }
+};
+
+async function getTopUsersWithMostAccounts(limit = 10) {
+    try {
+        const topUsers = await User.aggregate([
+            {
+                $lookup: {
+                    from: 'accounts', // Collection name for accounts
+                    localField: '_id',
+                    foreignField: 'userId',
+                    as: 'accounts',
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    userName: 1,
+                    numberOfAccounts: { $size: '$accounts' },
+                },
+            },
+            { $sort: { numberOfAccounts: -1 } },
+            { $limit: limit },
+        ]);
+
+        return topUsers;
+    } catch (error) {
+        console.error('Error fetching top users:', error);
+        throw error;
+    }
+}
+
 export const dashboard = {
   getAllUser,
   getAllLoginAttempts,
@@ -496,4 +556,8 @@ export const dashboard = {
   updateUrl,
   deleteUrl,
   getAccountsStatistics,
+  postIp,
+  getIps,
+  deleteIp,
+  getTopUsersWithMostAccounts
 };

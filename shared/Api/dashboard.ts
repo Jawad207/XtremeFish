@@ -49,6 +49,18 @@ import {
   DELETE_ACCOUNTS_INIT,
   DELETE_ACCOUNTS_FAILURE,
   DELETE_ACCOUNTS_SUCCESS,
+  CREATE_IP_FAILURE,
+  CREATE_IP_INIT,
+  CREATE_IP_SUCCESS,
+  DELETE_IP_FAILURE,
+  DELETE_IP_INIT,
+  DELETE_IP_SUCCESS,
+  GET_IP_FAILURE,
+  GET_IP_INIT,
+  GET_IP_SUCCESS,
+  GET_TOPUSER_INIT,
+  GET_TOPUSER_SUCCESS,
+  GET_TOPUSER_FAILURE,
 } from "../redux/types";
 
 export const getAlluserCount = async (dispatch: any) => {
@@ -453,7 +465,6 @@ export const createUrl = async (data: any, dispatch: any) => {
   }
 };
 
-
 export const getUrl = async (urlId: string, dispatch: any) => {
   try {
     dispatch({ type: GET_URL_INIT });
@@ -565,12 +576,140 @@ export const deleteUrl = async (data: any, dispatch: any) => {
         type: DELETE_URL_FAILURE,
         payload: error.response.data.message || "Error deleting URL",
       });
-      console.error("Delete URL failed:", error.response.data.message || "Error deleting URL");
+      console.error(
+        "Delete URL failed:",
+        error.response.data.message || "Error deleting URL"
+      );
       return error.response.data.message || "Error deleting URL";
     } else {
       console.error("Error:", error.message);
       dispatch({
         type: DELETE_URL_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const createIp = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: CREATE_IP_INIT });
+    const response = await apiClient.post("/dashboard/postIp", data); //data will be {blockerId: user?._id, ip: that user enter}
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: CREATE_IP_SUCCESS, payload: response.data });
+    }
+    return response.data.loginAttempts;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: CREATE_IP_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Login failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: CREATE_IP_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const getIps = async (dispatch: any) => {
+  try {
+    dispatch({ type: GET_IP_INIT });
+    const response = await apiClient.get(`/dashboard/getIps`);
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: GET_IP_SUCCESS, payload: response.data });
+    }
+    return response.data; // Return the ips for further use if needed
+  } catch (error: any) {
+    if (error.response) {
+      dispatch({
+        type: GET_IP_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Get ip failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_IP_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const deleteIp = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: DELETE_IP_INIT });
+    const response = await apiClient.delete("/dashboard/deleteIp", {
+      params: { id: data?.id },
+    });
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: DELETE_IP_SUCCESS, payload: response.data });
+    }
+    return response.data.loginAttempts; // or whatever relevant data you need
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: DELETE_IP_FAILURE,
+        payload: error.response.data.message || "Error deleting Ip",
+      });
+      console.error(
+        "Delete Ip failed:",
+        error.response.data.message || "Error deleting Ip"
+      );
+      return error.response.data.message || "Error deleting Ip";
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: DELETE_IP_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+
+export const getTopUser = async (dispatch: any) => {
+  try {
+    dispatch({ type: GET_TOPUSER_INIT });
+    const response = await apiClient.get(`/dashboard/getTopUsers`);
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: GET_TOPUSER_SUCCESS, payload: response.data });
+    }
+    return response.data; 
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_TOPUSER_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Get top users failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_TOPUSER_FAILURE,
         payload: error.message,
       });
       return error.message;
