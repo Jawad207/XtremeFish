@@ -306,6 +306,14 @@ export const MenuItems: any = [
         dirchange: false,
         title: "High Scores",
       },
+      {
+        path: "/dashboards/blocked-users",
+        type: "link",
+        active: false,
+        selected: false,
+        dirchange: false,
+        title: "Blocked Users",
+      },
     ],
   },
 

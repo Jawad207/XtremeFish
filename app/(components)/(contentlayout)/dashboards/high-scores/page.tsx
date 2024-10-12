@@ -1,15 +1,19 @@
 "use client";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
-import { Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Row } from "react-bootstrap";
 import { SquarePlus, Trash2, Pencil } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
+import { FaTrash } from "react-icons/fa";
 import moment from "moment";
+import { deleteAccounts } from "@/shared/Api/dashboard";
 import { getTopUser } from "@/shared/Api/dashboard";
 const page = () => {
-  const topUser = useSelector((state: any) => state.dash.topUsers);
+  const topUsers = useSelector((state: any) => state.dash.topUsers);
+  
+  const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
-  console.log(topUser);
+  console.log(topUsers)
   const dispatch = useDispatch();
   const fetchAccounts = async () => {
     return await getTopUser(dispatch);
@@ -17,28 +21,28 @@ const page = () => {
   useEffect(() => {
     fetchAccounts();
   }, []);
-  const [accounts, setaccounts] = useState([
-    {
-      _id: 1,
-      name: "Imran Ali",
-      accounts: 10,
-    },
-    {
-      _id: 2,
-      name: "Imran Ali",
-      accounts: 10,
-    },
-    {
-      _id: 3,
-      name: "Imran Ali",
-      accounts: 10,
-    },
-    {
-      _id: 4,
-      name: "Imran Ali",
-      accounts: 10,
-    },
-  ]);
+  const handleDeleteSelectedAccounts = async () => {
+    await Promise.all(
+      selectedAccounts.map((id) => deleteAccounts({ id }, dispatch))
+    );
+    setSelectedAccounts([]); // Clear selected accounts
+  };
+  const toggleSelectAccount = (accountId: string) => {
+    setSelectedAccounts((prevSelected) =>
+      prevSelected.includes(accountId)
+        ? prevSelected.filter((id) => id !== accountId)
+        : [...prevSelected, accountId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedAccounts.length === topUsers?.topUsers.length) {
+      setSelectedAccounts([]);
+    } else {
+      setSelectedAccounts(topUsers?.topUsers.map((account: any) => account._id));
+    }
+  };
+
   return (
     <Fragment>
       <Seo title={"urls"} />
@@ -48,6 +52,18 @@ const page = () => {
             <Card.Header className="justify-content-between">
               <Card.Title>High Score</Card.Title>
               <div className="d-flex flex-wrap gap-2">
+              <div
+                    title="Delete selected logs"
+                    className="hover:text-red-500"
+                  >
+                    <Button
+                      className="btn-md bg-[#546dfe]"
+                      onClick={handleDeleteSelectedAccounts}
+                      disabled={selectedAccounts.length === 0}
+                    >
+                      <FaTrash size={14} className="hover:text-red-400" />
+                    </Button>
+                  </div>
                 {/* <div className="flex justify-between gap-2">
                     <button 
                       className="title:rounded-md"
@@ -82,16 +98,31 @@ const page = () => {
               <div className="table-responsive">
                 <table className="table text-nowrap">
                   <thead>
+                    <th>
+                      <input
+                        title="select all"
+                        className="mt-1"
+                        type="checkbox"
+                        checked={selectedAccounts.length === topUsers?.topUsers.length}
+                        onChange={toggleSelectAll}
+                      />
+                    </th>
                     <th>Name</th>
                     <th>Accounts</th>
-                    <th>Actions</th>
                   </thead>
                   <tbody>
-                    {accounts?.length > 0 &&
-                      accounts.map((account: any) => (
+                    {topUsers?.topUsers.length > 0 &&
+                      topUsers?.topUsers.map((account: any) => (
                         <tr key={account._id}>
-                          <td>{account.name}</td>
-                          <td>{account.accounts}</td>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedAccounts.includes(account._id)}
+                              onChange={() => toggleSelectAccount(account._id)}
+                            />
+                          </td>
+                          <td>{account.userName}</td>
+                          <td>{account.numberOfAccounts}</td>
                           {/* <td>
                                 <a href={url.description + `${user?._id}`} target="_blank">{url.description}</a>
                             </td> */}

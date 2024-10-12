@@ -475,7 +475,7 @@ const postIp = async (req, res) => {
   try {
     const { blockerId, ip } = req.body;
     const newIp = await IpBlock.create({ blockerId, ip });
-    res.status(200).json({ ip: newIp });
+    res.status(200).json({ newIp });
   } catch (error) {
     res.status(500).json({ message: "Error creating ip", error });
   }
