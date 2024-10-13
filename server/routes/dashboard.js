@@ -29,7 +29,7 @@ router.get("/editProfile", dashboard.editUserProfile);
 router.get("/getaccountstatistics", dashboard.getAccountsStatistics);
 router.post("/postIp", dashboard.postIp);
 router.get("/getIps", dashboard.getIps);
-router.post("/deleteIp", dashboard.deleteIp);
+router.delete("/deleteIp", dashboard.deleteIp);
 router.get("/getTopUsers", dashboard.getTopUsersWithMostAccounts);
 
 export default router;

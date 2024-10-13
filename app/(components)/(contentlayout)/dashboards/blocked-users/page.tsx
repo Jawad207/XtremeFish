@@ -1,18 +1,20 @@
 "use client";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
-import { Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Row } from "react-bootstrap";
 import { SquarePlus, Trash2, Pencil } from 'lucide-react';
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { deleteIp, getIps } from "@/shared/Api/dashboard";
 import Popup from "@/components/Popup";
+import { FaTrash } from "react-icons/fa";
 
 function Page() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [ipPopup, setIpPopup] = useState(false);
   const [ipVal, setIpVal] = useState("");
   const Ips = useSelector((state: any) => state.dash.ips);
+  const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
   // const User = useSelector((state: any) => state.dash);
   const dispatch = useDispatch();
 
@@ -30,6 +32,33 @@ console.log('ips in here brother', Ips)
   const filterIps = (ipToDelete: any) => {
     deleteIp({ id: ipToDelete?._id }, dispatch);
   };
+
+  const handleDeleteSelectedAccounts = async () => {
+    await Promise.all(
+      selectedAccounts.map((id) => deleteIp({ id }, dispatch))
+    );
+    setSelectedAccounts([]); // Clear selected accounts
+    // fetchAccounts(currentPage); // Refresh after deletion
+  };
+
+
+  
+  const toggleSelectAccount = (accountId: string) => {
+    setSelectedAccounts((prevSelected) =>
+      prevSelected.includes(accountId)
+        ? prevSelected.filter((id) => id !== accountId)
+        : [...prevSelected, accountId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedAccounts.length === Ips.length) {
+      setSelectedAccounts([]);
+    } else {
+      setSelectedAccounts(Ips.map((account: any) => account._id));
+    }
+  };
+
 
   const getAllIps = async () => {
     await getIps(dispatch);
@@ -56,6 +85,18 @@ console.log('ips in here brother', Ips)
                   >
                     <SquarePlus size={30} className="hover:text-blue-400" />
                   </button>
+                  <div
+                    title="Delete selected logs"
+                    className="hover:text-red-500"
+                  >
+                    <Button
+                      className="btn-md bg-[#546dfe]"
+                      onClick={handleDeleteSelectedAccounts}
+                      disabled={selectedAccounts.length === 0}
+                    >
+                      <FaTrash size={14} className="hover:text-red-400" />
+                    </Button>
+                  </div>
                   <Popup
                     ipPopup={ipPopup}
                     isOpen={isPopupOpen}
@@ -77,7 +118,15 @@ console.log('ips in here brother', Ips)
                 <table className="table text-nowrap">
                   <thead>
                     <tr>
-                      {/* <th>Blocker ID</th> */}
+                    <th>
+                        <input
+                          title="select all"
+                          className="mt-1"
+                          type="checkbox"
+                          checked={selectedAccounts.length === Ips.length}
+                          onChange={toggleSelectAll}
+                        />
+                      </th>
                       <th>IP Address</th>
                       <th>Date</th>
                       <th>Actions</th>
@@ -87,7 +136,13 @@ console.log('ips in here brother', Ips)
                     {Ips?.length &&
                       Ips?.map((item: any) => (
                         <tr key={item?._id}>
-                          {/* <td>{item?.blockerId}</td> */}
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedAccounts.includes(item._id)}
+                              onChange={() => toggleSelectAccount(item._id)}
+                            />
+                          </td>
                           {item?.ip&&<td>{item?.ip}</td>}
                           <td>
                             <div className="btn-list">
