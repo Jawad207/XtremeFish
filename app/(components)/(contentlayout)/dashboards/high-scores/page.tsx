@@ -13,7 +13,7 @@ const page = () => {
   
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
-  console.log(topUsers)
+  console.log(topUsers, 'topp users')
   const dispatch = useDispatch();
   const fetchAccounts = async () => {
     return await getTopUser(dispatch);

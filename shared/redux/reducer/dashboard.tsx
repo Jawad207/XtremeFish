@@ -468,7 +468,7 @@ export const dashReducer = (
     case CREATE_IP_SUCCESS:
       return {
         ...state,
-        ips: [...state.ips, action.payload],
+        ips: [...state.ips, action?.payload?.newIp],
         loading: false,
       };
     case CREATE_IP_FAILURE:

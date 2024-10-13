@@ -20,8 +20,7 @@ function Page() {
     setIsPopupOpen(true);
     setIpPopup(true);
   };
-
-  console.log(Ips)
+console.log('ips in here brother', Ips)
   // console.log(Ips[0].ip)
 
   const handleClosePopup = () => {
@@ -64,12 +63,12 @@ function Page() {
                     ipVal={ipVal}
                     setIpVal={setIpVal}
                   />
-                  <input
+                  {/* <input
                     className="form-control form-control-sm"
                     type="text"
                     placeholder="Search Here"
                     aria-label=".form-control-sm example"
-                  />
+                  /> */}
                 </div>
               </div>
             </Card.Header>
@@ -89,7 +88,7 @@ function Page() {
                       Ips?.map((item: any) => (
                         <tr key={item?._id}>
                           {/* <td>{item?.blockerId}</td> */}
-                          {/* {item?.ip&&<td>{item?.ip}</td>} */}
+                          {item?.ip&&<td>{item?.ip}</td>}
                           <td>
                             <div className="btn-list">
                               {moment(item?.createdAt).format(
