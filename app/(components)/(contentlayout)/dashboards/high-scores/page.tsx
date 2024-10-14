@@ -1,19 +1,19 @@
 "use client";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
-import { Button, Card, Col, Row } from "react-bootstrap";
-import { SquarePlus, Trash2, Pencil } from "lucide-react";
+import { Card, Col, Row } from "react-bootstrap";
+// import { SquarePlus, Trash2, Pencil } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import { FaTrash } from "react-icons/fa";
-import moment from "moment";
-import { deleteAccounts } from "@/shared/Api/dashboard";
+// import { FaTrash } from "react-icons/fa";
+// import moment from "moment";
+// import { deleteAccounts } from "@/shared/Api/dashboard";
 import { getTopUser } from "@/shared/Api/dashboard";
 const page = () => {
   const topUsers = useSelector((state: any) => state.dash.topUsers);
   
-  const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
+  // const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
-  console.log(topUsers, 'topp users')
+  console.log(topUsers)
   const dispatch = useDispatch();
   const fetchAccounts = async () => {
     return await getTopUser(dispatch);
@@ -21,28 +21,6 @@ const page = () => {
   useEffect(() => {
     fetchAccounts();
   }, []);
-  const handleDeleteSelectedAccounts = async () => {
-    await Promise.all(
-      selectedAccounts.map((id) => deleteAccounts({ id }, dispatch))
-    );
-    setSelectedAccounts([]); // Clear selected accounts
-  };
-  const toggleSelectAccount = (accountId: string) => {
-    setSelectedAccounts((prevSelected) =>
-      prevSelected.includes(accountId)
-        ? prevSelected.filter((id) => id !== accountId)
-        : [...prevSelected, accountId]
-    );
-  };
-
-  const toggleSelectAll = () => {
-    if (selectedAccounts.length === topUsers?.topUsers.length) {
-      setSelectedAccounts([]);
-    } else {
-      setSelectedAccounts(topUsers?.topUsers.map((account: any) => account._id));
-    }
-  };
-
   return (
     <Fragment>
       <Seo title={"urls"} />
@@ -52,7 +30,7 @@ const page = () => {
             <Card.Header className="justify-content-between">
               <Card.Title>High Score</Card.Title>
               <div className="d-flex flex-wrap gap-2">
-              <div
+                  {/* <div
                     title="Delete selected logs"
                     className="hover:text-red-500"
                   >
@@ -63,7 +41,7 @@ const page = () => {
                     >
                       <FaTrash size={14} className="hover:text-red-400" />
                     </Button>
-                  </div>
+                  </div> */}
                 {/* <div className="flex justify-between gap-2">
                     <button 
                       className="title:rounded-md"
@@ -98,7 +76,7 @@ const page = () => {
               <div className="table-responsive">
                 <table className="table text-nowrap">
                   <thead>
-                    <th>
+                    {/* <th>
                       <input
                         title="select all"
                         className="mt-1"
@@ -106,7 +84,7 @@ const page = () => {
                         checked={selectedAccounts.length === topUsers?.topUsers.length}
                         onChange={toggleSelectAll}
                       />
-                    </th>
+                    </th> */}
                     <th>Name</th>
                     <th>Accounts</th>
                   </thead>
@@ -114,13 +92,13 @@ const page = () => {
                     {topUsers?.topUsers.length > 0 &&
                       topUsers?.topUsers.map((account: any) => (
                         <tr key={account._id}>
-                          <td>
+                          {/* <td>
                             <input
                               type="checkbox"
                               checked={selectedAccounts.includes(account._id)}
                               onChange={() => toggleSelectAccount(account._id)}
                             />
-                          </td>
+                          </td> */}
                           <td>{account.userName}</td>
                           <td>{account.numberOfAccounts}</td>
                           {/* <td>
@@ -131,7 +109,7 @@ const page = () => {
                               {moment(url?.createdAt).format('ddd, MMM DD,YYYY')}
                             </div>
                             </td> */}
-                          <td>
+                          {/* <td>
                             <button
                               className="text-red-500"
                               // onClick={() => filterUrls(url)}
@@ -144,7 +122,7 @@ const page = () => {
                             >
                               <Pencil size={14} />
                             </button> */}
-                          </td>
+                          {/* </td> */}
                         </tr>
                       ))}
                   </tbody>

@@ -13,6 +13,7 @@ function Page() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [ipPopup, setIpPopup] = useState(false);
   const [ipVal, setIpVal] = useState("");
+  const [ips, setIps] = useState();
   const Ips = useSelector((state: any) => state.dash.ips);
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
   // const User = useSelector((state: any) => state.dash);
@@ -22,13 +23,13 @@ function Page() {
     setIsPopupOpen(true);
     setIpPopup(true);
   };
-console.log('ips in here brother', Ips)
+// console.log('ips in here brother', Ips)
   // console.log(Ips[0].ip)
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
-
+  console.log("ips: ",Ips)
   const filterIps = (ipToDelete: any) => {
     deleteIp({ id: ipToDelete?._id }, dispatch);
   };
@@ -63,6 +64,7 @@ console.log('ips in here brother', Ips)
   const getAllIps = async () => {
     await getIps(dispatch);
   };
+  
 
   useEffect(() => {
     getAllIps();
@@ -103,6 +105,8 @@ console.log('ips in here brother', Ips)
                     onClose={handleClosePopup}
                     ipVal={ipVal}
                     setIpVal={setIpVal}
+                    ips={ips}
+                    setIps={setIps}
                   />
                   {/* <input
                     className="form-control form-control-sm"
@@ -123,7 +127,7 @@ console.log('ips in here brother', Ips)
                           title="select all"
                           className="mt-1"
                           type="checkbox"
-                          checked={selectedAccounts.length === Ips.length}
+                          checked={selectedAccounts.length === Ips?.length}
                           onChange={toggleSelectAll}
                         />
                       </th>
@@ -133,7 +137,7 @@ console.log('ips in here brother', Ips)
                     </tr>
                   </thead>
                   <tbody>
-                    {Ips?.length &&
+                    {Ips?.length > 0 &&
                       Ips?.map((item: any) => (
                         <tr key={item?._id}>
                           <td>
@@ -143,7 +147,7 @@ console.log('ips in here brother', Ips)
                               onChange={() => toggleSelectAccount(item._id)}
                             />
                           </td>
-                          {item?.ip&&<td>{item?.ip}</td>}
+                          {<td>{item?.ip}</td>}
                           <td>
                             <div className="btn-list">
                               {moment(item?.createdAt).format(

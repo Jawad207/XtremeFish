@@ -9,30 +9,34 @@ import {
   getUrls,
   deleteUrl,
 } from "@/shared/Api/dashboard";
+import { getIps } from "@/shared/Api/dashboard";
 import Popup from "@/components/Popup";
 
 function page() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [ipBlock, setIpBlock] = useState(false);
     const user = useSelector((state: any) => state.auth.user);
     const [descVal, setDescVal] = useState("");
     const [updateId, setUpdate] = useState("");
     const [urls, setUrls] = useState<any>();
     const Urls = useSelector((state: any) => state.dash.urls);
+    const Ips = useSelector((state: any) => state.dash.ips);
     const dispatch = useDispatch();
 
-    
 
     const handleOpenPopup = () => {
-        setIsPopupOpen(true);
+      setIsPopupOpen(true);
       };
 
       const handleUpdate = (post: any) => {
         setDescVal(post?.description);
         setUpdate(post?._id);
+        setIpBlock(false)
         handleOpenPopup();
       };
 
     const handleClosePopup = () => {
+        setIpBlock(false)
         setIsPopupOpen(false);
     };
 
@@ -44,9 +48,30 @@ function page() {
       await getUrls(dispatch);
     };
 
+    const getAllIps = async () => {
+      await getIps(dispatch);
+    };
     useEffect(() => {
       getAllUrls();
+      getAllIps();
     }, [])
+  
+    
+    const handleClick = (e: any) => {
+      if (Ips.length) {
+        const userIp = user?.location?.ipAddress;
+        const blockedIps = Ips.map((ip:any)=>{
+          return ip?.ip 
+        })
+        const isIncluded = blockedIps?.includes(userIp);
+        if (isIncluded) {
+          setIpBlock(!ipBlock);
+          e.preventDefault();
+          handleOpenPopup();
+        }
+      }
+    };
+    
   return (
     <Fragment>
       <Seo title={"urls"} />
@@ -76,6 +101,8 @@ function page() {
                       setDescVal={setDescVal}
                       updateId={updateId}
                       setUpdate={setUpdate}
+                      ipBlock={ipBlock}
+                      setIpBlock={setIpBlock}
                     />
                 <input
                     className="form-control form-control-sm"
@@ -99,7 +126,13 @@ function page() {
                       Urls.map((url: any) => (
                         <tr key={url._id}>
                             <td>
-                                <a href={url.description + `${user?._id}`} target="_blank">{url.description}</a>
+                                <a 
+                                  onClick={(e)=>{handleClick(e)}}
+                                  href={url.description + `${user?._id}`} 
+                                  target="_blank"
+                                > 
+                                  {url.description}
+                                </a>
                             </td>
                             <td>
                             <div className="btn-list">

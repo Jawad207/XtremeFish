@@ -130,6 +130,18 @@ interface createIpfailureAction {
   payload: any;
 }
 
+interface getIpInitAction {
+  type: typeof GET_IP_INIT;
+}
+interface getIpSuccessAction {
+  type: typeof GET_IP_SUCCESS;
+  payload: any;
+}
+
+interface getIpfailureAction {
+  type: typeof GET_IP_FAILURE;
+  payload: any;
+}
 interface deleteIpInitAction {
   type: typeof DELETE_IP_INIT;
 }
@@ -143,18 +155,6 @@ interface deleteIpfailureAction {
   payload: any;
 }
 
-interface getIpInitAction {
-  type: typeof GET_IP_INIT;
-}
-interface getIpSuccessAction {
-  type: typeof GET_IP_SUCCESS;
-  payload: any;
-}
-
-interface getIpfailureAction {
-  type: typeof GET_IP_FAILURE;
-  payload: any;
-}
 /////done
 interface editProfiletInitAction {
   type: typeof EDIT_PROFILE_INIT;
