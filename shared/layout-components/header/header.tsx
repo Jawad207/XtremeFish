@@ -639,7 +639,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                 <div className="d-flex align-items-center">
                   <div className="me-xl-2 me-0">
                     <img
-                      src={user?.profileImage}
+                      src={user?.profileImage ?? "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"}
                       alt="img"
                       className="avatar avatar-sm avatar-rounded"
                     />

@@ -89,8 +89,8 @@ const page = () => {
                     <th>Accounts</th>
                   </thead>
                   <tbody>
-                    {topUsers?.topUsers.length > 0 &&
-                      topUsers?.topUsers.map((account: any) => (
+                    {topUsers?.topUsers?.length > 0 &&
+                      topUsers?.topUsers?.map((account: any) => (
                         <tr key={account._id}>
                           {/* <td>
                             <input
