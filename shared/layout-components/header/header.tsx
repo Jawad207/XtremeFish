@@ -1,9 +1,8 @@
 "use client";
 import Link from "next/link";
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { ThemeChanger } from "../../redux/action";
-import { connect, useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+
+import { connect, useSelector, useDispatch } from "react-redux";
 import store from "@/shared/redux/store";
 import {
   Button,
@@ -16,8 +15,13 @@ import { MenuItems } from "../sidebar/nav";
 import nextConfig from "@/next.config.mjs";
 import { LOGIN_FAILURE, LOGOUT } from "@/shared/redux/types";
 import { userInfo } from "os";
-import { deleteNotifications, getNotifications } from "@/shared/Api/dashboard";
-const Header = ({ local_varaiable, ThemeChanger }: any) => {
+import {
+  deleteNotifications,
+  getNotifications,
+  ThemeChanger,
+} from "@/shared/Api/dashboard";
+const Header = ({ local_varaiable }: any) => {
+  const dispatch = useDispatch();
   let { basePath } = nextConfig;
   const theme = useSelector((state: any) => state.theme);
   const notifications = useSelector((state: any) => state.dash.notifications);
@@ -35,7 +39,6 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
     setProfileShow(false); // Close the dropdown
   };
 
-  const dispatch = useDispatch();
   useEffect(() => {
     setNotification(notifications);
   }, [notifications]);
@@ -77,9 +80,9 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
 
   ///handleResize
   function menuClose() {
-    const theme = store.getState();
+    const { theme } = store.getState();
     if (window.innerWidth <= 992) {
-      ThemeChanger({ ...theme, toggled: "close" });
+      ThemeChanger({ ...theme, toggled: "close" }, dispatch);
     }
   }
 
@@ -108,53 +111,73 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
         switch (verticalStyle) {
           // closed
           case "closed":
-            ThemeChanger({ ...theme, dataNavStyle: "" });
+            console.log("this one got called");
+            ThemeChanger({ ...theme, dataNavStyle: "" }, dispatch);
             if (theme.toggled === "close-menu-close") {
-              ThemeChanger({ ...theme, toggled: "" });
+              console.log("this one got called if");
+              ThemeChanger({ ...theme, toggled: "" }, dispatch);
             } else {
-              ThemeChanger({ ...theme, toggled: "close-menu-close" });
+              ThemeChanger({ ...theme, toggled: "close-menu-close" }, dispatch);
             }
             break;
           // icon-overlay
           case "overlay":
-            ThemeChanger({ ...theme, dataNavStyle: "" });
+            console.log("this one got called");
+            ThemeChanger({ ...theme, dataNavStyle: "" }, dispatch);
             if (theme.toggled === "icon-overlay-close") {
-              ThemeChanger({ ...theme, toggled: "", iconOverlay: "" });
+              ThemeChanger(
+                { ...theme, toggled: "", iconOverlay: "" },
+                dispatch
+              );
             } else {
               if (window.innerWidth >= 992) {
-                ThemeChanger({
-                  ...theme,
-                  toggled: "icon-overlay-close",
-                  iconOverlay: "",
-                });
+                ThemeChanger(
+                  {
+                    ...theme,
+                    toggled: "icon-overlay-close",
+                    iconOverlay: "",
+                  },
+                  dispatch
+                );
               }
             }
             break;
           // icon-text
           case "icontext":
-            ThemeChanger({ ...theme, dataNavStyle: "" });
+            console.log("this one got called");
+            ThemeChanger({ ...theme, dataNavStyle: "" }, dispatch);
             if (theme.toggled === "icon-text-close") {
-              ThemeChanger({ ...theme, toggled: "" });
+              ThemeChanger({ ...theme, toggled: "" }, dispatch);
             } else {
-              ThemeChanger({ ...theme, toggled: "icon-text-close" });
+              ThemeChanger({ ...theme, toggled: "icon-text-close" }, dispatch);
             }
             break;
           // doublemenu
           case "doublemenu":
-            ThemeChanger({ ...theme, dataNavStyle: "" });
-            ThemeChanger({ ...theme, dataNavStyle: "" });
+            console.log("this one got called");
+            ThemeChanger({ ...theme, dataNavStyle: "" }, dispatch);
+            ThemeChanger({ ...theme, dataNavStyle: "" }, dispatch);
             if (theme.toggled === "double-menu-open") {
-              ThemeChanger({ ...theme, toggled: "double-menu-close" });
+              ThemeChanger(
+                { ...theme, toggled: "double-menu-close" },
+                dispatch
+              );
             } else {
               let sidemenu = document.querySelector(".side-menu__item.active");
               if (sidemenu) {
-                ThemeChanger({ ...theme, toggled: "double-menu-open" });
+                ThemeChanger(
+                  { ...theme, toggled: "double-menu-open" },
+                  dispatch
+                );
                 if (sidemenu.nextElementSibling) {
                   sidemenu.nextElementSibling.classList.add(
                     "double-menu-active"
                   );
                 } else {
-                  ThemeChanger({ ...theme, toggled: "double-menu-close" });
+                  ThemeChanger(
+                    { ...theme, toggled: "double-menu-close" },
+                    dispatch
+                  );
                   // ThemeChanger({ ...theme, "toggled": "" });
                 }
               }
@@ -163,57 +186,82 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
             break;
           // detached
           case "detached":
+            console.log("this one got called");
             if (theme.toggled === "detached-close") {
-              ThemeChanger({ ...theme, toggled: "", iconOverlay: "" });
+              ThemeChanger(
+                { ...theme, toggled: "", iconOverlay: "" },
+                dispatch
+              );
             } else {
-              ThemeChanger({
-                ...theme,
-                toggled: "detached-close",
-                iconOverlay: "",
-              });
+              ThemeChanger(
+                {
+                  ...theme,
+                  toggled: "detached-close",
+                  iconOverlay: "",
+                },
+                dispatch
+              );
             }
 
             break;
 
           // default
           case "default":
-            ThemeChanger({ ...theme, toggled: "" });
+            console.log("this one got called default");
+            ThemeChanger({ ...theme, toggled: "" }, dispatch);
         }
         switch (navStyle) {
           case "menu-click":
+            console.log("this one got called");
             if (theme.toggled === "menu-click-closed") {
-              ThemeChanger({ ...theme, toggled: "" });
+              ThemeChanger({ ...theme, toggled: "" }, dispatch);
             } else {
-              ThemeChanger({ ...theme, toggled: "menu-click-closed" });
+              ThemeChanger(
+                { ...theme, toggled: "menu-click-closed" },
+                dispatch
+              );
             }
             break;
           // icon-overlay
           case "menu-hover":
+            console.log("this one got called");
             if (theme.toggled === "menu-hover-closed") {
-              ThemeChanger({ ...theme, toggled: "" });
+              ThemeChanger({ ...theme, toggled: "" }, dispatch);
             } else {
-              ThemeChanger({ ...theme, toggled: "menu-hover-closed" });
+              ThemeChanger(
+                { ...theme, toggled: "menu-hover-closed" },
+                dispatch
+              );
             }
             break;
           case "icon-click":
+            console.log("this one got called");
             if (theme.toggled === "icon-click-closed") {
-              ThemeChanger({ ...theme, toggled: "" });
+              ThemeChanger({ ...theme, toggled: "" }, dispatch);
             } else {
-              ThemeChanger({ ...theme, toggled: "icon-click-closed" });
+              ThemeChanger(
+                { ...theme, toggled: "icon-click-closed" },
+                dispatch
+              );
             }
             break;
           case "icon-hover":
+            console.log("this one got called");
             if (theme.toggled === "icon-hover-closed") {
-              ThemeChanger({ ...theme, toggled: "" });
+              ThemeChanger({ ...theme, toggled: "" }, dispatch);
             } else {
-              ThemeChanger({ ...theme, toggled: "icon-hover-closed" });
+              ThemeChanger(
+                { ...theme, toggled: "icon-hover-closed" },
+                dispatch
+              );
             }
             break;
         }
       }
     } else {
       if (theme.toggled === "close") {
-        ThemeChanger({ ...theme, toggled: "open" });
+        console.log("this one got called");
+        ThemeChanger({ ...theme, toggled: "open" }, dispatch);
 
         setTimeout(() => {
           if (theme.toggled == "open") {
@@ -243,7 +291,8 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
           });
         }, 100);
       } else {
-        ThemeChanger({ ...theme, toggled: "close" });
+        console.log("this one got called final");
+        ThemeChanger({ ...theme, toggled: "close" }, dispatch);
       }
     }
   };
@@ -345,8 +394,8 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
             {/* End::header-element */}
 
             {/* Start::header-element */}
-            <div
-              className="header-element mx-lg-0 mx-2"
+            {/* <div
+              className="header-element mx-lg-0 mx-2 cursor-pointer "
               onClick={() => toggleSidebar()}
             >
               <Link
@@ -358,37 +407,10 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
               >
                 <span></span>
               </Link>
-            </div>
-            {/* End::header-element */}
-
-            {/* Start::header-element */}
-            {/* <div className="header-element autoComplete_wrapper header-search d-md-block d-none my-auto"> */}
-              {/* Start::header-link */}
-              {/* <input
-                type="text"
-                className="header-search-bar form-control"
-                id="header-search"
-                placeholder="Search for Results..."
-                onClick={() => {}}
-                autoComplete="off"
-                autoCapitalize="off"
-              />
-              <Link
-                scroll={false}
-                href="#!"
-                className="header-search-icon border-0"
-              >
-                <i className="bi bi-search"></i>
-              </Link>
             </div> */}
-
-            {/* End::header-element */}
           </div>
-          {/* End::header-content-left */}
 
-          {/* Start::header-content-right */}
           <ul className="header-content-right">
-            {/* Start::header-element */}
             <li className="header-element d-md-none d-block">
               <Link
                 onClick={handleShow}
@@ -401,48 +423,6 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                 <i className="bi bi-search header-link-icon lh-1"></i>
               </Link>
             </li>
-
-            {/* <li className="header-element header-theme-mode">
-              <Link
-                scroll={false}
-                href="#!"
-                className="header-link layout-setting"
-                onClick={() => ToggleDark()}
-              >
-                <span className="light-layout">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="header-link-icon"
-                    width="32"
-                    height="32"
-                    fill="#000000"
-                    viewBox="0 0 256 256"
-                  >
-                    <path
-                      d="M98.31,130.38ZM94.38,17.62h0A64.06,64.06,0,0,1,17.62,94.38h0A64.12,64.12,0,0,0,55,138.93h0a44.08,44.08,0,0,1,43.33-8.54,68.13,68.13,0,0,1,45.47-47.32l.15,0c0-1,.07-2,.07-3A64,64,0,0,0,94.38,17.62Z"
-                      opacity="0.1"
-                    ></path>
-                    <path d="M164,72a76.45,76.45,0,0,0-12.36,1A71.93,71.93,0,0,0,96.17,9.83a8,8,0,0,0-9.59,9.58A56.45,56.45,0,0,1,88,32,56.06,56.06,0,0,1,32,88a56.45,56.45,0,0,1-12.59-1.42,8,8,0,0,0-9.59,9.59,72.22,72.22,0,0,0,32.29,45.06A52,52,0,0,0,84,224h80a76,76,0,0,0,0-152ZM29.37,104c.87,0,1.75,0,2.63,0a72.08,72.08,0,0,0,72-72c0-.89,0-1.78,0-2.67a55.63,55.63,0,0,1,32,48,76.28,76.28,0,0,0-43,43.4A52,52,0,0,0,54,129.59,56.22,56.22,0,0,1,29.37,104ZM164,208H84a36,36,0,1,1,4.78-71.69c-.37,2.37-.63,4.79-.77,7.23a8,8,0,0,0,16,.92,58.91,58.91,0,0,1,1.88-11.81c0-.16.09-.32.12-.48A60.06,60.06,0,1,1,164,208Z"></path>
-                  </svg>
-                </span>
-                <span className="dark-layout">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="header-link-icon"
-                    width="32"
-                    height="32"
-                    fill="#000000"
-                    viewBox="0 0 256 256"
-                  >
-                    <path
-                      d="M131.84,84.41v0a68.22,68.22,0,0,0-41.65,46v-.11a44.08,44.08,0,0,0-38.54,5h0a48,48,0,1,1,80.19-50.94Z"
-                      opacity="0.1"
-                    ></path>
-                    <path d="M156,72a76.2,76.2,0,0,0-20.26,2.73,55.63,55.63,0,0,0-9.41-11.54l9.51-13.57a8,8,0,1,0-13.11-9.18L113.22,54A55.9,55.9,0,0,0,88,48c-.58,0-1.16,0-1.74,0L83.37,31.71a8,8,0,1,0-15.75,2.77L70.5,50.82A56.1,56.1,0,0,0,47.23,65.67L33.61,56.14a8,8,0,1,0-9.17,13.11L38,78.77A55.55,55.55,0,0,0,32,104c0,.57,0,1.15,0,1.72L15.71,108.6a8,8,0,0,0,1.38,15.88,8.24,8.24,0,0,0,1.39-.12l16.32-2.88a55.74,55.74,0,0,0,5.86,12.42A52,52,0,0,0,76,224h80a76,76,0,0,0,0-152ZM48,104a40,40,0,0,1,72.54-23.24,76.26,76.26,0,0,0-35.62,40,52.14,52.14,0,0,0-31,4.17A40,40,0,0,1,48,104ZM156,208H76a36,36,0,1,1,4.78-71.69c-.37,2.37-.63,4.79-.77,7.23a8,8,0,0,0,16,.92,58.91,58.91,0,0,1,1.88-11.81c0-.16.09-.32.12-.48A60.06,60.06,0,1,1,156,208Z"></path>
-                  </svg>
-                </span>
-              </Link>
-            </li> */}
 
             <Dropdown
               className="header-element notifications-dropdown d-xl-block d-none dropdown"
@@ -495,8 +475,8 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                   className="list-unstyled mb-0"
                   id="header-notification-scroll"
                   style={{
-                    maxHeight: '300px',  // Adjust the height as needed
-                    overflowY: 'auto'    // Enable vertical scrolling
+                    maxHeight: "300px", // Adjust the height as needed
+                    overflowY: "auto", // Enable vertical scrolling
                   }}
                 >
                   {notification?.map((idx: any, index: any) => (
@@ -572,12 +552,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                 </div>
               </Dropdown.Menu>
             </Dropdown>
-
-            {/* End::header-element */}
-
-            {/* Start::header-element */}
             <li className="header-element header-fullscreen">
-              {/* Start::header-link */}
               <Link
                 scroll={false}
                 // onclick="openFullscreen();"
@@ -617,15 +592,11 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                   </svg>
                 )}
               </Link>
-              {/* End::header-link */}
             </li>
-            {/* End::header-element */}
-
-            {/* Start::header-element */}
             <Dropdown
               className="header-element dropdown custom-dropdown"
-              show={profileShow} // Control the visibility with state
-              onToggle={handleToggle} // Toggle visibility on click
+              show={profileShow}
+              onToggle={handleToggle}
             >
               <Dropdown.Toggle
                 variant=""
@@ -634,12 +605,15 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                 id="mainHeaderProfile"
                 data-bs-auto-close="outside"
                 aria-expanded={show}
-                onClick={handleToggle} // Toggle the dropdown manually
+                onClick={handleToggle}
               >
                 <div className="d-flex align-items-center">
                   <div className="me-xl-2 me-0">
                     <img
-                      src={user?.profileImage ?? "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"}
+                      src={
+                        user?.profileImage ??
+                        "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
+                      }
                       alt="img"
                       className="avatar avatar-sm avatar-rounded"
                     />
@@ -659,7 +633,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                   <Link
                     className="dropdown-item d-flex align-items-center"
                     href="/dashboards/profile"
-                    onClick={handleDropdownClose} // Close the dropdown on link click
+                    onClick={handleDropdownClose}
                   >
                     <i className="ti ti-user me-2 fs-18 text-primary"></i>
                     Profile
@@ -669,7 +643,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                   <Link
                     className="dropdown-item d-flex align-items-center"
                     href="/dashboards/edit-profile"
-                    onClick={handleDropdownClose} // Close the dropdown on link click
+                    onClick={handleDropdownClose}
                   >
                     <i className="ti ti-settings me-2 fs-18 text-orange"></i>
                     Settings
@@ -680,7 +654,7 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                     className="dropdown-item d-flex align-items-center cursor-pointer"
                     onClick={() => {
                       logOut();
-                      handleDropdownClose(); // Close the dropdown after logout
+                      handleDropdownClose();
                     }}
                   >
                     <i className="ti ti-logout me-2 fs-18 text-warning"></i>Log
@@ -689,11 +663,8 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
                 </li>
               </Dropdown.Menu>
             </Dropdown>
-            {/* End::header-element */}
 
-            {/* Start::header-element */}
             <li className="header-element">
-              {/* Start::header-link|switcher-icon */}
               <Link
                 scroll={false}
                 href="#!"
@@ -759,7 +730,4 @@ const Header = ({ local_varaiable, ThemeChanger }: any) => {
   );
 };
 
-const mapStateToProps = (state: any) => ({
-  local_varaiable: state,
-});
-export default connect(mapStateToProps, { ThemeChanger })(Header);
+export default Header;

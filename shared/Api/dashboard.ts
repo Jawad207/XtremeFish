@@ -78,7 +78,7 @@ export const getAlluserCount = async (dispatch: any) => {
     if (response.status === 200) {
       dispatch({ type: GET_COUNT_SUCCESS, payload: response.data });
     }
-    return response?.data?.TotalUser;
+    return response?.data;
   } catch (error: any) {
     // Handle server or network errors
     if (error.response) {
@@ -220,6 +220,12 @@ export const deleteAccounts = async (data: any, dispatch: any) => {
     }
   }
 };
+
+export const ThemeChanger = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: "Theme_Changer", payload: data });
+  } catch (error) {}
+};
 export const getAccounts = async (
   userId: any,
   page: number,
@@ -237,15 +243,15 @@ export const getAccounts = async (
     });
 
     if (response.status === 200) {
-      const { accounts, accountsCount, totalPages } = response.data;
+      const { accounts, accountsCount, totalPages, percentageChange } = response.data;
 
       // Dispatch success with payload containing accounts and pagination info
       dispatch({
         type: GET_ACCOUNTS_SUCCESS,
-        payload: { accounts, accountsCount, currentPage: page },
+        payload: { accounts, accountsCount, currentPage: page,  },
       });
 
-      return { accounts, totalAccounts: accountsCount, totalPages }; // Return necessary data
+      return { accounts, totalAccounts: accountsCount, totalPages, percentageChange }; // Return necessary data
     }
   } catch (error: any) {
     // Handle server or network errors
@@ -718,7 +724,6 @@ export const deleteIp = async (data: any, dispatch: any) => {
   }
 };
 
-
 export const getTopUser = async (dispatch: any) => {
   try {
     dispatch({ type: GET_TOPUSER_INIT });
@@ -729,7 +734,7 @@ export const getTopUser = async (dispatch: any) => {
       dispatch({ type: GET_TOPUSER_SUCCESS, payload: response.data });
     }
 
-    return response.data; 
+    return response.data;
   } catch (error: any) {
     // Handle server or network errors
     if (error.response) {
@@ -757,10 +762,13 @@ export const getAccountsStatistics = async (dispatch: any) => {
 
     // If the request was successful
     if (response.status === 200) {
-      dispatch({ type: GET_ACCOUNT_STATISTICS_SUCCESS, payload: response.data });
+      dispatch({
+        type: GET_ACCOUNT_STATISTICS_SUCCESS,
+        payload: response.data,
+      });
     }
 
-    return response.data; 
+    return response.data;
   } catch (error: any) {
     // Handle server or network errors
     if (error.response) {

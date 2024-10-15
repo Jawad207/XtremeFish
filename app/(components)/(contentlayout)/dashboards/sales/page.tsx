@@ -11,7 +11,7 @@ import {
   deletePost,
   getAccounts,
   getTodayuserCount,
-  getAccountsStatistics
+  getAccountsStatistics,
 } from "@/shared/Api/dashboard";
 import moment from "moment";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -26,8 +26,14 @@ import { SquarePlus, Trash2, Pencil } from "lucide-react";
 const Sales = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
-  const {posts, totalAccounts, todaysCount, account_stats} = useSelector((state: any) => state.dash)
+  const { posts, totalAccounts, todaysCount, account_stats } = useSelector(
+    (state: any) => state.dash
+  );
   const [allCounts, setAllcounts] = useState<number>(0);
+  const [percentage, setPercentage] = useState<any>({
+    totalPercentage: 0,
+    accountPercentage: 0,
+  });
   const [userName, setUserName] = useState<string>("");
   const [loginAttempt, setLoginAttempts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,6 +57,10 @@ const Sales = () => {
   // Fetch accounts with pagination
   const fetchAccounts = async (page: number) => {
     const response = await getAccounts(auth?._id, page, 10, dispatch);
+    setPercentage({
+      ...percentage,
+      accountPercentage: response?.percentageChange,
+    });
   };
 
   const handleOpenPopup = () => {
@@ -78,8 +88,12 @@ const Sales = () => {
   }, [searchQuery, loginAttempt]);
 
   const getAllusersCount = async () => {
-    const allUser = await getAlluserCount(dispatch);
-    setAllcounts(allUser ?? 0);
+    const { TotalUser, PercentageChange } = await getAlluserCount(dispatch);
+    setAllcounts(TotalUser ?? 0);
+    setPercentage({
+      ...percentage,
+      totalPercentage: PercentageChange,
+    });
   };
   const getAllPosts = async () => {
     await getPosts(dispatch);
@@ -89,8 +103,8 @@ const Sales = () => {
       { id: auth?._id, page: currentPage, limit: recordsPerPage },
       dispatch
     );
-    await getTodayuserCount(dispatch)
-     await getAccountsStatistics(dispatch)
+    await getTodayuserCount(dispatch);
+    await getAccountsStatistics(dispatch);
   };
   useEffect(() => {
     getAllusersCount();
@@ -109,7 +123,6 @@ const Sales = () => {
   useEffect(() => {
     getAllLoginAttempts();
     setUserName(auth?.userName);
-
   }, [auth, currentPage]);
 
   const handlePageChange = (page: any) => {
@@ -138,7 +151,7 @@ const Sales = () => {
       <Row>
         <Col xxl={3} xl={3} lg={6} md={6} sm={6} className="col-12">
           <Card className="custom-card">
-            <Card.Body className="p-4">
+            <Card.Body className="p-4 h-[170px]">
               <div className="d-flex align-items-start justify-content-between">
                 <div>
                   <div>
@@ -147,7 +160,7 @@ const Sales = () => {
                   </div>
                   <span className="text-success me-2 fw-medium d-inline-block">
                     <i className="ti ti-trending-up fs-5 align-middle me-1 d-inline-block"></i>
-                    0.45%
+                    {percentage?.totalPercentage}%
                   </span>
                   <span className="text-muted">Since last month</span>
                 </div>
@@ -174,7 +187,7 @@ const Sales = () => {
         </Col>
         <Col xxl={3} xl={3} lg={6} md={6} sm={6} className="col-12">
           <Card className="custom-card main-card">
-            <Card.Body className="p-4">
+            <Card.Body className="p-4 h-[170px]">
               <div className="d-flex align-items-start justify-content-between">
                 <div>
                   <div>
@@ -183,7 +196,7 @@ const Sales = () => {
                   </div>
                   <span className="text-success me-2 fw-medium d-inline-block">
                     <i className="ti ti-trending-up fs-5 align-middle me-1 d-inline-block"></i>
-                    0.18%
+                    {percentage?.accountPercentage}%
                   </span>
                   <span className="text-muted">than last month</span>
                 </div>
@@ -210,18 +223,13 @@ const Sales = () => {
         </Col>
         <Col xxl={3} xl={3} lg={6} md={6} sm={6} className="col-12">
           <Card className="custom-card main-card">
-            <Card.Body className="p-4">
+            <Card.Body className="p-4 h-[170px]">
               <div className="d-flex align-items-start justify-content-between">
                 <div>
                   <div>
                     <span className="d-block mb-2">Last Active</span>
                     <h5 className="mb-4 fs-4">{todaysCount}</h5>
                   </div>
-                  <span className="text-success me-2 fw-medium d-inline-block">
-                    <i className="ti ti-trending-up fs-5 align-middle me-1 d-inline-block"></i>
-                    0.18%
-                  </span>
-                  <span className="text-muted">than last month</span>
                 </div>
                 <div>
                   <div className="main-card-icon secondary">
@@ -316,7 +324,7 @@ const Sales = () => {
               <div id="sales-statistics">
                 <ReactApexChart
                   options={Salesdata.Statistics2.options}
-                  series={[{name: 'Accounts', data: account_stats}]}
+                  series={[{ name: "Accounts", data: account_stats }]}
                   type="line"
                   width={"100%"}
                   height={300}

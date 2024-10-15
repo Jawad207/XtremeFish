@@ -31,10 +31,10 @@ export const Themereducer = (state = initialState, action: any) => {
   let { type, payload } = action;
 
   switch (type) {
-    case "ThemeChanger":
+    case "Theme_Changer":
+      console.log("reducer hitted", payload, 'bro');
       state = payload;
       return state;
-      break;
 
     default:
       return state;

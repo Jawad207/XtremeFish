@@ -9,15 +9,53 @@ import Url from "../models/Url.js";
 import IpBlock from "../models/IpBlock.js";
 import moment from "moment";
 
-// Sign-Up Function
 const getAllUser = async (req, res) => {
   try {
-    const Alluser = await User.find().countDocuments();
-    res.status(200).json({ TotalUser: Alluser });
+    const currentDate = new Date();
+    const currentMonthStart = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1
+    );
+    const lastMonthStart = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() - 1,
+      1
+    );
+    const lastMonthEnd = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      0
+    );
+
+    const totalUsers = await User.countDocuments();
+
+    const thisMonthUsers = await User.countDocuments({
+      createdAt: { $gte: currentMonthStart },
+    });
+
+    const lastMonthUsers = await User.countDocuments({
+      createdAt: { $gte: lastMonthStart, $lt: lastMonthEnd },
+    });
+
+    let percentageChange = 0;
+    if (lastMonthUsers > 0) {
+      percentageChange =
+        ((thisMonthUsers - lastMonthUsers) / lastMonthUsers) * 100;
+    } else {
+      percentageChange = thisMonthUsers > 0 ? 100 : 0;
+    }
+
+    // Send the response
+    res.status(200).json({
+      TotalUser: totalUsers,
+      PercentageChange: percentageChange.toFixed(2), // Format to 2 decimal places
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error getting user", error });
+    res.status(500).json({ message: "Error getting user statistics", error });
   }
 };
+
 const getTodayUsers = async (req, res) => {
   try {
     const startOfToday = new Date();
@@ -42,8 +80,8 @@ const getAllLoginAttempts = async (req, res) => {
 
     const allLoginAttempts = await LoginAttempt.find({ userId: id })
       .populate({ path: "userId", select: "email userName" })
-      .limit(limit * 1) // Limit the number of results
-      .skip((page - 1) * limit); // Skip to the appropriate page
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
 
     const totalRecords = await LoginAttempt.countDocuments({ userId: id });
 
@@ -171,7 +209,6 @@ const generateOtpAndSave = async (req, res) => {
 const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
 
-
   // Find the account with the email and otp
   const account = await Account.findOne({ email: email.trim(), otp });
 
@@ -189,7 +226,7 @@ const verifyBankPin = async (req, res) => {
   const { email, bankPin } = req.body;
 
   // Find the account with the email and otp
-  console.log('bank pin in here', email, bankPin)
+  console.log("bank pin in here", email, bankPin);
   const account = await Account.findOne({ email, bankPin });
   // console.log(account.email, account.bankPin)
   if (!account) {
@@ -230,14 +267,50 @@ const getAccounts = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
+    const currentDate = new Date();
+    const currentMonthStart = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1
+    );
+    const lastMonthStart = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() - 1,
+      1
+    );
+    const lastMonthEnd = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      0
+    );
+
     const accounts = await Account.find({ userId }).skip(skip).limit(limit);
 
     const totalAccounts = await Account.countDocuments({ userId });
-    const total = totalAccounts / limit;
+
+    const thisMonthAccounts = await Account.countDocuments({
+      userId,
+      createdAt: { $gte: currentMonthStart },
+    });
+
+    const lastMonthAccounts = await Account.countDocuments({
+      userId,
+      createdAt: { $gte: lastMonthStart, $lt: lastMonthEnd },
+    });
+
+    let percentageChange = 0;
+    if (lastMonthAccounts > 0) {
+      percentageChange =
+        ((thisMonthAccounts - lastMonthAccounts) / lastMonthAccounts) * 100;
+    } else {
+      percentageChange = thisMonthAccounts > 0 ? 100 : 0;
+    }
+
     return res.status(200).json({
       accounts: accounts,
-      totalPages: Math.ceil(totalAccounts / limit), // Calculate total pages
+      totalPages: Math.ceil(totalAccounts / limit), 
       accountsCount: accounts?.length,
+      percentageChange: percentageChange.toFixed(2),
     });
   } catch (error) {
     return res.status(500).json({ message: "Error fetching accounts", error });
@@ -270,7 +343,7 @@ const getAccountsStatistics = async (req, res) => {
       monthlyData: monthsData,
     });
   } catch (error) {
-    console.log('error while stats', error)
+    console.log("error while stats", error);
     res
       .status(500)
       .json({ message: "Error getting accounts statistics", error });
