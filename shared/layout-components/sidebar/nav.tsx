@@ -247,7 +247,7 @@ export const MenuItems: any = [
   {
     icon: DashboardIcon,
     badgetxt: "",
-    title: "Dashboards",
+    title: "Dashboard",
     type: "sub",
     active: false,
     selected: false,

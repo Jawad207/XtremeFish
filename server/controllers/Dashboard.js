@@ -171,8 +171,9 @@ const generateOtpAndSave = async (req, res) => {
 const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
 
+
   // Find the account with the email and otp
-  const account = await Account.findOne({ email, otp });
+  const account = await Account.findOne({ email: email.trim(), otp });
 
   if (!account) {
     return res.status(400).json({ error: "Invalid OTP or email" });
@@ -188,6 +189,7 @@ const verifyBankPin = async (req, res) => {
   const { email, bankPin } = req.body;
 
   // Find the account with the email and otp
+  console.log('bank pin in here', email, bankPin)
   const account = await Account.findOne({ email, bankPin });
   // console.log(account.email, account.bankPin)
   if (!account) {
