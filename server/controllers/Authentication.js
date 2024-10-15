@@ -93,6 +93,7 @@ const SignIn = async (req, res) => {
 
     // Generate JWT token
     user.location = locationObject;
+    user.lastLogin = new Date()
     user.save();
     const token = generateToken(user._id, rememberMe);
     res.status(200).json({ token, user });

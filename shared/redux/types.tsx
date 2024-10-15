@@ -24,6 +24,10 @@ export const GET_COUNT_INIT = "GET_COUNT_INIT";
 export const GET_COUNT_SUCCESS = "GET_COUNT_SUCCESS";
 export const GET_COUNT_FAILURE = "GET_COUNT_FAILURE";
 
+export const GET_TODAY_COUNT_INIT = "GET_TODAY_COUNT_INIT";
+export const GET_TODAY_COUNT_SUCCESS = "GET_TODAY_COUNT_SUCCESS";
+export const GET_TODAY_COUNT_FAILURE = "GET_TODAY_COUNT_FAILURE";
+
 export const CREATE_POST_INIT = "CREATE_POST_INIT";
 export const CREATE_POST_SUCCESS = "CREATE_POST_SUCCESS";
 export const CREATE_POST_FAILURE = "CREATE_POST_FAILURE";
@@ -104,6 +108,10 @@ export const GET_TOPUSER_INIT = "GET_TOPUSER_INIT";
 export const GET_TOPUSER_SUCCESS = "GET_TOPUSER_SUCCESS";
 export const GET_TOPUSER_FAILURE = "GET_TOPUSER_FAILURE";
 
+export const GET_ACCOUNT_STATISTICS_INIT = "GET_ACCOUNT_STATISTICS_INIT";
+export const GET_ACCOUNT_STATISTICS_SUCCESS = "GET_ACCOUNT_STATISTICS_SUCCESS";
+export const GET_ACCOUNT_STATISTICS_FAILURE = "GET_ACCOUNT_STATISTICS_FAILURE";
+
 interface getTopAccountInitAction {
   type: typeof GET_TOPUSER_INIT;
 }
@@ -114,6 +122,31 @@ interface getTopAccountSuccessAction {
 
 interface getTopAccountFailureAction {
   type: typeof GET_TOPUSER_FAILURE;
+  payload: any;
+}
+interface getTodayAccountInitAction {
+  type: typeof GET_TODAY_COUNT_INIT;
+}
+interface getTodayAccountSuccessAction {
+  type: typeof GET_TODAY_COUNT_SUCCESS;
+  payload: any;
+}
+
+interface getTodayAccountFailureAction {
+  type: typeof GET_TODAY_COUNT_FAILURE;
+  payload: any;
+}
+
+interface getAccountstatisticsInitAction {
+  type: typeof GET_ACCOUNT_STATISTICS_INIT;
+}
+interface getAccountstatisticsSuccessAction {
+  type: typeof GET_ACCOUNT_STATISTICS_SUCCESS;
+  payload: any;
+}
+
+interface getAccountstatisticsFailureAction {
+  type: typeof GET_ACCOUNT_STATISTICS_FAILURE;
   payload: any;
 }
 
@@ -551,4 +584,10 @@ export type DashActionTypes =
   | deleteIpfailureAction
   | getTopAccountFailureAction
   | getTopAccountInitAction
-  | getTopAccountSuccessAction;
+  | getTopAccountSuccessAction
+  | getTodayAccountInitAction
+  | getTodayAccountSuccessAction
+  | getTodayAccountFailureAction
+  | getAccountstatisticsInitAction
+  | getAccountstatisticsSuccessAction
+  | getAccountstatisticsFailureAction;

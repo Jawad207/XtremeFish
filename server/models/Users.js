@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
+import { type } from "os";
 
 const userSchema = new mongoose.Schema(
   {
@@ -18,7 +19,7 @@ const userSchema = new mongoose.Schema(
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },
     location: { type: Object },
-    timestamp: { type: Date, default: Date.now },
+    lastLogin: {type : Date, default: Date.now()}
   },
   { timestamps: true }
 );

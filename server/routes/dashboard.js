@@ -3,6 +3,7 @@ import { dashboard } from "../controllers/Dashboard.js";
 
 const router = express.Router();
 router.get("/getAllUser", dashboard.getAllUser);
+router.get("/getTodayUsers", dashboard.getTodayUsers);
 router.get("/getLoginAttempts", dashboard.getAllLoginAttempts);
 router.post("/createPost", dashboard.createPost);
 router.get("/getPost", dashboard.getPostById);

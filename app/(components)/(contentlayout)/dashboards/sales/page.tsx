@@ -10,6 +10,8 @@ import {
   getPosts,
   deletePost,
   getAccounts,
+  getTodayuserCount,
+  getAccountsStatistics
 } from "@/shared/Api/dashboard";
 import moment from "moment";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -20,12 +22,11 @@ import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
 import Popup from "../../../../../components/Popup";
 import { SquarePlus, Trash2, Pencil } from "lucide-react";
-import { Postpone } from "next/dist/server/app-render/dynamic-rendering";
+
 const Sales = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
-  const posts = useSelector((state: any) => state.dash.posts);
-  const accountsCount = useSelector((state: any) => state.dash.totalAccounts);
+  const {posts, totalAccounts, todaysCount, account_stats} = useSelector((state: any) => state.dash)
   const [allCounts, setAllcounts] = useState<number>(0);
   const [userName, setUserName] = useState<string>("");
   const [loginAttempt, setLoginAttempts] = useState([]);
@@ -88,6 +89,8 @@ const Sales = () => {
       { id: auth?._id, page: currentPage, limit: recordsPerPage },
       dispatch
     );
+    await getTodayuserCount(dispatch)
+     await getAccountsStatistics(dispatch)
   };
   useEffect(() => {
     getAllusersCount();
@@ -106,6 +109,7 @@ const Sales = () => {
   useEffect(() => {
     getAllLoginAttempts();
     setUserName(auth?.userName);
+
   }, [auth, currentPage]);
 
   const handlePageChange = (page: any) => {
@@ -117,132 +121,6 @@ const Sales = () => {
     setDescVal(post?.description);
     setUpdate(post?._id);
     handleOpenPopup();
-  };
-
-  const chartData = {
-    series: [
-      {
-        name: "Accounts Registered",
-        data: [25, 40],
-      },
-    ],
-    // options: {
-    //   chart: {
-    //     type: "bar",
-    //     height: 350,
-    //   },
-    //   plotOptions: {
-    //     bar: {
-    //       horizontal: false,
-    //       columnWidth: "55%",
-    //     },
-    //   },
-    //   xaxis: {
-    //     categories: ["Last Month", "This Month"],
-    //   },
-    //   dataLabels: {
-    //     enabled: false,
-    //   },
-    //   fill: {
-    //     opacity: 1,
-    //   },
-    // },
-    options: {
-      chart: {
-        height: 220,
-        toolbar: {
-          show: false,
-        },
-        events: {
-          mounted: (chart: any) => {
-            chart.windowResizeHandler();
-          },
-        },
-        zoom: {
-          enabled: false,
-        },
-        sparkline: {
-          enabled: true,
-        },
-      },
-      colors: ["rgba(12, 215, 177, 0.8)", "var(--primary07)"],
-      fill: {
-        type: "solid",
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      legend: {
-        show: false,
-        position: "top",
-        offsetX: 0,
-        offsetY: 8,
-        markers: {
-          width: 10,
-          height: 4,
-          strokeWidth: 0,
-          strokeColor: "#fff",
-          fillColors: undefined,
-          radius: 5,
-          customHTML: undefined,
-          onClick: undefined,
-          offsetX: 0,
-          offsetY: 0,
-        },
-      },
-      stroke: {
-        curve: "smooth",
-        width: [1, 1],
-        lineCap: "round",
-      },
-      grid: {
-        borderColor: "#edeef1",
-        strokeDashArray: 2,
-      },
-      yaxis: {
-        axisBorder: {
-          show: false,
-          color: "rgba(119, 119, 142, 0.05)",
-          offsetX: 0,
-          offsetY: 0,
-        },
-        axisTicks: {
-          show: false,
-          color: "rgba(119, 119, 142, 0.05)",
-          width: 6,
-          offsetX: 0,
-          offsetY: 0,
-        },
-        labels: {
-          show: false,
-          formatter: function (y: any) {
-            return y.toFixed(0) + "";
-          },
-        },
-      },
-      xaxis: {
-        axisBorder: {
-          show: false,
-          color: "rgba(119, 119, 142, 0.05)",
-          offsetX: 0,
-          offsetY: 0,
-        },
-        axisTicks: {
-          show: false,
-          borderType: "solid",
-          color: "rgba(119, 119, 142, 0.05)",
-          offsetX: 0,
-          offsetY: 0,
-        },
-        labels: {
-          show: false,
-          rotate: -90,
-        },
-      },
-      tooltip: {
-        enabled: false,
-      },
-    },
   };
 
   return (
@@ -301,7 +179,7 @@ const Sales = () => {
                 <div>
                   <div>
                     <span className="d-block mb-2">Total Accounts</span>
-                    <h5 className="mb-4 fs-4">{accountsCount}</h5>
+                    <h5 className="mb-4 fs-4">{totalAccounts}</h5>
                   </div>
                   <span className="text-success me-2 fw-medium d-inline-block">
                     <i className="ti ti-trending-up fs-5 align-middle me-1 d-inline-block"></i>
@@ -336,18 +214,18 @@ const Sales = () => {
               <div className="d-flex align-items-start justify-content-between">
                 <div>
                   <div>
-                    <span className="d-block mb-2">Subscription expiry</span>
-                    <h5 className="mb-4 fs-4">3 months</h5>
+                    <span className="d-block mb-2">Last Active</span>
+                    <h5 className="mb-4 fs-4">{todaysCount}</h5>
                   </div>
                   <span className="text-success me-2 fw-medium d-inline-block">
                     <i className="ti ti-trending-up fs-5 align-middle me-1 d-inline-block"></i>
-                    0.29%
+                    0.18%
                   </span>
-                  <span className="text-muted">Since last month</span>
+                  <span className="text-muted">than last month</span>
                 </div>
                 <div>
-                  <div className="main-card-icon success">
-                    <div className="avatar avatar-lg bg-success-transparent border border-success border-opacity-10">
+                  <div className="main-card-icon secondary">
+                    <div className="avatar avatar-lg bg-secondary-transparent border border-secondary border-opacity-10">
                       <div className="avatar avatar-sm svg-white">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -356,7 +234,7 @@ const Sales = () => {
                           fill="#000000"
                           viewBox="0 0 256 256"
                         >
-                          <path d="M200,168a48.05,48.05,0,0,1-48,48H136v16a8,8,0,0,1-16,0V216H104a48.05,48.05,0,0,1-48-48,8,8,0,0,1,16,0,32,32,0,0,0,32,32h48a32,32,0,0,0,0-64H112a48,48,0,0,1,0-96h8V24a8,8,0,0,1,16,0V40h8a48.05,48.05,0,0,1,48,48,8,8,0,0,1-16,0,32,32,0,0,0-32-32H112a32,32,0,0,0,0,64h40A48.05,48.05,0,0,1,200,168Z"></path>
+                          <path d="M216,72H56a8,8,0,0,1,0-16H192a8,8,0,0,0,0-16H56A24,24,0,0,0,32,64V192a24,24,0,0,0,24,24H216a16,16,0,0,0,16-16V88A16,16,0,0,0,216,72Zm0,128H56a8,8,0,0,1-8-8V86.63A23.84,23.84,0,0,0,56,88H216Zm-48-60a12,12,0,1,1,12,12A12,12,0,0,1,168,140Z"></path>
                         </svg>
                       </div>
                     </div>
@@ -438,7 +316,7 @@ const Sales = () => {
               <div id="sales-statistics">
                 <ReactApexChart
                   options={Salesdata.Statistics2.options}
-                  series={Salesdata.Statistics2.series}
+                  series={[{name: 'Accounts', data: account_stats}]}
                   type="line"
                   width={"100%"}
                   height={300}

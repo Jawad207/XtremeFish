@@ -60,6 +60,12 @@ import {
   GET_TOPUSER_INIT,
   GET_TOPUSER_SUCCESS,
   GET_TOPUSER_FAILURE,
+  GET_TODAY_COUNT_FAILURE,
+  GET_TODAY_COUNT_INIT,
+  GET_TODAY_COUNT_SUCCESS,
+  GET_ACCOUNT_STATISTICS_FAILURE,
+  GET_ACCOUNT_STATISTICS_INIT,
+  GET_ACCOUNT_STATISTICS_SUCCESS,
 } from "../types";
 
 interface LoginAttempt {
@@ -99,6 +105,8 @@ interface DashState {
   currentUrl: any;
   ips: any;
   topUsers: any;
+  todaysCount: any;
+  account_stats: any
 }
 
 const initialState: DashState = {
@@ -117,6 +125,8 @@ const initialState: DashState = {
   ips: [],
   currentUrl: null,
   topUsers: [],
+  todaysCount: 0,
+  account_stats: []
 };
 
 export const dashReducer = (
@@ -138,6 +148,44 @@ export const dashReducer = (
         error: null,
       };
     case GET_COUNT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case GET_TODAY_COUNT_INIT:
+      return {
+        ...state,
+        loading: true,
+      };
+    case GET_TODAY_COUNT_SUCCESS:
+      return {
+        ...state,
+        todaysCount: action.payload?.TotalTodayUsers,
+        loading: false,
+
+        error: null,
+      };
+    case GET_TODAY_COUNT_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case GET_ACCOUNT_STATISTICS_INIT:
+      return {
+        ...state,
+        loading: true,
+      };
+    case GET_ACCOUNT_STATISTICS_SUCCESS:
+      return {
+        ...state,
+        account_stats: action.payload?.monthlyData,
+        loading: false,
+
+        error: null,
+      };
+    case GET_ACCOUNT_STATISTICS_FAILURE:
       return {
         ...state,
         loading: false,

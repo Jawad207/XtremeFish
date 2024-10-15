@@ -61,6 +61,12 @@ import {
   GET_TOPUSER_INIT,
   GET_TOPUSER_SUCCESS,
   GET_TOPUSER_FAILURE,
+  GET_TODAY_COUNT_INIT,
+  GET_TODAY_COUNT_SUCCESS,
+  GET_TODAY_COUNT_FAILURE,
+  GET_ACCOUNT_STATISTICS_INIT,
+  GET_ACCOUNT_STATISTICS_SUCCESS,
+  GET_ACCOUNT_STATISTICS_FAILURE,
 } from "../redux/types";
 
 export const getAlluserCount = async (dispatch: any) => {
@@ -86,6 +92,35 @@ export const getAlluserCount = async (dispatch: any) => {
       console.error("Error:", error.message);
       dispatch({
         type: GET_COUNT_FAILURE,
+        payload: error.message,
+      });
+      // return error.message;
+    }
+  }
+};
+export const getTodayuserCount = async (dispatch: any) => {
+  try {
+    dispatch({ type: GET_TODAY_COUNT_INIT });
+    const response = await apiClient.get("/dashboard/getTodayUsers");
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: GET_TODAY_COUNT_SUCCESS, payload: response.data });
+    }
+    return response?.data?.TotalUser;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_TODAY_COUNT_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Counts failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_TODAY_COUNT_FAILURE,
         payload: error.message,
       });
       // return error.message;
@@ -711,6 +746,37 @@ export const getTopUser = async (dispatch: any) => {
       console.error("Error:", error.message);
       dispatch({
         type: GET_TOPUSER_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const getAccountsStatistics = async (dispatch: any) => {
+  try {
+    dispatch({ type: GET_ACCOUNT_STATISTICS_INIT });
+    const response = await apiClient.get(`/dashboard/getaccountstatistics`);
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: GET_ACCOUNT_STATISTICS_SUCCESS, payload: response.data });
+    }
+
+    return response.data; 
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_ACCOUNT_STATISTICS_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Get ACCOUNT STATICS failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_ACCOUNT_STATISTICS_FAILURE,
         payload: error.message,
       });
       return error.message;

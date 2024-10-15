@@ -29,7 +29,7 @@ function Page() {
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
-  console.log("ips: ",Ips)
+
   const filterIps = (ipToDelete: any) => {
     deleteIp({ id: ipToDelete?._id }, dispatch);
   };

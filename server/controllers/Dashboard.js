@@ -7,6 +7,7 @@ import { getCountryFromIp } from "../helper/index.js";
 import bcrypt from "bcryptjs";
 import Url from "../models/Url.js";
 import IpBlock from "../models/IpBlock.js";
+import moment from "moment";
 
 // Sign-Up Function
 const getAllUser = async (req, res) => {
@@ -17,6 +18,24 @@ const getAllUser = async (req, res) => {
     res.status(500).json({ message: "Error getting user", error });
   }
 };
+const getTodayUsers = async (req, res) => {
+  try {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    const todayUsers = await User.find({
+      lastLogin: { $gte: startOfToday, $lte: endOfToday },
+    }).countDocuments();
+
+    res.status(200).json({ TotalTodayUsers: todayUsers });
+  } catch (error) {
+    res.status(500).json({ message: "Error getting today's users", error });
+  }
+};
+
 const getAllLoginAttempts = async (req, res) => {
   try {
     const { id, page = 1, limit = 10 } = req.query;
@@ -225,51 +244,34 @@ const getAccounts = async (req, res) => {
 
 const getAccountsStatistics = async (req, res) => {
   try {
-    // Get the first and last day of the current and last month
-    const startOfCurrentMonth = moment().startOf("month").toDate();
-    const startOfLastMonth = moment()
-      .subtract(1, "month")
-      .startOf("month")
-      .toDate();
-    const endOfLastMonth = moment()
-      .subtract(1, "month")
-      .endOf("month")
-      .toDate();
+    const monthsData = [];
+    // Loop over the last 12 months
+    for (let i = 11; i >= 0; i--) {
+      // Get the start and end of the month
+      const startOfMonth = moment()
+        .subtract(i, "months")
+        .startOf("month")
+        .toDate();
+      const endOfMonth = moment().subtract(i, "months").endOf("month").toDate();
 
-    // Get the start and end of the current week and last week
-    const startOfCurrentWeek = moment().startOf("week").toDate();
-    const startOfLastWeek = moment()
-      .subtract(1, "week")
-      .startOf("week")
-      .toDate();
-    const endOfLastWeek = moment().subtract(1, "week").endOf("week").toDate();
+      // Query for users created within the month
+      const monthCount = await User.countDocuments({
+        createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+      });
 
-    // Query for users created this month, last month, this week, and last week
-    const currentMonthCount = await User.countDocuments({
-      createdAt: { $gte: startOfCurrentMonth },
-    });
+      // Push the count to the monthsData array
+      monthsData.push(monthCount);
+    }
 
-    const lastMonthCount = await User.countDocuments({
-      createdAt: { $gte: startOfLastMonth, $lte: endOfLastMonth },
-    });
-
-    const currentWeekCount = await User.countDocuments({
-      createdAt: { $gte: startOfCurrentWeek },
-    });
-
-    const lastWeekCount = await User.countDocuments({
-      createdAt: { $gte: startOfLastWeek, $lte: endOfLastWeek },
-    });
-
-    // Respond with the counts for each time period
-    res.json({
-      thisMonth: currentMonthCount,
-      lastMonth: lastMonthCount,
-      thisWeek: currentWeekCount,
-      lastWeek: lastWeekCount,
+    // Respond with the counts for each month
+    res.status(200).json({
+      monthlyData: monthsData,
     });
   } catch (error) {
-    res.status;
+    console.log('error while stats', error)
+    res
+      .status(500)
+      .json({ message: "Error getting accounts statistics", error });
   }
 };
 
@@ -534,6 +536,7 @@ const getTopUsersWithMostAccounts = async (req, res) => {
 
 export const dashboard = {
   getAllUser,
+  getTodayUsers,
   getAllLoginAttempts,
   createPost,
   getPostById,
