@@ -77,7 +77,7 @@ function Page() {
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
-              <Card.Title>Blocked Users</Card.Title>
+              <Card.Title>Blocker</Card.Title>
               <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
                   <button

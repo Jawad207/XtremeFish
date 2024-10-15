@@ -268,6 +268,14 @@ export const MenuItems: any = [
         dirchange: false,
         title: "Subscription",
       },
+      {
+        path: "/dashboards/high-scores",
+        type: "link",
+        active: false,
+        selected: false,
+        dirchange: false,
+        title: "High Scores",
+      },
     ],
   },
 
@@ -298,21 +306,14 @@ export const MenuItems: any = [
         dirchange: false,
         title: "URLS",
       },
-      {
-        path: "/dashboards/high-scores",
-        type: "link",
-        active: false,
-        selected: false,
-        dirchange: false,
-        title: "High Scores",
-      },
+      
       {
         path: "/dashboards/blocked-users",
         type: "link",
         active: false,
         selected: false,
         dirchange: false,
-        title: "Blocked Users",
+        title: "Blocker",
       },
     ],
   },
