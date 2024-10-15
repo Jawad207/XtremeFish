@@ -228,8 +228,6 @@ export const getAccounts = async (
 ) => {
   try {
     dispatch({ type: GET_ACCOUNTS_INIT });
-
-    // Include pagination parameters: page and limit
     const response = await apiClient.get("/dashboard/getAccounts", {
       params: {
         id: userId,
@@ -238,7 +236,6 @@ export const getAccounts = async (
       },
     });
 
-    // If the request was successful
     if (response.status === 200) {
       const { accounts, accountsCount, totalPages } = response.data;
 

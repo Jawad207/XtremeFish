@@ -117,7 +117,7 @@ function CallLogsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {accounts?.length > 0 &&
+                    {accounts?.length > 0 ?
                       accounts.map((account: any) => (
                         <tr key={account._id}>
                           <td>
@@ -178,7 +178,7 @@ function CallLogsPage() {
                             </div>
                           </td> */}
                         </tr>
-                      ))}
+                      )) : <div>No Call Logs found</div>}
                   </tbody>
                 </table>
               </div>
