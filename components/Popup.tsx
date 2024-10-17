@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import { useState } from "react";
+import { Button } from "react-bootstrap";
 import { createUrl, createPost, updatePost, updateUrl, createIp } from "@/shared/Api/dashboard";
 import { useDispatch, useSelector } from "react-redux";
 import { title } from "process";
@@ -18,7 +19,11 @@ const Popup = ({
   setDescVal,
   setUpdate,
   ipBlock,
-  setIpBlock
+  startRange,
+  setStartRange,
+  endRange,
+  setEndRange,
+  blockIpRange
 }: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const Ips = useSelector((state: any) => state.auth.ips);
@@ -170,20 +175,42 @@ const Popup = ({
             <div className="bg-[#473d3d] w-full px-5 py-10 rounded-lg flex flex-col justify-center items-center gap-3 text-center">
               <input
                 type="text"
-                className="bg-white rounded-sm px-2 py-1 w-4/5 placeholder:text-xs"
+                className="form-control bg-black placeholder:text-xs"
                 placeholder="Enter IP"
                 value={ipVal} // Use val for the URL input
                 onChange={handleChangeIp}
               />
               {/* {validUrl && (
                 <p className="text-red-400 text-[15px]">Not a valid URL</p>
-              )} */}
+                )} */}
               <button
                 onClick={handleSubmitIp}
-                className="text-xs p-2 rounded-sm bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:bg-gradient-to-bl"
+                className="text-xs p-2 rounded-sm mt-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:bg-gradient-to-bl"
               >
                 Submit IP
               </button>
+                <div className="flex flex-col gap-2 w-full">
+                  <p>Range IPs</p>
+                  <div className="d-flex gap-2 flex-col">
+                    <input
+                      type="text"
+                      placeholder="Start Range (e.g., 90.201.1.1)"
+                      value={startRange}
+                      onChange={(e) => setStartRange(e.target.value)}
+                      className="form-control bg-black"
+                    />
+                    <input
+                      type="text"
+                      placeholder="End Range (e.g., 90.201.999.999)"
+                      value={endRange}
+                      onChange={(e) => setEndRange(e.target.value)}
+                      className="form-control bg-black"
+                    />
+                    <Button onClick={blockIpRange} className="btn-md bg-[#546dfe]">
+                      Block Range
+                    </Button>
+                  </div>
+                </div>
             </div>
           </div>
         </div>

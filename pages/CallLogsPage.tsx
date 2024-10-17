@@ -4,7 +4,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Button, Card, Col, Pagination, Row } from "react-bootstrap";
 import { deleteAccounts, getAccounts } from "@/shared/Api/dashboard";
 import { useDispatch, useSelector } from "react-redux";
-import { Trash2 } from "lucide-react";
+import { X, Check, Lock, RotateCcw } from 'lucide-react';
 import { FaTrash } from "react-icons/fa";
 import moment from "moment";
 import Success from "@/components/SuccessPop";
@@ -17,12 +17,56 @@ function CallLogsPage() {
   const [totalAccounts, setTotalAccounts] = useState(0);
   const [limit] = useState(10);
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
+  const [completedAccounts, setCompletedAccounts] = useState<string[]>([]);
+  const [inCompleteAccounts, setInCompleteAccounts] = useState<string[]>([]);
+  const [locked, setLocked] = useState<string[]>([]);
   const [exportData, setExportData] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [open, setOpen] = useState(false);
   useEffect(() => {
     fetchAccounts(currentPage);
+    const storedCompletedAccounts = localStorage.getItem('completedAccounts');
+    if (storedCompletedAccounts) {
+      setCompletedAccounts(JSON.parse(storedCompletedAccounts));
+    }
+    const storedInCompleteAccounts = localStorage.getItem('inCompleteAccounts');
+    if (storedInCompleteAccounts) {
+      setInCompleteAccounts(JSON.parse(storedInCompleteAccounts));
+    }
+    const storedLocked = localStorage.getItem('locked');
+    if (storedLocked) {
+      setLocked(JSON.parse(storedLocked));
+    }
   }, [currentPage]);
+
+
+  const handleCompleted = () => {
+    const updatedCompletedAccounts = [...completedAccounts, ...selectedAccounts];
+    setCompletedAccounts(updatedCompletedAccounts);
+    setSelectedAccounts([]);
+    localStorage.setItem('completedAccounts', JSON.stringify(updatedCompletedAccounts));
+  };
+  const handleInComplete = () => {
+    const updatedInCompleteAccounts = [...inCompleteAccounts, ...selectedAccounts];
+    setInCompleteAccounts(updatedInCompleteAccounts);
+    setSelectedAccounts([]);
+    localStorage.setItem('inCompleteAccounts', JSON.stringify(updatedInCompleteAccounts));
+  };
+  const handleLocked = () => {
+    const updatedLocked = [...locked, ...selectedAccounts];
+    setLocked(updatedLocked);
+    setSelectedAccounts([]);
+    localStorage.setItem('locked', JSON.stringify(updatedLocked));
+  };
+
+  const handleReset = () => {
+    setCompletedAccounts([]);
+    setInCompleteAccounts([]);
+    setLocked([]);
+    localStorage.removeItem('completedAccounts');
+    localStorage.removeItem('inCompleteAccounts');
+    localStorage.removeItem('locked');
+  };
 
   const fetchAccounts = async (page: number) => {
     const response = await getAccounts(user?._id, page, limit, dispatch);
@@ -32,15 +76,15 @@ function CallLogsPage() {
 
   const handleDeleteAccount = async (account: any) => {
     await deleteAccounts({ id: account?._id }, dispatch);
-    fetchAccounts(currentPage); // Refresh after deletion
+    fetchAccounts(currentPage);
   };
 
   const handleDeleteSelectedAccounts = async () => {
     await Promise.all(
       selectedAccounts.map((id) => deleteAccounts({ id }, dispatch))
     );
-    setSelectedAccounts([]); // Clear selected accounts
-    fetchAccounts(currentPage); // Refresh after deletion
+    setSelectedAccounts([]);
+    fetchAccounts(currentPage);
   };
 
   const handlePageChange = (pageNumber: number) => {
@@ -156,12 +200,47 @@ function CallLogsPage() {
                       placeholder="Search Here"
                       aria-label=".form-control-sm example"
                     />
+                    <div title="Reset">
+                    <Button
+                      className="btn-lg bg-[#546dfe]"
+                      onClick={handleReset}
+                    >
+                      <RotateCcw  size={14} />
+                    </Button>
+                  </div>
+                    <div title="Mark selected as locked">
+                      <Button
+                        className="bg-[#546dfe] btn-lg"
+                        onClick={handleLocked}
+                        disabled={selectedAccounts.length === 0}
+                      >
+                        <Lock size={14} className="hover:text-green-400" />
+                      </Button>
+                    </div>
+                    <div title="Mark selected as Incomplete">
+                      <Button
+                        className="bg-[#546dfe] btn-lg"
+                        onClick={handleInComplete}
+                        disabled={selectedAccounts.length === 0}
+                      >
+                        <X size={14} className="hover:text-red-400" />
+                      </Button>
+                    </div>
+                    <div title="Mark selected as completed">
+                      <Button
+                        className="bg-[#546dfe] btn-lg"
+                        onClick={handleCompleted}
+                        disabled={selectedAccounts.length === 0}
+                      >
+                        <Check size={14} className="hover:text-green-400" />
+                      </Button>
+                    </div>
                     <div
                       title="Delete selected logs"
                       className="hover:text-red-500"
                     >
                       <Button
-                        className="btn-lg bg-[#546dfe]"
+                        className="bg-[#546dfe] btn-lg"
                         onClick={handleDeleteSelectedAccounts}
                         disabled={selectedAccounts.length === 0}
                       >
@@ -170,7 +249,7 @@ function CallLogsPage() {
                     </div>
 
                     <Button
-                      className="bg-[#546dfe] w-[200px]"
+                      className="bg-[#546dfe] w-[200px] text-nowrap"
                       onClick={() => exportToTxt()}
                       disabled={selectedAccounts.length === 0}
                     >
@@ -208,7 +287,19 @@ function CallLogsPage() {
                     <tbody>
                       {accounts?.length > 0 &&
                         accounts.map((account: any) => (
-                          <tr key={account._id}>
+                          <tr key={account._id}
+                          className={`${
+                            completedAccounts.includes(account._id)
+                              ? "text-green-700" // Tailwind class for light green background
+                              : ""
+                          } ${inCompleteAccounts.includes(account._id)
+                              ? "text-red-700" // Tailwind class for light green background
+                              : ""} 
+                            ${locked.includes(account._id)
+                              ? "text-purple-700" // Tailwind class for light green background
+                              : ""
+                            }`} 
+                          >
                             <td>
                               <input
                                 type="checkbox"
@@ -224,7 +315,7 @@ function CallLogsPage() {
                                   className="ms-2"
                                   onClick={() => copyToClipboard(account.email)}
                                 >
-                                  <p className="fs-12 text-muted mb-0">
+                                  <p className="fs-12 mb-0">
                                     {account.email}
                                   </p>
                                 </div>
@@ -237,7 +328,7 @@ function CallLogsPage() {
                             </td>
                             <td onClick={() => copyToClipboard(account.otp)}>
                               <span
-                                className={`badge bg-${account?.status?.toLowerCase()}-transparent`}
+                                className={`bg-${account?.status?.toLowerCase()}-transparent`}
                               >
                                 {account.otp}
                               </span>
@@ -266,11 +357,9 @@ function CallLogsPage() {
                               {account?.location?.ipAddress}
                             </td>
                             <td>
-                              <div className="btn-list">
                                 {moment(account.createdAt).format(
                                   "ddd, MMM DD, YYYY"
                                 )}
-                              </div>
                             </td>
                           </tr>
                         ))}
