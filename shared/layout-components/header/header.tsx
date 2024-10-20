@@ -32,7 +32,7 @@ const Header = ({ local_varaiable }: any) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleToggle = () => {
-    setProfileShow(!show); // Toggle the dropdown state
+    setProfileShow(!profileShow); // Toggle the dropdown state
   };
 
   const handleDropdownClose = () => {
