@@ -227,7 +227,7 @@ const Sales = () => {
               <div className="d-flex align-items-start justify-content-between">
                 <div>
                   <div>
-                    <span className="d-block mb-2">Last Active</span>
+                    <span className="d-block mb-2">Online Users</span>
                     <h5 className="mb-4 fs-4">{todaysCount}</h5>
                   </div>
                 </div>

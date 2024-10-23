@@ -667,11 +667,11 @@ const Header = ({ local_varaiable }: any) => {
             <li className="header-element">
               <Link
                 scroll={false}
-                href="#!"
+                href="/dashboards/edit-profile"
                 className="header-link switcher-icon"
                 data-bs-toggle="offcanvas"
                 data-bs-target="#switcher-canvas"
-                onClick={() => Switchericon()}
+                // onClick={() => Switchericon()}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
