@@ -23,7 +23,7 @@ const page = () => {
   }, []);
   return (
     <Fragment>
-      <Seo title={"urls"} />
+      <Seo title={"high-scores"} />
       <Row>
         <Col xl={12}>
           <Card className="custom-card">

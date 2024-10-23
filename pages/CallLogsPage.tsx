@@ -357,9 +357,7 @@ function CallLogsPage() {
                               {account?.location?.ipAddress}
                             </td>
                             <td>
-                                {moment(account.createdAt).format(
-                                  "ddd, MMM DD, YYYY"
-                                )}
+                            {moment(account?.createdAt).format("ddd, MMM DD, YYYY, hh:mm A")}
                             </td>
                           </tr>
                         ))}

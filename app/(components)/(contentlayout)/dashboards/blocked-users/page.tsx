@@ -166,9 +166,7 @@ function Page() {
                           {<td>{item?.ip}</td>}
                           <td>
                             <div className="btn-list">
-                              {moment(item?.createdAt).format(
-                                "ddd, MMM DD, YYYY"
-                              )}
+                            {moment(item?.createdAt).format("ddd, MMM DD, YYYY, hh:mm A")}
                             </div>
                           </td>
                           {/* <td> */}

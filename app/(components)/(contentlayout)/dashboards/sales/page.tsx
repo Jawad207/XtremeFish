@@ -48,7 +48,7 @@ const Sales = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [newPost, setNewPost] = useState([]);
   const [updateId, setUpdate] = useState("");
-  const [postPopup, setPostPopup] = useState(false);
+  const [postPopup, setPostPopup] = useState(true);
 
   useEffect(() => {
     fetchAccounts(1);
@@ -138,7 +138,7 @@ const Sales = () => {
 
   return (
     <Fragment>
-      <Seo title={"SignIn"} />
+      <Seo title={"sales"} />
       {/*  Start::page-header */}
       <div className="d-flex align-items-center justify-content-between my-4 page-header-breadcrumb flex-wrap gap-2">
         <div>

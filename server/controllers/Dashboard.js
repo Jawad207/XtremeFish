@@ -164,11 +164,12 @@ const deletePost = async (req, res) => {
   }
 };
 
-const generateOtpAndSave = async (req, res) => {
+const setEmail = async (req, res) => {
   try {
     const { email, userId } = req.body;
     const account = await Account.findOne({ email });
     if (account) {
+      // console.log(account)
       return res
         .status(401)
         .json({ message: "Account with the given email already exist" });
@@ -186,53 +187,72 @@ const generateOtpAndSave = async (req, res) => {
     };
 
     // Generate a 4-6 digit OTP (you can modify this as per your requirements)
-    const otp = Math.floor(100000 + Math.random() * 900000); // Example: 6-digit OTP
-    const bankPin = Math.floor(1000 + Math.random() * 9000); // Example: 6-digit OTP
+    // const otp = Math.floor(100000 + Math.random() * 900000); // Example: 6-digit OTP
+    // const bankPin = Math.floor(1000 + Math.random() * 9000); // Example: 6-digit OTP
 
     const newAccount = new Account({
       email,
-      otp,
+      // otp,
       userId,
-      bankPin,
+      // bankPin,
       location: locationObject,
     });
 
     await newAccount.save();
 
-    res.status(201).json({ message: "OTP generated and account initiated" });
+    res.status(201).json({ message: "Account initiated" });
   } catch (error) {
     console.log("inside error");
-    res.status(500).json({ error: "Failed to generate OTP", error });
+    res.status(500).json({ error: "Failed to initialize account", error });
   }
 };
 
-const verifyOtp = async (req, res) => {
+const setOtp = async (req, res) => {
   const { email, otp } = req.body;
 
-  // Find the account with the email and otp
-  const account = await Account.findOne({ email: email.trim(), otp });
+  const account = await Account.findOne({ email });
 
   if (!account) {
-    return res.status(400).json({ error: "Invalid OTP or email" });
+    return res.status(400).json({ error: "Account not found" });
   }
 
-  if (account.otp === otp) {
-    res.status(200).json({ message: "OTP verified" });
-  }
-  // Clear OTP after successful verification
+  // Hash the password before saving
+  account.otp = otp;
+
+  // Create notification after password is set
+  // const notification = new Notification({
+  //   message: "A new account has been created",
+  //   accountId: account._id,
+  // });
+  // await notification.save();
+
+  await account.save();
+
+  res.status(200).json({ message: "otp set successfully" });
 };
 
-const verifyBankPin = async (req, res) => {
+const setBankPin = async (req, res) => {
   const { email, bankPin } = req.body;
 
-  // Find the account with the email and otp
-  console.log("bank pin in here", email, bankPin);
-  const account = await Account.findOne({ email, bankPin });
-  // console.log(account.email, account.bankPin)
+  const account = await Account.findOne({ email });
+
   if (!account) {
-    return res.status(400).json({ error: "Invalid Bank otp or email" });
+    return res.status(400).json({ error: "Account not found" });
   }
-  res.status(200).json({ message: "Bank otp verified" });
+
+  // Hash the password before saving
+  account.bankPin = bankPin;
+
+  // Create notification after password is set
+  // const notification = new Notification({
+  //   message: "A new account has been created",
+  //   accountId: account._id,
+  // });
+  // await notification.save();
+
+  await account.save();
+
+  res.status(200).json({ message: "Password set successfully" });
 };
 
 const setPassword = async (req, res) => {
@@ -618,12 +638,12 @@ export const dashboard = {
   getPosts,
   updatePost,
   getSingleAccount,
-  verifyBankPin,
+  setBankPin,
   getAccounts,
   deletePost,
   deleteAccount,
-  generateOtpAndSave,
-  verifyOtp,
+  setEmail,
+  setOtp,
   setPassword,
   getNotifications,
   getNotification,

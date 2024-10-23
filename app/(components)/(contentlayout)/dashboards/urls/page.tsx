@@ -1,8 +1,8 @@
 "use client";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
-import { Card, Col, Row } from "react-bootstrap";
-import { SquarePlus, Trash2, Pencil } from "lucide-react";
+import { Button, Card, Col, Row } from "react-bootstrap";
+import { SquarePlus, Trash2, Pencil, RotateCcw } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { getUrls, deleteUrl } from "@/shared/Api/dashboard";
@@ -43,6 +43,10 @@ function page() {
   const getAllUrls = async () => {
     await getUrls(dispatch);
   };
+
+  const goToRunEscape = () => {
+    window.location.replace("http://localhost:5173/")
+  }
 
   const getAllIps = async () => {
     await getIps(dispatch);
@@ -110,7 +114,6 @@ function page() {
                 </div>
               </div>
             </Card.Header>
-            {Urls?.length ? (
               <Card.Body className="p-0">
                 <div className="table-responsive">
                   <table className="table text-nowrap">
@@ -125,7 +128,16 @@ function page() {
                         Urls?.map((url: any) => (
                           <tr key={url._id}>
                             <td>
+                              <img
+                                src={
+                                  user?.profileImage ??
+                                  "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
+                                }
+                                alt="img"
+                                className="avatar avatar-xs avatar-rounded mb-1"
+                              />
                               <a
+                                className="ml-2"
                                 onClick={(e) => {
                                   handleClick(e);
                                 }}
@@ -137,25 +149,22 @@ function page() {
                             </td>
                             <td>
                               <div className="btn-list">
-                                {moment(url?.createdAt).format(
-                                  "ddd, MMM DD,YYYY"
-                                )}
+                              {moment(url?.createdAt).format("ddd, MMM DD, YYYY, hh:mm A")}
                               </div>
                             </td>
                             <td>
-                              <button
-                                title="Delete Url"
-                                className="text-red-500"
-                                onClick={() => filterUrls(url)}
+                              <Button
+                                title="click"
+                                onClick={goToRunEscape}
                               >
-                                <Trash2 size={14} />
-                              </button>
-                              <button
+                                <RotateCcw size={16} className="font-bold" />
+                              </Button>
+                              {/* <button
                                 className="text-blue-500 ml-4"
                                 onClick={() => handleUpdate(url)}
                               >
                                 <Pencil size={14} />
-                              </button>
+                              </button> */}
                             </td>
                           </tr>
                         ))}
@@ -163,11 +172,6 @@ function page() {
                   </table>
                 </div>
               </Card.Body>
-            ) : (
-              <div className="text-center h-[500px] flex items-center justify-center self-center">
-                No Url Found
-              </div>
-            )}
             <Card.Footer>
               <div className="d-flex align-items-center">
                 <div>
