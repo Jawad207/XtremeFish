@@ -118,19 +118,19 @@ const Popup = ({
   return (
     <>
       {postPopup?(
-        <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-md z-10 w-full h-full flex justify-center items-center">
-          <div className="flex flex-col justify-center items-center w-1/3 mt-2">
-            <button 
-              title="close"
-              onClick={()=>{
-              onClose();
-              setVal("");
-              setDescVal("");
-            }} className="cursor-pointer relative top-7 left-52">
-              <X className="rounded-md hover:bg-[#4f5763]"/>
-            </button>
-            <div className="bg-[#12111d] w-full py-20 rounded-md flex flex-col justify-center items-center gap-4 text-center">
-              <p className="absolute top-48 text-lg font-bold">Add New Post</p>
+        <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-screen flex justify-center items-center">
+          <div className="flex flex-col items-center w-[500px] mt-2">
+              <button 
+                title="close"
+                onClick={()=>{
+                onClose();
+                setVal("");
+                setDescVal("");
+              }} className="">
+                <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]"/>
+              </button>
+            <div className="bg-[#12111d] w-full py-10 rounded-md flex flex-col justify-center items-center gap-4 text-center">
+              <p className="text-lg font-bold">Add New Post</p>
               <input
                 type="text"
                 className="form-control rounded-md px-2 py-2 w-4/5"
@@ -161,14 +161,14 @@ const Popup = ({
   ):(
       ipPopup?(
         <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-full flex justify-center items-center">
-          <div className="flex flex-col justify-center items-center w-1/3 mt-2">
+          <div className="flex flex-col justify-center items-center w-[500px] mt-2">
           <button 
               title="close"
               onClick={()=>{
               onClose();
               setIpVal("");
-            }} className="cursor-pointer relative top-7 left-52">
-              <X className="rounded-md hover:bg-[#4f5763]"/>
+            }} className="">
+              <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]"/>
             </button>
             <div className="bg-[#12111d] w-full py-20 rounded-lg flex flex-col justify-center items-center gap-4 text-center">
               <input
@@ -220,13 +220,13 @@ const Popup = ({
       ):
       (ipBlock?(
       <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-full flex justify-center items-center">
-        <div className="flex flex-col justify-center items-center w-1/3 mt-2">
+        <div className="flex flex-col justify-center items-center w-[500px] mt-2">
         <button 
               title="close"
               onClick={()=>{
               onClose();
-            }} className="cursor-pointer relative top-7 left-52">
-              <X className="rounded-md hover:bg-[#4f5763]"/>
+            }} className="cursor-pointer">
+              <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]"/>
             </button>
           <div className="bg-[#12111d] w-full py-10 px-5 rounded-lg flex flex-col justify-center items-center text-center text-lg text-red-400 font-semibold">
             Access Denied: This user has been blocked.
@@ -235,14 +235,14 @@ const Popup = ({
       </div>
     ):(
     <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-full flex justify-center items-center">
-        <div className="flex flex-col justify-center items-center w-1/3 mt-2">
+        <div className="flex flex-col justify-center items-center w-[500px] mt-2">
         <button 
               title="close"
               onClick={()=>{
               onClose();
               setDescVal("");
-            }} className="cursor-pointer relative top-7 left-52">
-              <X className="rounded-md hover:bg-[#4f5763]"/>
+            }} className="cursor-pointer">
+              <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]"/>
             </button>
           <div className="bg-[#12111d] w-full py-20 rounded-lg flex flex-col justify-center items-center gap-4 text-center">
             <input

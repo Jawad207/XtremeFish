@@ -45,8 +45,10 @@ function page() {
   };
 
   const goToRunEscape = () => {
-    window.location.replace("http://localhost:5173/")
-  }
+    // window.location.href = "http://localhost:5173";
+    window.open("http://localhost:5173", "_blank");
+  };
+  
 
   const getAllIps = async () => {
     await getIps(dispatch);
