@@ -108,7 +108,7 @@ const ForgetPassword = () => {
                   </div>
                   <Card className="custom-card">
                     <Card.Body className="p-5">
-                      <p className="h4 mb-2 fw-semibold">Forget Password</p>
+                      <p className="h4 mb-2 fw-semibold">Forgot Password</p>
                       <p className="mb-3 text-muted fw-normal">
                         Please Enter your Email to receive Code
                       </p>

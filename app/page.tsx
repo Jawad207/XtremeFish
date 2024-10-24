@@ -124,7 +124,7 @@ export default function Home() {
                                     pattern: {
                                       value:
                                         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                      message: "This input is pattern only.",
+                                      message: "Invalid email address.",
                                     },
                                   })}
                                   className="form-control"
@@ -146,7 +146,7 @@ export default function Home() {
                                     href="forget-password"
                                     className="float-end  link-danger op-5 fw-medium fs-12"
                                   >
-                                    Forget password ?
+                                    Forgot password ?
                                   </Link>
                                 </label>
                                 <div className="position-relative">
