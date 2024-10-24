@@ -10,10 +10,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { getTopUser } from "@/shared/Api/dashboard";
 const page = () => {
   const topUsers = useSelector((state: any) => state.dash.topUsers);
-  
+
   // const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
-  console.log(topUsers)
+  console.log(topUsers, "===");
   const dispatch = useDispatch();
   const fetchAccounts = async () => {
     return await getTopUser(dispatch);
@@ -30,7 +30,7 @@ const page = () => {
             <Card.Header className="justify-content-between">
               <Card.Title>High Score</Card.Title>
               <div className="d-flex flex-wrap gap-2">
-                  {/* <div
+                {/* <div
                     title="Delete selected logs"
                     className="hover:text-red-500"
                   >
@@ -85,6 +85,7 @@ const page = () => {
                         onChange={toggleSelectAll}
                       />
                     </th> */}
+                    <th>Image</th>
                     <th>Name</th>
                     <th>Accounts</th>
                   </thead>
@@ -92,13 +93,16 @@ const page = () => {
                     {topUsers?.topUsers?.length > 0 &&
                       topUsers?.topUsers?.map((account: any) => (
                         <tr key={account._id}>
-                          {/* <td>
-                            <input
-                              type="checkbox"
-                              checked={selectedAccounts.includes(account._id)}
-                              onChange={() => toggleSelectAccount(account._id)}
-                            />
-                          </td> */}
+                          <td>
+                            <img
+                              src={
+                                account?.profileImage ??
+                                "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
+                              }
+                              alt="img"
+                              className="avatar avatar-xs avatar-rounded mb-1"
+                            /> 
+                          </td>
                           <td>{account.userName}</td>
                           <td>{account.numberOfAccounts}</td>
                           {/* <td>

@@ -13,8 +13,10 @@ function page() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [ipBlock, setIpBlock] = useState(false);
   const user = useSelector((state: any) => state.auth.user);
+
   const [descVal, setDescVal] = useState("");
   const [updateId, setUpdate] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [urls, setUrls] = useState<any>();
   const Urls = useSelector((state: any) => state.dash.urls);
   const Ips = useSelector((state: any) => state.dash.ips);
@@ -24,6 +26,9 @@ function page() {
     setIsPopupOpen(true);
   };
 
+  const filteredUrls = Urls.filter((url: any) =>
+    url.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   const handleUpdate = (post: any) => {
     setDescVal(post?.description);
     setUpdate(post?._id);
@@ -45,10 +50,8 @@ function page() {
   };
 
   const goToRunEscape = () => {
-    // window.location.href = "http://localhost:5173";
-    window.open("http://localhost:5173", "_blank");
+    window.open(`http://localhost:5173/${user?._id}`, "_blank");
   };
-  
 
   const getAllIps = async () => {
     await getIps(dispatch);
@@ -74,8 +77,6 @@ function page() {
   };
 
   // Function to copy text to the clipboard
- 
-
   return (
     <Fragment>
       <Seo title={"urls"} />
@@ -116,64 +117,63 @@ function page() {
                 </div>
               </div>
             </Card.Header>
-              <Card.Body className="p-0">
-                <div className="table-responsive">
-                  <table className="table text-nowrap">
-                    <thead>
-                      <th>URL</th>
-                      <th>Date</th>
-                      <th>Actions</th>
-                    </thead>
-                    <tbody>
-                      {Urls &&
-                        Urls?.length > 0 &&
-                        Urls?.map((url: any) => (
-                          <tr key={url._id}>
-                            <td>
-                              <img
-                                src={
-                                  user?.profileImage ??
-                                  "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
-                                }
-                                alt="img"
-                                className="avatar avatar-xs avatar-rounded mb-1"
-                              />
-                              <a
-                                className="ml-2"
-                                onClick={(e) => {
-                                  handleClick(e);
-                                }}
-                                href={url.description + `${user?._id}`}
-                                target="_blank"
-                              >
-                                {url.description}
-                              </a>
-                            </td>
-                            <td>
-                              <div className="btn-list">
-                              {moment(url?.createdAt).format("ddd, MMM DD, YYYY, hh:mm A")}
-                              </div>
-                            </td>
-                            <td>
-                              <Button
-                                title="click"
-                                onClick={goToRunEscape}
-                              >
-                                <RotateCcw size={16} className="font-bold" />
-                              </Button>
-                              {/* <button
+            <Card.Body className="p-0">
+              <div className="table-responsive">
+                <table className="table text-nowrap">
+                  <thead>
+                    <th>URL</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </thead>
+                  <tbody>
+                    {Urls &&
+                      Urls?.length > 0 &&
+                      Urls?.map((url: any) => (
+                        <tr key={url._id}>
+                          <td>
+                            <img
+                              src={
+                                user?.profileImage ??
+                                "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
+                              }
+                              alt="img"
+                              className="avatar avatar-xs avatar-rounded mb-1"
+                            />
+                            <a
+                              className="ml-2"
+                              onClick={(e) => {
+                                handleClick(e);
+                              }}
+                              href={url.description + `${user?._id}`}
+                              target="_blank"
+                            >
+                              {url.description}
+                            </a>
+                          </td>
+                          <td>
+                            <div className="btn-list">
+                              {moment(url?.createdAt).format(
+                                "ddd, MMM DD, YYYY, hh:mm A"
+                              )}
+                            </div>
+                          </td>
+                          <td>
+                            <Button title="click" onClick={goToRunEscape}>
+                              <RotateCcw size={16} className="font-bold" />
+                            </Button>
+                            {/* <button
                                 className="text-blue-500 ml-4"
                                 onClick={() => handleUpdate(url)}
                               >
                                 <Pencil size={14} />
                               </button> */}
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Card.Body>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card.Body>
             <Card.Footer>
               <div className="d-flex align-items-center">
                 <div>

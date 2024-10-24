@@ -37,16 +37,15 @@ export default function Home() {
   } = useForm({
     defaultValues: {
       email: "",
+      emailOrUsername: "",
       password: "",
     },
   });
 
-
-
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
-    const savedPassword =  localStorage.getItem("password");
-    console.log('savedEmail and password', savedEmail, savedPassword)
+    const savedPassword = localStorage.getItem("password");
+    console.log("savedEmail and password", savedEmail, savedPassword);
     if (savedEmail) {
       setValue("email", savedEmail); // Set email value
     }
@@ -59,14 +58,12 @@ export default function Home() {
     try {
       const response = await signIn({ ...data, rememberMe }, dispatch);
 
-
       if (rememberMe) {
         // Store the token in localStorage for persistent login
-        localStorage.setItem("email", data?.email);
+        localStorage.setItem("email", data?.emailOrUsername);
         localStorage.setItem("password", data?.password);
       } else {
         // Store the token in sessionStorage for temporary login
-        
       }
 
       if (response?.user) {
@@ -109,29 +106,34 @@ export default function Home() {
                               {err && <Alert variant="danger">{err}</Alert>}
                               <Col xl={12}>
                                 <label
-                                  htmlFor="signin-username"
+                                  htmlFor="signin-emailOrUsername"
                                   className="form-label text-default"
                                 >
-                                  Email
+                                  Email / Username
                                 </label>
                                 <input
                                   type="text"
-                                  {...register("email", {
+                                  {...register("emailOrUsername", {
                                     required: {
                                       value: true,
-                                      message: "Email is required",
+                                      message: "Email or Username is required",
                                     },
-                                    pattern: {
-                                      value:
-                                        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                      message: "Invalid email address.",
+                                    validate: (value) => {
+                                      const emailPattern =
+                                        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                                      const isValidEmail =
+                                        emailPattern.test(value);
+                                      const isValidUsername = value.length >= 3; // Assuming a valid username is at least 3 characters long
+                                      if (!isValidEmail && !isValidUsername) {
+                                        return "Invalid email address or username.";
+                                      }
                                     },
                                   })}
                                   className="form-control"
                                 />
-                                {errors.email && (
+                                {errors.emailOrUsername && (
                                   <p className="mt-2 text-danger">
-                                    {errors.email?.message}{" "}
+                                    {errors.emailOrUsername?.message}
                                   </p>
                                 )}
                               </Col>
@@ -144,9 +146,9 @@ export default function Home() {
                                   <Link
                                     scroll={false}
                                     href="forget-password"
-                                    className="float-end  link-danger op-5 fw-medium fs-12"
+                                    className="float-end link-danger op-5 fw-medium fs-12"
                                   >
-                                    Forgot password ?
+                                    Forgot password?
                                   </Link>
                                 </label>
                                 <div className="position-relative">
@@ -160,7 +162,7 @@ export default function Home() {
                                       maxLength: {
                                         value: 10,
                                         message:
-                                          "This input must exceed 10 characters",
+                                          "Password must not exceed 10 characters",
                                       },
                                     })}
                                     className="form-control"
@@ -192,12 +194,13 @@ export default function Home() {
                                       className="form-check-label text-muted fw-normal fs-12"
                                       htmlFor="defaultCheck1"
                                     >
-                                      Remember me ?
+                                      Remember me?
                                     </label>
                                   </div>
                                 </div>
                               </Col>
                             </div>
+
                             <div className="d-grid mt-4">
                               {loading ? (
                                 <button

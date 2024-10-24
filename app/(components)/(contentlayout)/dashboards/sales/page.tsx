@@ -481,74 +481,74 @@ const Sales = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredAttempts &&
-                      filteredAttempts?.length &&
-                      filteredAttempts?.map((attempt: any) => (
-                        <tr key={attempt._id}>
-                          <td className="ps-4">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id={`checkboxNoLabeljob_${attempt._id}`}
-                              value=""
-                              aria-label="..."
-                            />
-                          </td>
-                          <td>
-                            <div className="d-flex">
-                              <span className="avatar avatar-md">
-                                <img
-                                  src="../../assets/images/ecommerce/jpg/1.jpg"
-                                  className=""
-                                  alt="..."
-                                />
-                              </span>
-                              <div className="ms-2">
-                                <p className="fw-semibold fs-13 mb-0 d-flex align-items-center">
-                                  <Link scroll={false} href="#!">
-                                    {attempt.userId?.email}{" "}
-                                  </Link>
-                                </p>
-                                <p className="fs-12 text-muted mb-0">
-                                  {attempt.location?.city},{" "}
-                                  {attempt.location?.region}
-                                </p>
+                    {filteredAttempts && filteredAttempts?.length
+                      ? filteredAttempts?.map((attempt: any) => (
+                          <tr key={attempt._id}>
+                            <td className="ps-4">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id={`checkboxNoLabeljob_${attempt._id}`}
+                                value=""
+                                aria-label="..."
+                              />
+                            </td>
+                            <td>
+                              <div className="d-flex">
+                                <span className="avatar avatar-md">
+                                  <img
+                                    src="../../assets/images/ecommerce/jpg/1.jpg"
+                                    className=""
+                                    alt="..."
+                                  />
+                                </span>
+                                <div className="ms-2">
+                                  <p className="fw-semibold fs-13 mb-0 d-flex align-items-center">
+                                    <Link scroll={false} href="#!">
+                                      {attempt.userId?.email}{" "}
+                                    </Link>
+                                  </p>
+                                  <p className="fs-12 text-muted mb-0">
+                                    {attempt.location?.city},{" "}
+                                    {attempt.location?.region}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td>{attempt.userId?.userName}</td>
-                          <td>
-                            <span
-                              className={`badge ${
-                                attempt?.status == "success"
-                                  ? "bg-primary-transparent"
-                                  : "bg-red-400"
-                              }`}
-                            >
-                              {attempt.status}
-                            </span>
-                          </td>
-                          <td>{attempt.description}</td>
-                          <td>
-                            <span className="d-block fw-semibold fs-13">
-                              {attempt.location?.country}
-                            </span>
-                          </td>
-                          <td>{attempt.location?.countryCode}</td>
-                          <td>
-                            {new Date(attempt.timestamp).toLocaleDateString()}
-                          </td>
-                          <td className="text-center">
-                            {attempt.location?.region}
-                          </td>
-                          <td className="fw-semibold">
-                            {attempt.location?.city}
-                          </td>
-                          <td className="fw-semibold">
-                            {attempt.location?.ipAddress}
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                            <td>{attempt.userId?.userName}</td>
+                            <td>
+                              <span
+                                className={`badge ${
+                                  attempt?.status == "success"
+                                    ? "bg-primary-transparent"
+                                    : "bg-red-400"
+                                }`}
+                              >
+                                {attempt.status}
+                              </span>
+                            </td>
+                            <td>{attempt.description}</td>
+                            <td>
+                              <span className="d-block fw-semibold fs-13">
+                                {attempt.location?.country}
+                              </span>
+                            </td>
+                            <td>{attempt.location?.countryCode}</td>
+                            <td>
+                              {new Date(attempt.timestamp).toLocaleDateString()}
+                            </td>
+                            <td className="text-center">
+                              {attempt.location?.region}
+                            </td>
+                            <td className="fw-semibold">
+                              {attempt.location?.city}
+                            </td>
+                            <td className="fw-semibold">
+                              {attempt.location?.ipAddress}
+                            </td>
+                          </tr>
+                        ))
+                      : null}
                   </tbody>
                 </table>
               </div>
@@ -568,15 +568,27 @@ const Sales = () => {
                       >
                         Prev
                       </Pagination.Item>
-                      {[...Array(totalPages).keys()].map((num) => (
-                        <Pagination.Item
-                          key={num + 1}
-                          active={num + 1 === currentPage}
-                          onClick={() => handlePageChange(num + 1)}
-                        >
-                          {num + 1}
-                        </Pagination.Item>
-                      ))}
+
+                      {Array.from(
+                        { length: Math.min(5, totalPages) },
+                        (_, i) => {
+                          const startPage = Math.max(
+                            Math.min(currentPage - 2, totalPages - 4),
+                            1
+                          );
+                          const pageNumber = startPage + i;
+                          return (
+                            <Pagination.Item
+                              key={pageNumber}
+                              active={pageNumber === currentPage}
+                              onClick={() => handlePageChange(pageNumber)}
+                            >
+                              {pageNumber}
+                            </Pagination.Item>
+                          );
+                        }
+                      )}
+
                       <Pagination.Item
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}

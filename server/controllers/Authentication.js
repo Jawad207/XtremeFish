@@ -48,11 +48,13 @@ const SignUp = async (req, res) => {
 
 // Sign-In Function
 const SignIn = async (req, res) => {
-  const { email, password, rememberMe } = req.body;
+  const { emailOrUsername, email, password, rememberMe } = req.body;
 
   let failUser, LocationObject;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({
+      $or: [{ email: emailOrUsername }, { userName: emailOrUsername }],
+    });
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
@@ -93,7 +95,7 @@ const SignIn = async (req, res) => {
 
     // Generate JWT token
     user.location = locationObject;
-    user.lastLogin = new Date()
+    user.lastLogin = new Date();
     user.save();
     const token = generateToken(user._id, rememberMe);
     res.status(200).json({ token, user });
@@ -263,11 +265,11 @@ const resetPassword = async (req, res) => {
 
 const editProfile = async (req, res) => {
   try {
-    const { email, password, userName, bio, coverImage, profileImage } = req.body;
+    const { email, password, userName, bio, coverImage, profileImage } =
+      req.body;
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
-
 
     const user = await User.findOne({ email });
 
@@ -281,7 +283,6 @@ const editProfile = async (req, res) => {
       user.password = await bcrypt.hash(password, 10); // Update the password
     }
 
-
     if (userName) {
       user.userName = userName; // Update the username
     }
@@ -290,12 +291,12 @@ const editProfile = async (req, res) => {
       user.bio = bio; // Update the bio
     }
 
-    if(coverImage) {
-      user.coverImage = coverImage
+    if (coverImage) {
+      user.coverImage = coverImage;
     }
 
-    if(profileImage) {
-      user.profileImage = profileImage
+    if (profileImage) {
+      user.profileImage = profileImage;
     }
     // Save the updated user
     const updatedUser = await user.save();

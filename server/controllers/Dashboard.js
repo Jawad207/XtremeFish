@@ -328,7 +328,7 @@ const getAccounts = async (req, res) => {
 
     return res.status(200).json({
       accounts: accounts,
-      totalPages: Math.ceil(totalAccounts / limit), 
+      totalPages: Math.ceil(totalAccounts / limit),
       accountsCount: accounts?.length,
       percentageChange: percentageChange.toFixed(2),
     });
@@ -614,6 +614,7 @@ const getTopUsersWithMostAccounts = async (req, res) => {
         $project: {
           _id: 1,
           userName: 1,
+          profileImage: 1,
           numberOfAccounts: { $size: "$accounts" },
         },
       },
