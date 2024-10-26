@@ -75,7 +75,39 @@ function page() {
       }
     }
   };
-
+  const Tooltip = ({ children, title }:any) => {
+    const [visible, setVisible] = React.useState(false);
+  
+    return (
+      <div 
+        onMouseEnter={() => setVisible(true)} 
+        onMouseLeave={() => setVisible(false)} 
+        style={{ position: 'relative', display: 'inline-block' }}
+      >
+        {children}
+        {visible && (
+          <div 
+            style={{
+              position: 'absolute',
+              top: '55%',
+              left: '130%',
+              transform: 'translateX(-50%)',
+              backgroundColor: 'black',
+              color: 'white',
+              padding: '2px 5px',
+              borderRadius: '4px',
+              whiteSpace: 'nowrap',
+              zIndex: 1,
+              border:"1px solid white"
+            }}
+          >
+            {title}
+          </div>
+        )}
+      </div>
+    );
+  };
+  
   // Function to copy text to the clipboard
   return (
     <Fragment>
@@ -158,9 +190,11 @@ function page() {
                             </div>
                           </td>
                           <td>
-                            <Button title="click" onClick={goToRunEscape}>
+                          <Tooltip title="click">
+                            <Button onClick={goToRunEscape}>
                               <RotateCcw size={16} className="font-bold" />
                             </Button>
+                          </Tooltip>
                             {/* <button
                                 className="text-blue-500 ml-4"
                                 onClick={() => handleUpdate(url)}

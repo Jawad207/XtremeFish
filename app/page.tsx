@@ -89,7 +89,7 @@ export default function Home() {
                     <img
                       src={`${
                         process.env.NODE_ENV === "production" ? basePath : ""
-                      }/assets/images/brand-logos/desktop-dark.png`}
+                      }/assets/images/brand-logos/logo.png`}
                       alt="logo"
                       className="desktop-dark"
                     />

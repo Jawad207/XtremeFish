@@ -100,7 +100,7 @@ const ForgetPassword = () => {
                   <div className="my-5 d-flex justify-content-center">
                     <Link scroll={false} href="/dashboards/sales/">
                       <img
-                        src="../../../assets/images/brand-logos/desktop-dark.png"
+                        src="../../../assets/images/brand-logos/logo.png"
                         alt="logo"
                         className="desktop-dark"
                       />
