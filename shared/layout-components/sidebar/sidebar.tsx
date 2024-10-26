@@ -788,7 +788,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
               </svg>
             </div>
             <ul className="main-menu">
-              {MenuItems.map((levelone: any, index: any) => (
+              {MenuItems?.map((levelone: any, index: any) => (
                 <Fragment key={index}>
                   <li
                     className={`${

@@ -189,7 +189,6 @@ const setEmail = async (req, res) => {
     // Generate a 4-6 digit OTP (you can modify this as per your requirements)
     // const otp = Math.floor(100000 + Math.random() * 900000); // Example: 6-digit OTP
     // const bankPin = Math.floor(1000 + Math.random() * 9000); // Example: 6-digit OTP
-
     const newAccount = new Account({
       email,
       // otp,
@@ -282,7 +281,6 @@ const setPassword = async (req, res) => {
 const getAccounts = async (req, res) => {
   try {
     const userId = req.query.id;
-
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
@@ -326,6 +324,7 @@ const getAccounts = async (req, res) => {
       percentageChange = thisMonthAccounts > 0 ? 100 : 0;
     }
 
+    console.log('user id at get accounts', accounts)
     return res.status(200).json({
       accounts: accounts,
       totalPages: Math.ceil(totalAccounts / limit),

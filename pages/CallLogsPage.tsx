@@ -13,6 +13,7 @@ function CallLogsPage() {
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user);
   const accounts = useSelector((state: any) => state.dash.accounts);
+  console.log('accounts in here', accounts)
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAccounts, setTotalAccounts] = useState(0);
   const [limit] = useState(10);
@@ -191,6 +192,7 @@ function CallLogsPage() {
       <Success
         isOpen={open}
         title={"Copied!"}
+        copied={true}
         description={"Copied to clipboard!"}
       />
       <Row>
@@ -292,7 +294,7 @@ function CallLogsPage() {
                   </thead>
                   <tbody>
                     {/* {accounts?.length > 0 && */}
-                    {accounts.map((account: any) => (
+                    {accounts?.map((account: any) => (
                       <tr
                         key={account._id}
                         className={`${

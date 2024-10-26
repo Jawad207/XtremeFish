@@ -73,10 +73,10 @@ export const authReducer = (
     case REGISTERED_SUCCESS:
       return {
         ...state,
-        isAuthenticated: true,
+        // isAuthenticated: true,
         loading: false,
-        token: action.payload.token,
-        user: action.payload.user,
+        // token: action.payload.token,
+        // user: action.payload.user,
         error: null,
       };
     case REGISTERED_FAILURE:

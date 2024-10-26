@@ -8,10 +8,11 @@ import { useForm } from "react-hook-form";
 import { signUp } from "@/shared/Api/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
+import Success from "@/components/SuccessPop";
 
 const SignUp = () => {
   const dispatch = useDispatch();
-
+  const [open, setOpen] = useState(false);
   let { basePath } = nextConfig;
   const router = useRouter();
   const loading = useSelector((state: any) => state.auth.loading);
@@ -37,14 +38,18 @@ const SignUp = () => {
   });
 
   const RouteChange = () => {
-    let path = "/dashboards/sales";
+    let path = "/";
     router.push(path);
   };
 
   const onSubmit = async (data: any) => {
     const response = await signUp(data, dispatch);
     if (response.status == 200) {
-      return RouteChange();
+      setOpen(true);
+      setTimeout(() => {
+        setOpen(false);
+        return RouteChange();
+      }, 2000);
     } else {
       setError(response);
       reset();
@@ -54,6 +59,11 @@ const SignUp = () => {
 
   return (
     <Fragment>
+      <Success
+        isOpen={open}
+        title={"Account Created"}
+        description={"Your Account has been created Please Sign in"}
+      />
       <div className="authentication-background">
         <div className="container">
           <div className="row justify-content-center align-items-center authentication authentication-basic h-100">
@@ -98,15 +108,15 @@ const SignUp = () => {
                                 })}
                                 className="form-control"
                               />
-                              {errors.email && (
+                              {errors.userName && (
                                 <p className="mt-2 text-danger">
-                                  {errors.email?.message}{" "}
+                                  {errors.userName?.message}{" "}
                                 </p>
                               )}
                             </Col>
                             <Col xl={12}>
                               <label
-                                htmlFor="signin-username"
+                                htmlFor="signin-email"
                                 className="form-label text-default"
                               >
                                 Email
@@ -121,7 +131,8 @@ const SignUp = () => {
                                   pattern: {
                                     value:
                                       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                    message: "This input is pattern only.",
+                                    message:
+                                      "Please enter a valid email address (e.g., user@example.com).",
                                   },
                                 })}
                                 className="form-control"

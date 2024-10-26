@@ -159,11 +159,11 @@ export default function Home() {
                                         value: true,
                                         message: "Password is required",
                                       },
-                                      maxLength: {
-                                        value: 10,
-                                        message:
-                                          "Password must not exceed 10 characters",
-                                      },
+                                      // maxLength: {
+                                      //   value: 10,
+                                      //   message:
+                                      //     "Password must not exceed 10 characters",
+                                      // },
                                     })}
                                     className="form-control"
                                   />
