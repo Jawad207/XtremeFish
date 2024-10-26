@@ -20,11 +20,14 @@ const SignUp = async (req, res) => {
       lon: "73.0435",
     };
     if (userName && email && password) {
-      const user = await User.findOne({ email });
+      // const user = await User.findOne({ email });
+      const user = await User.findOne({
+        $or: [{ email: email }, { userName: userName }],
+      });
       if (user) {
         return res
           .status(400)
-          .json({ message: "User with the given Email already exist" });
+          .json({ message: "User with the given Email/UserName already exist" });
       }
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new User({
