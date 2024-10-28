@@ -75,7 +75,7 @@ const SignUp = () => {
                       process.env.NODE_ENV === "production" ? basePath : ""
                     }/assets/images/brand-logos/logo.png`}
                     alt="logo"
-                    className="desktop-dark"
+                    className="h-10 w-48"
                   />
                 </Link>
               </div>

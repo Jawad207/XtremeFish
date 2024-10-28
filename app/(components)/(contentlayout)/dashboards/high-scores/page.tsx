@@ -85,7 +85,7 @@ const page = () => {
                         onChange={toggleSelectAll}
                       />
                     </th> */}
-                    <th>Image</th>
+                    {/* <th>Image</th> */}
                     <th>Name</th>
                     <th>Accounts</th>
                   </thead>
@@ -100,10 +100,10 @@ const page = () => {
                                 "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
                               }
                               alt="img"
-                              className="avatar avatar-xs avatar-rounded mb-1"
+                              className="avatar avatar-xs avatar-rounded mb-1 mr-2"
                             /> 
+                            {account.userName}
                           </td>
-                          <td>{account.userName}</td>
                           <td>{account.numberOfAccounts}</td>
                           {/* <td>
                                 <a href={url.description + `${user?._id}`} target="_blank">{url.description}</a>
