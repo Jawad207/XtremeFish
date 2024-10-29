@@ -10,7 +10,6 @@ const Popup = ({
   postPopup,
   isOpen,
   onClose,
-  setUrls,
   val,
   ipVal,
   setIpVal,
@@ -81,7 +80,7 @@ const Popup = ({
     console.log("val and other data", descVal, isValidUrl(descVal));
     if (isValidUrl(descVal)) {
       // Append to the list of URLs
-      setUrls((prevUrls: any) => [...(prevUrls || []), descVal]);
+      // setUrls((prevUrls: any) => [...(prevUrls || []), descVal]);
 
       // Handle update or create
       const urlData = {

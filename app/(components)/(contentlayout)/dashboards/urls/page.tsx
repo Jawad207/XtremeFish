@@ -25,7 +25,10 @@ function page() {
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
   };
-
+  const playSound = () => {
+    const audio = new Audio("/assets/audio/beep-01a.mp3"); // Adjust the path if needed
+    audio.play().catch((error) => console.error("Error playing sound:", error));
+  };
   const filteredUrls = Urls.filter((url: any) =>
     url.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -45,20 +48,31 @@ function page() {
     deleteUrl({ id: urlToDelete?._id }, dispatch);
   };
 
-  const getAllUrls = async () => {
-    await getUrls(dispatch);
-  };
 
-  const goToRunEscape = () => {
-    window.open(`http://localhost:5173/${user?._id}`, "_blank");
+    const getAllUrls = async () => {
+      //  await getUrls(dispatch);
+      setInterval(async() => {
+        const allUrls = await getUrls(dispatch)
+        if (allUrls.length !== Urls.length) {
+          // playSound();
+          console.log("length is changed")
+        }
+        // console.log("allUrls:  ",allUrls.length)
+        // console.log("Urls:  ",Urls.length)
+      }, 2000);
+    };
+
+
+  const goToRunEscape = (url:any) => {
+    window.open(`${url}${user?._id}`, "_blank");
   };
 
   const getAllIps = async () => {
     await getIps(dispatch);
   };
   useEffect(() => {
-    getAllUrls();
-    getAllIps();
+      getAllUrls();
+      getAllIps();
   }, []);
 
   const handleClick = (e: any) => {
@@ -191,16 +205,19 @@ function page() {
                           </td>
                           <td>
                           <Tooltip title="click">
-                            <Button onClick={goToRunEscape}>
+                            <Button onClick={()=>{goToRunEscape(url.description)}}>
                               <RotateCcw size={16} className="font-bold" />
                             </Button>
                           </Tooltip>
-                            {/* <button
+                            <button
                                 className="text-blue-500 ml-4"
-                                onClick={() => handleUpdate(url)}
+                                onClick={() => filterUrls(url)}
                               >
-                                <Pencil size={14} />
-                              </button> */}
+                                <Trash2 size={14} />
+                              </button>
+                          </td>
+                          <td>
+                          <button onClick={playSound}>Play Sound</button>
                           </td>
                         </tr>
                       ))}
