@@ -45,7 +45,6 @@ export default function Home() {
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
     const savedPassword = localStorage.getItem("password");
-    console.log("savedEmail and password", savedEmail, savedPassword);
     if (savedEmail) {
       setValue("email", savedEmail); // Set email value
     }

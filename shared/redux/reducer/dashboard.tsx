@@ -106,7 +106,8 @@ interface DashState {
   ips: any;
   topUsers: any;
   todaysCount: any;
-  account_stats: any
+  account_stats: any;
+  beep: any;
 }
 
 const initialState: DashState = {
@@ -118,6 +119,7 @@ const initialState: DashState = {
   error: null,
   posts: [],
   post: null,
+  beep: false,
   accounts: [],
   notifications: [],
   totalAccounts: 0,
@@ -126,7 +128,7 @@ const initialState: DashState = {
   currentUrl: null,
   topUsers: [],
   todaysCount: 0,
-  account_stats: []
+  account_stats: [],
 };
 
 export const dashReducer = (
@@ -329,8 +331,14 @@ export const dashReducer = (
       };
 
     case GET_ACCOUNTS_SUCCESS:
+      console.log("get accounts success");
+      let beeplocal = false;
+      if (action?.payload?.accountsCount > state.totalAccounts) {
+        beeplocal = true;
+      }
       return {
         ...state,
+        beep: beeplocal,
         loading: false,
         accounts: action?.payload?.accounts,
         totalAccounts: action?.payload?.accountsCount,

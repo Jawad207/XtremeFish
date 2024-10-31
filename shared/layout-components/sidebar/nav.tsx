@@ -252,14 +252,14 @@ export const MenuItems: any = [
     active: false,
     selected: false,
     children: [
-      {
-        path: "/dashboards/sales",
-        type: "link",
-        active: true,
-        selected: true,
-        dirchange: false,
-        title: "Sales",
-      },
+      // {
+      //   path: "/dashboards/sales",
+      //   type: "link",
+      //   active: true,
+      //   selected: true,
+      //   dirchange: false,
+      //   title: "Sales",
+      // },
       {
         path: "/dashboards/pricing",
         type: "link",

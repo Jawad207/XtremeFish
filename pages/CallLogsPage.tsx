@@ -8,20 +8,29 @@ import { X, Check, Lock, RotateCcw } from "lucide-react";
 import { FaTrash } from "react-icons/fa";
 import moment from "moment";
 import Success from "@/components/SuccessPop";
+import { getDownloadURL, ref } from "firebase/storage";
+import { storage } from "@/shared/Api/firebase";
+import { useRouter } from "next/navigation";
+
 
 function CallLogsPage() {
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user);
   const accounts = useSelector((state: any) => state.dash.accounts);
-  // console.log('accounts in here', accounts)
+  const totalAccountsReducer = useSelector((state: any) => state.dash.totalAccounts);
+  const beep = useSelector((state: any) => state.dash.beep);
+  const router = useRouter();
+  const targetRoute = "/"; // Replace with the desired route path
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAccounts, setTotalAccounts] = useState(0);
-  const [totalAccountsFromReducer, setTotalAccountsFromReducer] = useState(0);
+  const [totalAccountsFromReducer, setTotalAccountsFromReducer] = useState(totalAccountsReducer);
   const [limit] = useState(10);
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
   const [completedAccounts, setCompletedAccounts] = useState<string[]>([]);
   const [inCompleteAccounts, setInCompleteAccounts] = useState<string[]>([]);
   const [locked, setLocked] = useState<string[]>([]);
+  const [playableUrl, setPlayableUrl] = useState<string>("");
   const [exportData, setExportData] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [open, setOpen] = useState(false);
@@ -40,6 +49,23 @@ function CallLogsPage() {
       setLocked(JSON.parse(storedLocked));
     }
   }, [currentPage]);
+
+  const getDownloadedUrl = async () => {
+    const audioRef = ref(storage, "audio/beep.mpeg");
+
+    getDownloadURL(audioRef)
+      .then((url) => {
+        setPlayableUrl(url);
+        // Use the URL to play audio, save it to the database, etc.
+      })
+      .catch((error) => {
+        console.error("Error getting download URL:", error);
+      });
+  };
+
+  useEffect(() => {
+    getDownloadedUrl();
+  });
 
   const handleCompleted = () => {
     const updatedCompletedAccounts = [
@@ -82,40 +108,39 @@ function CallLogsPage() {
   };
 
   const playSound = () => {
-    const audio = new Audio("/assets/audio/beep-01a.mp3");
+    const audio = new Audio(playableUrl);
     audio.play().catch((error) => console.error("Error playing sound:", error));
   };
-  
+  console.log('router name in here', router)
+
+  useEffect(() => {
+    if(beep) {
+      playSound()
+    }
+  }, [beep])
   useEffect(() => {
     const fetchAllAccounts = async (page: number) => {
       const response = await getAccounts(user?._id, page, limit, dispatch);
       setTotalAccounts(response?.totalAccounts);
       setTotalPages(response?.totalPages);
-      setTotalAccountsFromReducer(response?.totalAccounts);
-      // console.log("accounts from reducer in here outside if: ", totalAccountsFromReducer)
-      if (response?.totalAccounts !== totalAccountsFromReducer) {
-        // playSound();
-        setTotalAccountsFromReducer(response?.totalAccounts);
-        // console.log("length has been changed");
-      }
-      
-      // console.log("accounts from api in here: ", response?.totalAccounts);
-      // console.log("accounts from reducer in here: ", totalAccountsFromReducer);
     };
-  
+
     const intervalId = setInterval(() => {
       fetchAllAccounts(currentPage);
     }, 5000);
-  
-    return () => clearInterval(intervalId);
-  }, [totalAccountsFromReducer, user?._id, limit, dispatch]);
-  
 
- const fetchAccounts = async(page:number) => {
-  const response = await getAccounts(user?._id, page, limit, dispatch);
-  setTotalAccounts(response?.totalAccounts);
-  setTotalPages(response?.totalPages);
- }
+    return () => clearInterval(intervalId);
+  }, [totalAccountsFromReducer, user?._id, limit, currentPage]);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const fetchAccounts = async (page: number) => {
+    const response = await getAccounts(user?._id, page, limit, dispatch);
+    setTotalAccounts(response?.totalAccounts);
+    setTotalPages(response?.totalPages);
+  };
 
   const handleDeleteAccount = async (account: any) => {
     await deleteAccounts({ id: account?._id }, dispatch);
@@ -130,9 +155,7 @@ function CallLogsPage() {
     fetchAccounts(currentPage);
   };
 
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
+  
 
   const toggleSelectAccount = (accountId: string, account: any) => {
     if (exportData?.length) {
