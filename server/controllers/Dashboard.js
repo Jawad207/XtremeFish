@@ -277,7 +277,7 @@ const getAccounts = async (req, res) => {
 
     const accounts = await Account.find({ userId }).skip(skip).limit(limit);
 
-    const totalAccounts = await Account.countDocuments({ userId });
+    const totalAccounts = await Account.countDocuments({userId});
 
     const thisMonthAccounts = await Account.countDocuments({
       userId,
@@ -301,7 +301,7 @@ const getAccounts = async (req, res) => {
     return res.status(200).json({
       accounts: accounts,
       totalPages: Math.ceil(totalAccounts / limit),
-      accountsCount: accounts?.length,
+      accountsCount: totalAccounts,
       percentageChange: percentageChange.toFixed(2),
     });
   } catch (error) {

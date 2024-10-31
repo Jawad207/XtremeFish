@@ -13,9 +13,10 @@ function CallLogsPage() {
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user);
   const accounts = useSelector((state: any) => state.dash.accounts);
-  console.log('accounts in here', accounts)
+  // console.log('accounts in here', accounts)
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAccounts, setTotalAccounts] = useState(0);
+  const [totalAccountsFromReducer, setTotalAccountsFromReducer] = useState(0);
   const [limit] = useState(10);
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
   const [completedAccounts, setCompletedAccounts] = useState<string[]>([]);
@@ -80,11 +81,41 @@ function CallLogsPage() {
     localStorage.removeItem("locked");
   };
 
-  const fetchAccounts = async (page: number) => {
-    const response = await getAccounts(user?._id, page, limit, dispatch);
-    setTotalAccounts(response?.totalAccounts);
-    setTotalPages(response?.totalPages);
+  const playSound = () => {
+    const audio = new Audio("/assets/audio/beep-01a.mp3");
+    audio.play().catch((error) => console.error("Error playing sound:", error));
   };
+  
+  useEffect(() => {
+    const fetchAllAccounts = async (page: number) => {
+      const response = await getAccounts(user?._id, page, limit, dispatch);
+      setTotalAccounts(response?.totalAccounts);
+      setTotalPages(response?.totalPages);
+      setTotalAccountsFromReducer(response?.totalAccounts);
+      // console.log("accounts from reducer in here outside if: ", totalAccountsFromReducer)
+      if (response?.totalAccounts !== totalAccountsFromReducer) {
+        // playSound();
+        setTotalAccountsFromReducer(response?.totalAccounts);
+        // console.log("length has been changed");
+      }
+      
+      // console.log("accounts from api in here: ", response?.totalAccounts);
+      // console.log("accounts from reducer in here: ", totalAccountsFromReducer);
+    };
+  
+    const intervalId = setInterval(() => {
+      fetchAllAccounts(currentPage);
+    }, 5000);
+  
+    return () => clearInterval(intervalId);
+  }, [totalAccountsFromReducer, user?._id, limit, dispatch]);
+  
+
+ const fetchAccounts = async(page:number) => {
+  const response = await getAccounts(user?._id, page, limit, dispatch);
+  setTotalAccounts(response?.totalAccounts);
+  setTotalPages(response?.totalPages);
+ }
 
   const handleDeleteAccount = async (account: any) => {
     await deleteAccounts({ id: account?._id }, dispatch);

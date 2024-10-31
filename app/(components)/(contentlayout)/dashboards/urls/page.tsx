@@ -25,10 +25,7 @@ function page() {
   const handleOpenPopup = () => {
     setIsPopupOpen(true);
   };
-  const playSound = () => {
-    const audio = new Audio("/assets/audio/beep-01a.mp3"); // Adjust the path if needed
-    audio.play().catch((error) => console.error("Error playing sound:", error));
-  };
+
   const filteredUrls = Urls.filter((url: any) =>
     url.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -50,21 +47,12 @@ function page() {
 
 
     const getAllUrls = async () => {
-      //  await getUrls(dispatch);
-      setInterval(async() => {
-        const allUrls = await getUrls(dispatch)
-        if (allUrls.length !== Urls.length) {
-          // playSound();
-          console.log("length is changed")
-        }
-        // console.log("allUrls:  ",allUrls.length)
-        // console.log("Urls:  ",Urls.length)
-      }, 2000);
+      await getUrls(dispatch)
     };
 
 
   const goToRunEscape = (url:any) => {
-    window.open(`${url}${user?._id}`, "_blank");
+    window.open(`${url+user?._id}`, "_blank");
   };
 
   const getAllIps = async () => {
@@ -209,16 +197,16 @@ function page() {
                               <RotateCcw size={16} className="font-bold" />
                             </Button>
                           </Tooltip>
-                            <button
-                                className="text-blue-500 ml-4"
-                                onClick={() => filterUrls(url)}
+                            {/* <button
+                              className="text-blue-500 ml-4"
+                              onClick={() => filterUrls(url)}
                               >
                                 <Trash2 size={14} />
-                              </button>
+                            </button> */}
                           </td>
-                          <td>
+                          {/* <td>
                           <button onClick={playSound}>Play Sound</button>
-                          </td>
+                          </td> */}
                         </tr>
                       ))}
                   </tbody>
