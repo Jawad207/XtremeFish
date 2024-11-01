@@ -51,9 +51,26 @@ function page() {
     };
 
 
-  const goToRunEscape = (url:any) => {
-    window.open(`${url+user?._id}`, "_blank");
-  };
+    const goToRunEscape = (url: string) => {
+      // Check if the URL is valid and if it ends with a valid format for appending the ID
+      const isValidUrl = (url: string) => {
+        try {
+          new URL(url);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      };
+    
+      if (isValidUrl(url)) {
+        // Check if the URL already has parameters
+        const separator = url.includes('?') ? '&' : '?';
+        window.open(`${url}${separator}userId=${user?._id}`, "_blank");
+      } else {
+        // If not valid, just open the URL without the user ID
+        window.open(url, "_blank");
+      }
+    };
 
   const getAllIps = async () => {
     await getIps(dispatch);

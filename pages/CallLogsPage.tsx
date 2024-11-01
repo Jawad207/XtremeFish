@@ -10,7 +10,7 @@ import moment from "moment";
 import Success from "@/components/SuccessPop";
 import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "@/shared/Api/firebase";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 
 function CallLogsPage() {
@@ -19,8 +19,8 @@ function CallLogsPage() {
   const accounts = useSelector((state: any) => state.dash.accounts);
   const totalAccountsReducer = useSelector((state: any) => state.dash.totalAccounts);
   const beep = useSelector((state: any) => state.dash.beep);
-  const router = useRouter();
-  const targetRoute = "/"; // Replace with the desired route path
+  const pathname = usePathname();
+  // const targetRoute = "/dashboards/call-logs"; // Replace with the desired route path
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAccounts, setTotalAccounts] = useState(0);
@@ -111,11 +111,13 @@ function CallLogsPage() {
     const audio = new Audio(playableUrl);
     audio.play().catch((error) => console.error("Error playing sound:", error));
   };
-  console.log('router name in here', router)
+  console.log('router name in here', pathname)
 
   useEffect(() => {
-    if(beep) {
-      playSound()
+    if(pathname) {
+      if(beep){
+        playSound()
+      }
     }
   }, [beep])
   useEffect(() => {
