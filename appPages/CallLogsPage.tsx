@@ -111,7 +111,7 @@ function CallLogsPage() {
     const audio = new Audio(playableUrl);
     audio.play().catch((error) => console.error("Error playing sound:", error));
   };
-  console.log('router name in here', pathname)
+  // console.log('router name in here', pathname)
 
   useEffect(() => {
     if(pathname) {
@@ -156,8 +156,6 @@ function CallLogsPage() {
     setSelectedAccounts([]);
     fetchAccounts(currentPage);
   };
-
-  
 
   const toggleSelectAccount = (accountId: string, account: any) => {
     if (exportData?.length) {
@@ -241,7 +239,10 @@ function CallLogsPage() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }
-
+  // console.log(accounts)
+  // console.log("completedAccounts:  ", completedAccounts)
+  // console.log("inCompleteAccounts:  ",inCompleteAccounts)
+  // console.log("locked:  ",locked)
   return (
     <Fragment>
       <Seo title={"Call-logs"} />
@@ -353,20 +354,17 @@ function CallLogsPage() {
                     {accounts?.map((account: any) => (
                       <tr
                         key={account._id}
-                        className={`${
-                          completedAccounts.includes(account._id)
-                            ? "text-green-700" // Tailwind class for light green background
-                            : ""
-                        } ${
-                          inCompleteAccounts.includes(account._id)
-                            ? "text-red-700" // Tailwind class for light green background
-                            : ""
+                        className={`
+                        ${
+                          completedAccounts.includes(account._id) ? "text-green-500" : ""
                         } 
-                            ${
-                              locked.includes(account._id)
-                                ? "text-purple-700" // Tailwind class for light green background
-                                : ""
-                            }`}
+                        ${
+                          inCompleteAccounts.includes(account._id) ? "text-red-500" : ""
+                        } 
+                        ${
+                          locked.includes(account._id) ? "text-purple-500" : ""
+                        }`
+                      }
                       >
                         <td>
                           <input

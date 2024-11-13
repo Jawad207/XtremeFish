@@ -1,5 +1,5 @@
 import React from 'react'
-import ForgetPassword from '@/pages/ForgetPassword'
+import ForgetPassword from '@/appPages/ForgetPassword'
 
 function FrogetPasswordPage() {
   return (

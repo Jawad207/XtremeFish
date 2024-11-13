@@ -1,5 +1,5 @@
 import React from 'react'
-import SignUp from '@/pages/SignUpPage'
+import SignUp from '@/appPages/SignUpPage'
 
 function SignUpPage() {
   return (
