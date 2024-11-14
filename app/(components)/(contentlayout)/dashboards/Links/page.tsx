@@ -1,5 +1,5 @@
 import React from 'react'
-import LinksPage from '@/pages/LinksPage'
+import LinksPage from '@/appPages/LinksPage'
 
 function page() {
   return (

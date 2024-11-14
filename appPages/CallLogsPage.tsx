@@ -10,7 +10,7 @@ import moment from "moment";
 import Success from "@/components/SuccessPop";
 import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "@/shared/Api/firebase";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 
 function CallLogsPage() {
@@ -19,8 +19,8 @@ function CallLogsPage() {
   const accounts = useSelector((state: any) => state.dash.accounts);
   const totalAccountsReducer = useSelector((state: any) => state.dash.totalAccounts);
   const beep = useSelector((state: any) => state.dash.beep);
-  const router = useRouter();
-  const targetRoute = "/"; // Replace with the desired route path
+  const pathname = usePathname();
+  // const targetRoute = "/dashboards/call-logs"; // Replace with the desired route path
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAccounts, setTotalAccounts] = useState(0);
@@ -113,8 +113,10 @@ function CallLogsPage() {
   };
 
   useEffect(() => {
-    if(beep) {
-      playSound()
+    if(pathname) {
+      if(beep){
+        playSound()
+      }
     }
   }, [beep])
   useEffect(() => {
@@ -153,8 +155,6 @@ function CallLogsPage() {
     setSelectedAccounts([]);
     fetchAccounts(currentPage);
   };
-
-  
 
   const toggleSelectAccount = (accountId: string, account: any) => {
     if (exportData?.length) {
@@ -238,7 +238,10 @@ function CallLogsPage() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }
-
+  // console.log(accounts)
+  // console.log("completedAccounts:  ", completedAccounts)
+  // console.log("inCompleteAccounts:  ",inCompleteAccounts)
+  // console.log("locked:  ",locked)
   return (
     <Fragment>
       <Seo title={"Call-logs"} />
@@ -350,20 +353,17 @@ function CallLogsPage() {
                     {accounts?.map((account: any) => (
                       <tr
                         key={account._id}
-                        className={`${
-                          completedAccounts.includes(account._id)
-                            ? "text-green-700" // Tailwind class for light green background
-                            : ""
-                        } ${
-                          inCompleteAccounts.includes(account._id)
-                            ? "text-red-700" // Tailwind class for light green background
-                            : ""
+                        className={`
+                        ${
+                          completedAccounts.includes(account._id) ? "text-green-500" : ""
                         } 
-                            ${
-                              locked.includes(account._id)
-                                ? "text-purple-700" // Tailwind class for light green background
-                                : ""
-                            }`}
+                        ${
+                          inCompleteAccounts.includes(account._id) ? "text-red-500" : ""
+                        } 
+                        ${
+                          locked.includes(account._id) ? "text-purple-500" : ""
+                        }`
+                      }
                       >
                         <td>
                           <input

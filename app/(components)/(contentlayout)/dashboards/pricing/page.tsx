@@ -1,5 +1,5 @@
 import React from 'react'
-import SubscriptionPage from '@/pages/SubscriptionPage'
+import SubscriptionPage from '@/appPages/SubscriptionPage'
 
 function Subscription() {
   return (

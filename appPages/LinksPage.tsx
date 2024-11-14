@@ -1,8 +1,11 @@
+"use client"
 import Seo from "@/shared/layout-components/seo/seo";
 import Link from "next/link";
 import React, { Fragment } from "react";
-import { Button, Card, Col, Dropdown, Pagination, Row } from "react-bootstrap";
+import dynamic from "next/dynamic";
 
+import { Button, Col, Dropdown, Pagination, Row } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
 function LinksPage() {
   return (
     <Fragment>

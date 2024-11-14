@@ -1,5 +1,5 @@
 import React from 'react'
-import CallLogsPage from '@/pages/CallLogsPage'
+import CallLogsPage from '@/appPages/CallLogsPage'
 
 function CallLogs() {
   return (
