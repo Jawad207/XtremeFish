@@ -186,7 +186,6 @@ const Header = ({ local_varaiable }: any) => {
             break;
           // detached
           case "detached":
-            console.log("this one got called");
             if (theme.toggled === "detached-close") {
               ThemeChanger(
                 { ...theme, toggled: "", iconOverlay: "" },

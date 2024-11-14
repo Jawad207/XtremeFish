@@ -111,7 +111,6 @@ function CallLogsPage() {
     const audio = new Audio(playableUrl);
     audio.play().catch((error) => console.error("Error playing sound:", error));
   };
-  console.log('router name in here', router)
 
   useEffect(() => {
     if(beep) {

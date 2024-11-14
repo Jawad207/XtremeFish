@@ -53,7 +53,7 @@ function page() {
 
   const goToRunEscape = (url:any) => {
     window.open(`${url+user?._id}`, "_blank");
-  };
+  }; 
 
   const getAllIps = async () => {
     await getIps(dispatch);
