@@ -2,7 +2,7 @@ import User from "../models/Users.js";
 import LoginAttempt from "../models/LoginAttempt.js";
 import Post from "../models/Post.js";
 import Account from "../models/Account.js";
-import Notification from "../models/notification.js";
+import Notification from "../models/Notification.js";
 import { getCountryFromIp } from "../helper/index.js";
 import bcrypt from "bcryptjs";
 import Url from "../models/Url.js";

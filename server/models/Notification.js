@@ -1,4 +1,5 @@
-import { Schema, mongoose } from "mongoose";
+import { Schema } from "mongoose";
+import mongoose from "mongoose";
 const notificationSchema = new Schema(
   {
     message: { type: String, required: true },
@@ -13,4 +14,5 @@ const notificationSchema = new Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Notification", notificationSchema);
+const Notification = mongoose.model("Notification", notificationSchema);
+export default Notification;
