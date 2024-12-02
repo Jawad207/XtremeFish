@@ -331,7 +331,6 @@ export const dashReducer = (
       };
 
     case GET_ACCOUNTS_SUCCESS:
-      console.log("get accounts success");
       let beeplocal = false;
       if (action?.payload?.accountsCount > state.totalAccounts) {
         beeplocal = true;

@@ -297,7 +297,6 @@ const getAccounts = async (req, res) => {
       percentageChange = thisMonthAccounts > 0 ? 100 : 0;
     }
 
-    // console.log('user id at get accounts', accounts)
     return res.status(200).json({
       accounts: accounts,
       totalPages: Math.ceil(totalAccounts / limit),
