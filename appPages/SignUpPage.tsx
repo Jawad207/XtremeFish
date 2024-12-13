@@ -22,6 +22,7 @@ const SignUp = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const logo= "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Flogo.png?alt=media&token=c6c65b3d-1b55-49f4-9dcb-da1bcb6907b1"
 
   const [err, setError] = useState("");
   const {
@@ -71,9 +72,7 @@ const SignUp = () => {
               <div className="my-5 d-flex justify-content-center">
                 <Link scroll={false} href="#!">
                   <img
-                    src={`${
-                      process.env.NODE_ENV === "production" ? basePath : ""
-                    }/assets/images/brand-logos/logo.png`}
+                    src={logo}
                     alt="logo"
                     className="h-10 w-48"
                   />
