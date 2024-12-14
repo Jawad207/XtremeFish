@@ -136,12 +136,12 @@ export const Statistics1: spark3= {
             offsetX: 0,
             offsetY: 8,
             markers: {
-              width: 10,
-              height: 4,
+              // width: 10,
+              // height: 4,
               strokeWidth: 0,
               strokeColor: '#fff',
               fillColors: undefined,
-              radius: 5,
+              // radius: 5,
               customHTML: undefined,
               onClick: undefined,
               offsetX: 0,
@@ -208,13 +208,7 @@ export const Statistics2: spark3= {
         name: 'Sales',
         data: [32, 15, 63, 51, 36, 62, 99, 42, 78, 76, 32, 120],
       }, 
-      // {
-      //   name: 'Revenue',
-      //   data: [56, 58, 38, 50, 64, 45, 55, 32, 15, 63, 51, 86]
-      // }, {
-      //   name: 'Profit',
-      //   data: [48, 29, 50, 69, 20, 59, 52, 12, 48, 28, 17, 98]
-      // }
+
     ],
     options: {
         chart: {
@@ -368,12 +362,12 @@ export const Salescategories: spark3= {
               colors: '#9ba5b7',
             },
             markers: {
-              width: 7,
-              height: 7,
+              // width: 7,
+              // height: 7,
               strokeWidth: 0,
               strokeColor: '#fff',
               fillColors: undefined,
-              radius: 7,
+              // radius: 7,
               offsetX: 0,
               offsetY: 0
             },
