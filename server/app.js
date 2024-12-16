@@ -43,7 +43,7 @@ server.use("/auth", authentication);
 server.use("/dashboard", dashboard);
 
 server.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on http://localhost:${port} and on uri ${MONGODB_URI}`);
 });
 
 
