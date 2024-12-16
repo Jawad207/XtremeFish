@@ -12,10 +12,7 @@ const port = process.env.PORT || 8443; // Common HTTPS port
 const MONGODB_URI = process.env.MONGODB_URI;
 
 // Load SSL/TLS certificates (ensure these paths are correct)
-const httpsOptions = {
-  key: fs.readFileSync("/root/private.key"), // Replace with your private key file path
-  cert: fs.readFileSync("/root/root.crt"), // Replace with your certificate file path
-};
+
 
 // Initialize Express app
 const server = express();
@@ -27,7 +24,7 @@ server.set("trust proxy", true); // Trust proxy headers (important for X-Forward
 const connectToMongoDB = async () => {
   try {
     await mongoose.connect(MONGODB_URI, {});
-    console.log("Connected to MongoDB");
+    console.log(`Connected to MongoDB `);
   } catch (err) {
     console.error("Failed to connect to MongoDB", err);
     setTimeout(connectToMongoDB, 5000); // Retry after 5 seconds
@@ -45,8 +42,13 @@ server.get("/api/custom", (req, res) => {
 server.use("/auth", authentication);
 server.use("/dashboard", dashboard);
 
-// Create and start the HTTPS server
-https.createServer(httpsOptions, server).listen(port, (err) => {
-  if (err) throw err;
-  console.log(`Server running securely on https://localhost:${port}`);
+server.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
+
+
+// Create and start the HTTPS server
+// https.createServer(httpsOptions, server).listen(port, (err) => {
+//   if (err) throw err;
+//   console.log(`Server running securely on https://localhost:${port}`);
+// });

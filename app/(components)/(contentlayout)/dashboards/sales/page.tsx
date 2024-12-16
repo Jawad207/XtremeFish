@@ -56,6 +56,7 @@ const Sales = () => {
 
   // Fetch accounts with pagination
   const fetchAccounts = async (page: number) => {
+
     const response = await getAccounts(auth?._id, page, 10, dispatch);
     setPercentage({
       ...percentage,

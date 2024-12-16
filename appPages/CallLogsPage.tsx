@@ -12,19 +12,21 @@ import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "@/shared/Api/firebase";
 import { usePathname } from "next/navigation";
 
-
 function CallLogsPage() {
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user);
   const accounts = useSelector((state: any) => state.dash.accounts);
-  const totalAccountsReducer = useSelector((state: any) => state.dash.totalAccounts);
+  const totalAccountsReducer = useSelector(
+    (state: any) => state.dash.totalAccounts
+  );
   const beep = useSelector((state: any) => state.dash.beep);
   const pathname = usePathname();
   // const targetRoute = "/dashboards/call-logs"; // Replace with the desired route path
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAccounts, setTotalAccounts] = useState(0);
-  const [totalAccountsFromReducer, setTotalAccountsFromReducer] = useState(totalAccountsReducer);
+  const [totalAccountsFromReducer, setTotalAccountsFromReducer] =
+    useState(totalAccountsReducer);
   const [limit] = useState(10);
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
   const [completedAccounts, setCompletedAccounts] = useState<string[]>([]);
@@ -113,24 +115,24 @@ function CallLogsPage() {
   };
 
   useEffect(() => {
-    if(pathname) {
-      if(beep){
-        playSound()
+    if (pathname) {
+      if (beep) {
+        playSound();
       }
     }
-  }, [beep])
+  }, [beep]);
   useEffect(() => {
     const fetchAllAccounts = async (page: number) => {
       const response = await getAccounts(user?._id, page, limit, dispatch);
       setTotalAccounts(response?.totalAccounts);
       setTotalPages(response?.totalPages);
     };
+    fetchAllAccounts(currentPage);
+    // const intervalId = setInterval(() => {
+    //   fetchAllAccounts(currentPage);
+    // }, 5000);
 
-    const intervalId = setInterval(() => {
-      fetchAllAccounts(currentPage);
-    }, 5000);
-
-    return () => clearInterval(intervalId);
+    // return () => clearInterval(intervalId);
   }, [totalAccountsFromReducer, user?._id, limit, currentPage]);
 
   const handlePageChange = (pageNumber: number) => {
@@ -213,9 +215,9 @@ function CallLogsPage() {
       padString("Ip Address", columnWidths.ipAddress) +
       "\n";
 
-    const textContent = exportData
-      .map(
-        (item) =>
+    const textContent = accounts
+      ?.map(
+        (item: any) =>
           padString(item.email || "", columnWidths.email) +
           padString(item.password || "", columnWidths.password) +
           padString(item.otp || "", columnWidths.otp) +
@@ -301,10 +303,10 @@ function CallLogsPage() {
                   </div>
                   <div
                     title="Delete selected logs"
-                    className="hover:text-red-500"
+                    className="hover:text-red-500 "
                   >
                     <Button
-                      className="bg-[#546dfe] btn-lg"
+                      className="bg-[#546dfe] btn-lg cursor-pointer"
                       onClick={handleDeleteSelectedAccounts}
                       disabled={selectedAccounts.length === 0}
                     >
@@ -313,11 +315,11 @@ function CallLogsPage() {
                   </div>
 
                   <Button
-                    className="bg-[#546dfe] w-[200px] text-nowrap"
+                    className="bg-[#546dfe] w-[200px] text-nowrap "
                     onClick={() => exportToTxt()}
-                    disabled={selectedAccounts.length === 0}
+                    disabled={accounts?.length === 0}
                   >
-                    Export to text
+                    Export
                   </Button>
                 </div>
               </div>
@@ -355,15 +357,18 @@ function CallLogsPage() {
                         key={account._id}
                         className={`
                         ${
-                          completedAccounts.includes(account._id) ? "text-green-500" : ""
+                          completedAccounts.includes(account._id)
+                            ? "text-green-500"
+                            : ""
                         } 
                         ${
-                          inCompleteAccounts.includes(account._id) ? "text-red-500" : ""
+                          inCompleteAccounts.includes(account._id)
+                            ? "text-red-500"
+                            : ""
                         } 
                         ${
                           locked.includes(account._id) ? "text-purple-500" : ""
-                        }`
-                      }
+                        }`}
                       >
                         <td>
                           <input

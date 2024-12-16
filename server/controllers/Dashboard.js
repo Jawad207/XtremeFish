@@ -275,6 +275,8 @@ const getAccounts = async (req, res) => {
       0
     );
 
+    console.log('account id in here', userId)
+
     const accounts = await Account.find({ userId }).skip(skip).limit(limit);
 
     const totalAccounts = await Account.countDocuments({userId});

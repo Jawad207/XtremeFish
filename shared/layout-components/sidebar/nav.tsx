@@ -296,7 +296,7 @@ export const MenuItems: any = [
         active: false,
         selected: false,
         dirchange: false,
-        title: "Call Logs",
+        title: "Your Logs",
       },
       {
         path: "/dashboards/urls",

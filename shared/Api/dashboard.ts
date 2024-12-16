@@ -243,8 +243,9 @@ export const getAccounts = async (
     });
 
     if (response.status === 200) {
+      
       const { accounts, accountsCount, totalPages, percentageChange } = response.data;
-
+      console.log('accounts in here', accounts)
       // Dispatch success with payload containing accounts and pagination info
       dispatch({
         type: GET_ACCOUNTS_SUCCESS,
