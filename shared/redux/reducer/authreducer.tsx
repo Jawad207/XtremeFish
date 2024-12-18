@@ -39,7 +39,6 @@ export const authReducer = (
         loading: true,
       };
     case LOGIN_SUCCESS:
-      console.log('user in here inside reducer', action?.payload?.user)
       return {
         ...state,
         isAuthenticated: true,

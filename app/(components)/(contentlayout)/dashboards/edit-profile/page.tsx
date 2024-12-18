@@ -3,7 +3,7 @@ import Pageheader from "@/shared/layout-components/page-header/pageheader";
 import Seo from "@/shared/layout-components/seo/seo";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
 import { Camera } from "lucide-react";
 import { useDispatch } from "react-redux";

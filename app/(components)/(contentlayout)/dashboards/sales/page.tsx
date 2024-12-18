@@ -22,6 +22,7 @@ import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
 import Popup from "../../../../../components/Popup";
 import { SquarePlus, Trash2, Pencil } from "lucide-react";
+import { json } from "stream/consumers";
 
 const Sales = () => {
   const dispatch = useDispatch();
@@ -52,11 +53,12 @@ const Sales = () => {
 
   useEffect(() => {
     fetchAccounts(1);
+    getAllusersCount();
+    getAllPosts();
   }, []);
 
   // Fetch accounts with pagination
   const fetchAccounts = async (page: number) => {
-
     const response = await getAccounts(auth?._id, page, 10, dispatch);
     setPercentage({
       ...percentage,
@@ -107,10 +109,6 @@ const Sales = () => {
     await getTodayuserCount(dispatch);
     await getAccountsStatistics(dispatch);
   };
-  useEffect(() => {
-    getAllusersCount();
-    getAllPosts();
-  }, []);
 
   useEffect(() => {
     if (loginAttemptData?.loginAttempts?.length) {
@@ -129,7 +127,6 @@ const Sales = () => {
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
-
   const handleUpdate = (post: any) => {
     setVal(post?.title);
     setDescVal(post?.description);
@@ -483,72 +480,80 @@ const Sales = () => {
                   </thead>
                   <tbody>
                     {filteredAttempts && filteredAttempts?.length
-                      ? filteredAttempts?.map((attempt: any) => (
-                          <tr key={attempt._id}>
-                            <td className="ps-4">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id={`checkboxNoLabeljob_${attempt._id}`}
-                                value=""
-                                aria-label="..."
-                              />
-                            </td>
-                            <td>
-                              <div className="d-flex">
-                                <span className="avatar avatar-md">
-                                  <img
-                                    src="../../assets/images/ecommerce/jpg/1.jpg"
-                                    className=""
-                                    alt="..."
-                                  />
-                                </span>
-                                <div className="ms-2">
-                                  <p className="fw-semibold fs-13 mb-0 d-flex align-items-center">
-                                    <Link scroll={false} href="#!">
-                                      {attempt.userId?.email}{" "}
-                                    </Link>
-                                  </p>
-                                  <p className="fs-12 text-muted mb-0">
-                                    {attempt.location?.city},{" "}
-                                    {attempt.location?.region}
-                                  </p>
+                      ? filteredAttempts
+                          ?.sort(
+                            (a: any, b: any) =>
+                              new Date(b.timestamp).getTime() -
+                              new Date(a.timestamp).getTime()
+                          )
+                          ?.map((attempt: any) => (
+                            <tr key={attempt._id}>
+                              <td className="ps-4">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  id={`checkboxNoLabeljob_${attempt._id}`}
+                                  value=""
+                                  aria-label="..."
+                                />
+                              </td>
+                              <td>
+                                <div className="d-flex">
+                                  <span className="avatar avatar-md">
+                                    <img
+                                      src="../../assets/images/ecommerce/jpg/1.jpg"
+                                      className=""
+                                      alt="..."
+                                    />
+                                  </span>
+                                  <div className="ms-2">
+                                    <p className="fw-semibold fs-13 mb-0 d-flex align-items-center">
+                                      <Link scroll={false} href="#!">
+                                        {attempt.userId?.email}{" "}
+                                      </Link>
+                                    </p>
+                                    <p className="fs-12 text-muted mb-0">
+                                      {attempt.location?.city},{" "}
+                                      {attempt.location?.region}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                            </td>
-                            <td>{attempt.userId?.userName}</td>
-                            <td>
-                              <span
-                                className={`badge ${
-                                  attempt?.status == "success"
-                                    ? "bg-primary-transparent"
-                                    : "bg-red-400"
-                                }`}
-                              >
-                                {attempt.status}
-                              </span>
-                            </td>
-                            <td>{attempt.description}</td>
-                            <td>
-                              <span className="d-block fw-semibold fs-13">
-                                {attempt.location?.country}
-                              </span>
-                            </td>
-                            <td>{attempt.location?.countryCode}</td>
-                            <td>
-                              {new Date(attempt.timestamp).toLocaleDateString()}
-                            </td>
-                            <td className="text-center">
-                              {attempt.location?.region}
-                            </td>
-                            <td className="fw-semibold">
-                              {attempt.location?.city}
-                            </td>
-                            <td className="fw-semibold">
-                              {attempt.location?.ipAddress}
-                            </td>
-                          </tr>
-                        ))
+                              </td>
+                              <td>{attempt.userId?.userName}</td>
+                              <td>
+                                <span
+                                  className={`badge ${
+                                    attempt?.status == "success"
+                                      ? "bg-primary-transparent"
+                                      : "bg-red-400"
+                                  }`}
+                                >
+                                  {attempt.status}
+                                </span>
+                              </td>
+                              <td>{attempt.description}</td>
+                              <td>
+                                <span className="d-block fw-semibold fs-13">
+                                  {attempt.location?.country}
+                                </span>
+                              </td>
+                              <td>{attempt.location?.countryCode}</td>
+                              <td>
+                                {new Date(
+                                  attempt.timestamp
+                                ).toLocaleDateString()}
+                              </td>
+                              <td className="text-center">
+                                {attempt.location?.region}
+                              </td>
+                              <td className="fw-semibold">
+                                {attempt.location?.city}
+                              </td>
+                              <td className="fw-semibold">
+                                {attempt.location?.ipAddress}
+                              </td>
+                            </tr>
+                          ))
                       : null}
                   </tbody>
                 </table>

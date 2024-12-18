@@ -45,39 +45,38 @@ function page() {
     deleteUrl({ id: urlToDelete?._id }, dispatch);
   };
 
+  const getAllUrls = async () => {
+    await getUrls(dispatch);
+  };
 
-    const getAllUrls = async () => {
-      await getUrls(dispatch)
-    };
-
-
-    const goToRunEscape = (url: string) => {
-      // Check if the URL is valid and if it ends with a valid format for appending the ID
-      const isValidUrl = (url: string) => {
-        try {
-          new URL(url);
-          return true;
-        } catch (e) {
-          return false;
-        }
-      };
-    
-      if (isValidUrl(url)) {
-        // Check if the URL already has parameters
-        const separator = url.includes('?') ? '&' : '?';
-        window.open(`${url}${separator}userId=${user?._id}`, "_blank");
-      } else {
-        // If not valid, just open the URL without the user ID
-        window.open(url, "_blank");
+  const goToRunEscape = (url: string) => {
+    // Check if the URL is valid and if it ends with a valid format for appending the ID
+    const isValidUrl = (url: string) => {
+      try {
+        new URL(url);
+        return true;
+      } catch (e) {
+        return false;
       }
     };
+
+    if (isValidUrl(url)) {
+      console.log("valid url");
+      // Check if the URL already has parameters
+      const separator = url.includes("?") ? "&" : "?";
+      window.open(`${url}${separator}userId=${user?._id}`, "_blank");
+    } else {
+      // If not valid, just open the URL without the user ID
+      window.open(url, "_blank");
+    }
+  };
 
   const getAllIps = async () => {
     await getIps(dispatch);
   };
   useEffect(() => {
-      getAllUrls();
-      getAllIps();
+    getAllUrls();
+    getAllIps();
   }, []);
 
   const handleClick = (e: any) => {
@@ -94,30 +93,30 @@ function page() {
       }
     }
   };
-  const Tooltip = ({ children, title }:any) => {
+  const Tooltip = ({ children, title }: any) => {
     const [visible, setVisible] = React.useState(false);
-  
+
     return (
-      <div 
-        onMouseEnter={() => setVisible(true)} 
-        onMouseLeave={() => setVisible(false)} 
-        style={{ position: 'relative', display: 'inline-block' }}
+      <div
+        onMouseEnter={() => setVisible(true)}
+        onMouseLeave={() => setVisible(false)}
+        style={{ position: "relative", display: "inline-block" }}
       >
         {children}
         {visible && (
-          <div 
+          <div
             style={{
-              position: 'absolute',
-              top: '55%',
-              left: '130%',
-              transform: 'translateX(-50%)',
-              backgroundColor: 'black',
-              color: 'white',
-              padding: '2px 5px',
-              borderRadius: '4px',
-              whiteSpace: 'nowrap',
+              position: "absolute",
+              top: "55%",
+              left: "130%",
+              transform: "translateX(-50%)",
+              backgroundColor: "black",
+              color: "white",
+              padding: "2px 5px",
+              borderRadius: "4px",
+              whiteSpace: "nowrap",
               zIndex: 1,
-              border:"1px solid white"
+              border: "1px solid white",
             }}
           >
             {title}
@@ -126,7 +125,7 @@ function page() {
       </div>
     );
   };
-  
+
   // Function to copy text to the clipboard
   return (
     <Fragment>
@@ -195,7 +194,10 @@ function page() {
                               onClick={(e) => {
                                 handleClick(e);
                               }}
-                              href={url.description + `${user?._id}`}
+                              // href={url.description + `userId=${user?._id}`}
+                              href={`${url.description}${
+                                url.description.includes("?") ? "&" : "?"
+                              }${user?._id ? `userId=${user._id}` : ""}`}
                               target="_blank"
                             >
                               {url.description}
@@ -209,11 +211,15 @@ function page() {
                             </div>
                           </td>
                           <td>
-                          <Tooltip title="click">
-                            <Button onClick={()=>{goToRunEscape(url.description)}}>
-                              <RotateCcw size={16} className="font-bold" />
-                            </Button>
-                          </Tooltip>
+                            <Tooltip title="click">
+                              <Button
+                                onClick={() => {
+                                  goToRunEscape(url.description);
+                                }}
+                              >
+                                <RotateCcw size={16} className="font-bold" />
+                              </Button>
+                            </Tooltip>
                             {/* <button
                               className="text-blue-500 ml-4"
                               onClick={() => filterUrls(url)}

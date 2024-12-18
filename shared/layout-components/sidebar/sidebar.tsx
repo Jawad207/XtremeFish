@@ -3,7 +3,6 @@ import React, { Fragment, useState, useEffect } from "react";
 import { connect, useSelector } from "react-redux";
 import { ThemeChanger } from "../../redux/action";
 import Link from "next/link";
-import store from "@/shared/redux/store";
 import SimpleBar from "simplebar-react";
 import Menuloop from "./menuloop";
 import { usePathname, useRouter } from "next/navigation";
@@ -888,6 +887,15 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
                 </Fragment>
               ))}
             </ul>
+
+            {/* <ul className="main-menu">
+              <Fragment >
+                <li>
+                  <>Go to Admin</>
+                </li>
+              </Fragment>
+            </ul> */}
+
             <div
               className="slide-right"
               id="slide-right"
@@ -909,6 +917,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
           </nav>
           {/* End::nav  */}
         </SimpleBar>
+
         {/* End::main-sidebar  */}
       </aside>
     </Fragment>

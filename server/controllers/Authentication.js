@@ -58,7 +58,6 @@ const SignIn = async (req, res) => {
     const user = await User.findOne({
       $or: [{ email: emailOrUsername }, { userName: emailOrUsername }],
     });
-    console.log('user at backend ', user)
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
