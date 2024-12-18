@@ -340,16 +340,29 @@ const Sales = () => {
               <Card.Title>Reviews</Card.Title>
             </Card.Header>
             <Card.Body>
-              <div id="top-categories">
-                <ReactApexChart
-                  options={Salesdata.Salescategories.options}
-                  series={Salesdata.Salescategories.series}
-                  type="radar"
-                  width={"100%"}
-                  height={280}
-                />
+            <div className="card shadow-none mb-0 border-0 bg-primary">
+              <div className="card-body text-center p-5">
+                  <img src="../../assets/images/faces/1.jpg" alt="img" className="mx-auto text-center avatar avatar-xl rounded-circle mb-4"/>
+                  <div className="mb-2 text-warning fs-15">
+                      <i className="ri-star-fill me-1"></i>
+                      <i className="ri-star-fill me-1"></i>
+                      <i className="ri-star-fill me-1"></i>
+                      <i className="ri-star-fill me-1"></i>
+                      <i className="ri-star-half-line"></i>
+                  </div>
+                  <p className="text-fixed-white op-8 fs-14">
+                      This product has made a difference in my daily routine. Simple, effective, and worth every penny
+                  </p>
+                  <div className="d-flex align-items-center justify-content-start">
+                      <div className="flex-grow-1">
+                          <h6 className="mb-1 text-fixed-white">Allie Grater</h6>
+                          <span className="fs-14 fw-normal text-fixed-white op-7">Client</span>
+                      </div>
+                      <i className="bx bxs-quote-alt-left review-quote gradient"></i>
+                  </div>
               </div>
-              <div className="row mt-0">
+          </div>
+              {/* <div className="row mt-0">
                 <div className="col-6 border-end border-inline-end-dashed text-center">
                   <p className="text-muted mb-1 fs-12">This Month</p>
                   <h6 className="text-success">+74.83%</h6>
@@ -358,7 +371,7 @@ const Sales = () => {
                   <p className="text-muted mb-1 fs-12">Last Month</p>
                   <h6 className="text-primary">+56.90%</h6>
                 </div>
-              </div>
+              </div> */}
             </Card.Body>
           </Card>
         </Col>

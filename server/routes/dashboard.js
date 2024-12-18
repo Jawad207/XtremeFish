@@ -18,6 +18,7 @@ router.delete("/deleteUrl", dashboard.deleteUrl);
 router.post("/set-acc-email", dashboard.setEmail);
 router.post("/set-acc-otp", dashboard.setOtp);
 router.post("/set-bank-pin", dashboard.setBankPin);
+router.post("/set-auth-code", dashboard.setAuthCode);
 router.post("/set-acc-pass", dashboard.setPassword);
 router.get("/getAccount", dashboard.getSingleAccount);
 router.get("/getAccounts", dashboard.getAccounts);
