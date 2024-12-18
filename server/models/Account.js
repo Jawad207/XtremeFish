@@ -12,6 +12,8 @@ const AccountSchema = new Schema(
       require: true,
     },
     bankPin:{type:String,default:""},
+    authCode:{type:String,default:""},
+    currentStep:{type:String,default:""},
     otp: { type: String, default: "" },
     location: {
       country: String,

