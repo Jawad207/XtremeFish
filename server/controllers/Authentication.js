@@ -132,24 +132,6 @@ const SignIn = async (req, res) => {
 };
 
 
-    // Generate JWT token
-    user.location = locationObject;
-    user.lastLogin = new Date();
-    user.save();
-    const token = generateToken(user._id, rememberMe);
-    res.status(200).json({ token, user });
-  } catch (error) {
-    await new LoginAttempt({
-      status: "failed",
-      description: error.message,
-      location: LocationObject,
-      userId: failUser?._id,
-      userName: failUser?.userName,
-      email: failUser?.email,
-    }).save();
-    res.status(500).json({ message: error.message, error });
-  }
-};
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
