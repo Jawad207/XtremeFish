@@ -735,28 +735,28 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
             <img
               src={`${
                 process.env.NODE_ENV === "production" ? basePath : ""
-              }/assets/images/brand-logos/desktop-logo.png`}
+              }../../../assets/images/brand-logos/logo.png`}
               alt="logo"
               className="desktop-logo"
             />
             <img
               src={`${
                 process.env.NODE_ENV === "production" ? basePath : ""
-              }/assets/images/brand-logos/toggle-dark.png`}
+              }../../../assets/images/brand-logos/logo.png`}
               alt="logo"
               className="toggle-dark"
             />
             <img
               src={`${
                 process.env.NODE_ENV === "production" ? basePath : ""
-              }/assets/images/brand-logos/logo.png`}
+              }../../../assets/images/brand-logos/logo.png`}
               alt="logo"
               className="desktop-dark"
             />
             <img
               src={`${
                 process.env.NODE_ENV === "production" ? basePath : ""
-              }/assets/images/brand-logos/toggle-logo.png`}
+              }../../../assets/images/brand-logos/logo.png`}
               alt="logo"
               className="toggle-logo"
             />
