@@ -59,32 +59,46 @@ const SignIn = async (req, res) => {
       $or: [{ email: emailOrUsername }, { userName: emailOrUsername }],
     });
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
     failUser = user;
-    const userLocation = await getCountryFromIp();
-    const locationObject = {
+
+    // Get the real IP address from the X-Forwarded-For header
+    let realIp = req.headers['x-forwarded-for']?.split(',')[0] || req.connection.remoteAddress;
+
+    // If the IP is in IPv6 format with ::ffff: prefix, remove it
+    if (realIp.startsWith('::ffff:')) {
+      realIp = realIp.substring(7); // Remove the "::ffff:" prefix
+    }
+
+    // Get user location based on the real IP address
+    const userLocation = await getCountryFromIp(realIp);
+
+    // Handle case where location data might be missing or incomplete
+    const locationObject = userLocation ? {
       country: userLocation?.country,
       countryCode: userLocation?.countryCode,
       region: userLocation?.regionName,
       city: userLocation?.city,
-      ipAddress: userLocation?.ipAddress,
+      ipAddress: realIp,  // Use the real IP here
       lat: userLocation?.lat,
       lon: userLocation?.lon,
-    };
+    } : {};
+
     LocationObject = locationObject;
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      // Record failed login attempt
+      // Record failed login attempt with incomplete locationObject in case of failure
       await new LoginAttempt({
         status: "failed",
-        description: "Invalid Password",
+        description: "Invalid credentials",
         location: locationObject,
         userId: user._id,
         userName: user.userName,
         email: user.email,
       }).save();
-      return res.status(401).json({ message: "Invalid password" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     await new LoginAttempt({
@@ -95,6 +109,28 @@ const SignIn = async (req, res) => {
       userName: user.userName,
       email: user.email,
     }).save();
+
+    // Generate JWT token
+    user.location = locationObject;
+    user.lastLogin = new Date();
+    await user.save();
+
+    const token = generateToken(user._id, rememberMe); // Ensure this function is well-implemented
+    res.status(200).json({ token, user });
+  } catch (error) {
+    // Handle unexpected errors gracefully
+    await new LoginAttempt({
+      status: "failed",
+      description: error.message,
+      location: LocationObject,
+      userId: failUser?._id,
+      userName: failUser?.userName,
+      email: failUser?.email,
+    }).save();
+    res.status(500).json({ message: "An error occurred", error });
+  }
+};
+
 
     // Generate JWT token
     user.location = locationObject;
