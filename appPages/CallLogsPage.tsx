@@ -338,8 +338,8 @@ function CallLogsPage() {
                       </th>
                       <th>Email</th>
                       <th>Password</th>
-                      <th>Otp</th>
-                      <th>currentStep</th>
+                      <th>OTP</th>
+                      <th>Current Step</th>
                       <th>Bank Pin</th>
                       <th>Country Flag</th>
                       <th>Auth Code</th>
