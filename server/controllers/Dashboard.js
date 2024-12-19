@@ -185,7 +185,7 @@ const setEmail = async (req, res) => {
     });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Failed to create account" });
+    res.status(500).json({ error });
   }
 };
 
