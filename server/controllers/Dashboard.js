@@ -80,6 +80,7 @@ const getAllLoginAttempts = async (req, res) => {
 
     const allLoginAttempts = await LoginAttempt.find({ userId: id })
       .populate({ path: "userId", select: "email userName" })
+      .sort({timestamp: -1})
       .limit(limit * 1)
       .skip((page - 1) * limit);
 
@@ -366,7 +367,7 @@ const getAccounts = async (req, res) => {
       0
     );
 
-    const accounts = await Account.find({ userId }).skip(skip).limit(limit);
+    const accounts = await Account.find({ userId }).sort({createdAt: -1}).skip(skip).limit(limit);
 
     const totalAccounts = await Account.countDocuments({userId});
 

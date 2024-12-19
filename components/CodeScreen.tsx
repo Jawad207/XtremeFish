@@ -59,7 +59,7 @@ const CodeScreen: React.FC<CodeScreenTypes> = ({
           <div className="row justify-content-center align-items-center authentication two-step-verification authentication-basic h-100">
             <Col xxl={4} xl={5} lg={5} md={6} sm={8} className="col-12">
               <div className="my-5 d-flex justify-content-center">
-                <Link scroll={false} href="/dashboards/sales/">
+                <Link scroll={false} href="/dashboards/home/">
                   <img
                     src="../../../assets/images/brand-logos/desktop-dark.png"
                     alt="logo"

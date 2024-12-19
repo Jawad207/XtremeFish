@@ -24,7 +24,7 @@ import Popup from "../../../../../components/Popup";
 import { SquarePlus, Trash2, Pencil } from "lucide-react";
 import { json } from "stream/consumers";
 
-const Sales = () => {
+const Home = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
   const { posts, totalAccounts, todaysCount, account_stats } = useSelector(
@@ -136,7 +136,7 @@ const Sales = () => {
 
   return (
     <Fragment>
-      <Seo title={"sales"} />
+      <Seo title={"home"} />
       {/*  Start::page-header */}
       <div className="d-flex align-items-center justify-content-between my-4 page-header-breadcrumb flex-wrap gap-2">
         <div>
@@ -626,4 +626,4 @@ const Sales = () => {
   );
 };
 
-export default Sales;
+export default Home;

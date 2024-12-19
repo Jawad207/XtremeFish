@@ -729,7 +729,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
         <div className="main-sidebar-header">
           <Link
             scroll={false}
-            href="/dashboards/sales/"
+            href="/dashboards/home/"
             className="header-logo"
           >
             <img

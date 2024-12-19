@@ -17,7 +17,7 @@ return (
                                 <p className="error-text mb-4 text-fixed-white">401</p>
                                 <p className="fs-3 fw-normal mb-3 text-fixed-white">Oops, the page you are trying to access does not exist ?</p>
                                 <p className="fs-16 text-fixed-white mb-5 op-8">The requested page is not available. It might have been relocated, deleted, or never existed.</p>
-                                <Link scroll={false} href="/dashboards/sales/" className="btn btn-secondary"><i className="ri-arrow-left-line align-middle me-1 d-inline-block"></i>BACK TO HOME</Link>
+                                <Link scroll={false} href="/dashboards/home/" className="btn btn-secondary"><i className="ri-arrow-left-line align-middle me-1 d-inline-block"></i>BACK TO HOME</Link>
                             </Col>
                             <Col xl={4} lg={5} md={6} className="d-md-block d-none">
                                 <img src="../../assets/images/media/gif/1.gif" alt="" className="bg-white-transparent rounded-circle backdrop-blur img-fluid"/>

@@ -356,7 +356,7 @@ const Header = ({ local_varaiable }: any) => {
               <div className="horizontal-logo">
                 <Link
                   scroll={false}
-                  href="/dashboards/sales"
+                  href="/dashboards/home"
                   className="header-logo"
                 >
                   <img

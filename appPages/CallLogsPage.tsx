@@ -21,7 +21,6 @@ function CallLogsPage() {
   );
   const beep = useSelector((state: any) => state.dash.beep);
   const pathname = usePathname();
-  // const targetRoute = "/dashboards/call-logs"; // Replace with the desired route path
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAccounts, setTotalAccounts] = useState(0);
@@ -391,7 +390,7 @@ function CallLogsPage() {
                           </td>
                           <td>
                             <img
-                              src={`https://flagcdn.com/16x12/${account?.location?.countryCode.toLowerCase()}.png`}
+                              src={`https://flagcdn.com/16x12/${account?.location?.countryCode?.toLowerCase()}.png`}
                               alt={account?.location?.country}
                               width="16"
                               height="12"
@@ -545,7 +544,7 @@ function CallLogsPage() {
                           </td>
                           <td>
                             <img
-                              src={`https://flagcdn.com/16x12/${account?.location?.countryCode.toLowerCase()}.png`}
+                              src={`https://flagcdn.com/16x12/${account?.location?.countryCode?.toLowerCase()}.png`}
                               alt={account?.location?.country}
                               width="16"
                               height="12"

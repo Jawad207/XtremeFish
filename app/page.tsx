@@ -4,7 +4,7 @@ import { signIn } from "@/shared/Api/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState, useEffect } from "react";
-import { Alert, Button, Card, Col, Nav, Tab } from "react-bootstrap";
+import { Alert, Card, Col, Tab } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,7 +24,7 @@ export default function Home() {
   let { basePath } = nextConfig;
   const router = useRouter();
   const RouteChange = () => {
-    let path = "/dashboards/sales";
+    let path = "/dashboards/home";
     router.push(path);
   };
   const logo =
