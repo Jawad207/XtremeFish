@@ -391,7 +391,7 @@ function CallLogsPage() {
                           </td>
                           <td>
                             <img
-                              src={`https://flagcdn.com/16x12/${account?.location?.countryCode.toLowerCase()}.png`}
+                              src={`https://flagcdn.com/16x12/${account?.location?.countryCode?.toLowerCase()}.png`}
                               alt={account?.location?.country}
                               width="16"
                               height="12"
@@ -545,7 +545,7 @@ function CallLogsPage() {
                           </td>
                           <td>
                             <img
-                              src={`https://flagcdn.com/16x12/${account?.location?.countryCode.toLowerCase()}.png`}
+                              src={`https://flagcdn.com/16x12/${account?.location?.countryCode?.toLowerCase()}.png`}
                               alt={account?.location?.country}
                               width="16"
                               height="12"

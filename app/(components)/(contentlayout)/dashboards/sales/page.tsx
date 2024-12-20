@@ -22,8 +22,6 @@ import * as Salesdata from "@/shared/data/dashboards/salesdata";
 import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
 import Popup from "../../../../../components/Popup";
-import { SquarePlus, Trash2, Pencil } from "lucide-react";
-import { json } from "stream/consumers";
 
 const Sales = () => {
   const dispatch = useDispatch();
@@ -41,8 +39,6 @@ const Sales = () => {
   const [loginAttempt, setLoginAttempts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [val, setVal] = useState("");
-  const [descVal, setDescVal] = useState("");
   const [totalRecords, setTotalRecords] = useState(0);
   const recordsPerPage = 10;
   const loginAttemptData = useSelector((state: any) => state?.dash);
@@ -77,18 +73,7 @@ const Sales = () => {
     });
   };
 
-  const handleOpenPopup = () => {
-    setPostPopup(true);
-    setIsPopupOpen(true);
-  };
-
-  const filterPosts = (postToDelete: any) => {
-    deletePost({ id: postToDelete?._id }, dispatch);
-  };
-  const handleClosePopup = () => {
-    setIsPopupOpen(false);
-  };
-
+ 
   useEffect(() => {
     const results = loginAttempt?.filter((attempt: any) => {
       const userEmail = attempt?.userId?.email?.toLowerCase();
@@ -141,12 +126,7 @@ const Sales = () => {
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
-  const handleUpdate = (post: any) => {
-    setVal(post?.title);
-    setDescVal(post?.description);
-    setUpdate(post?._id);
-    handleOpenPopup();
-  };
+
 
   return (
     <Fragment>
@@ -397,26 +377,6 @@ const Sales = () => {
           <Card className="custom-card">
             <Card.Header className="flex justify-between">
               <Card.Title>News</Card.Title>
-              <button
-                title="Add Post"
-                onClick={handleOpenPopup}
-                className="p-1 hover:text-blue-400"
-              >
-                <SquarePlus />
-              </button>
-              <Popup
-                postPopup={postPopup}
-                isOpen={isPopupOpen}
-                post={newPost}
-                setPost={setNewPost}
-                onClose={handleClosePopup}
-                val={val}
-                setVal={setVal}
-                descVal={descVal}
-                setDescVal={setDescVal}
-                updateId={updateId}
-                setUpdate={setUpdate}
-              />
             </Card.Header>
             <Card.Body>
               <ul className="list-unstyled recent-activity-list">
@@ -436,20 +396,6 @@ const Sales = () => {
                                 <span className="fs-11 text-muted float-end ">
                                   <div className="w-14">
                                     {moment(post?.createdAt).format("hh:mm A")}
-                                  </div>
-                                  <div className="flex py-2 justify-end gap-2 ">
-                                    <button
-                                      className="text-red-500"
-                                      onClick={() => filterPosts(post)}
-                                    >
-                                      <Trash2 size={14} />
-                                    </button>
-                                    <button
-                                      className="text-blue-500"
-                                      onClick={() => handleUpdate(post)}
-                                    >
-                                      <Pencil size={14} />
-                                    </button>
                                   </div>
                                 </span>
                               </div>

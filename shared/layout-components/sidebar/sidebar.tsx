@@ -509,13 +509,15 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
     ) {
       // {
       for (const item of MenuItems) {
+        item.selected = !item.selected
+
         if (item === targetObject) {
           if (theme.dataVerticalStyle == "doublemenu" && item.active) {
             return;
           }
           item.active = !item.active;
-
           if (item.active) {
+            item.selected=true
             closeOtherMenus(MenuItems, item);
           } else {
             if (theme.dataVerticalStyle == "doublemenu") {
@@ -524,6 +526,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
           }
           setAncestorsActive(MenuItems, item);
         } else if (!item.active) {
+          item.selected=false
           if (theme.dataVerticalStyle != "doublemenu") {
             item.active = false; // Set active to false for items not matching the target
           }

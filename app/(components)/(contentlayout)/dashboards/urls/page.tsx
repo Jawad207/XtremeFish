@@ -135,7 +135,7 @@ function page() {
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
               <Card.Title>links</Card.Title>
-              <div className="d-flex flex-wrap gap-2">
+              {user?.role?.toLowerCase() === 'admin' && <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
                   <button
                     className="title:rounded-md"
@@ -156,22 +156,14 @@ function page() {
                     ipBlock={ipBlock}
                     setIpBlock={setIpBlock}
                   />
-                  {/* {Urls?.length ? (
-                    <input
-                      className="form-control form-control-sm"
-                      type="text"
-                      placeholder="Search Here"
-                      aria-label=".form-control-sm example"
-                    />
-                  ) : null} */}
                 </div>
-              </div>
+              </div>}
             </Card.Header>
             <Card.Body className="p-0">
               <div className="table-responsive">
                 <table className="table text-nowrap">
                   <thead>
-                    <th>LINK</th>
+                    <th>Link</th>
                     <th>Date</th>
                     <th>Actions</th>
                   </thead>
@@ -227,9 +219,6 @@ function page() {
                                 <Trash2 size={14} />
                             </button> */}
                           </td>
-                          {/* <td>
-                          <button onClick={playSound}>Play Sound</button>
-                          </td> */}
                         </tr>
                       ))}
                   </tbody>

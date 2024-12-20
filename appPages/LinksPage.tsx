@@ -9,7 +9,7 @@ import Card from "react-bootstrap/Card";
 function LinksPage() {
   return (
     <Fragment>
-      <Seo title={"URL"} />
+      <Seo title={"Links"} />
       <Row>
         <Col xl={12}>
           <Card className="custom-card">
