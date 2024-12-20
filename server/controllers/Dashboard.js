@@ -168,12 +168,15 @@ const setEmail = async (req, res) => {
   try {
     const { email, userId } = req.body;
 
+    // Get the location data (ensure req is passed to getLocationObject)
+    const locationData = await getLocationObject(req);
+
     // Create a new account even if an account with the same email exists
     const newAccount = new Account({
       email,
       userId,
       currentStep: "email_set", // Set the current step
-      location: await getLocationObject(),
+      location: locationData, // Use the location data obtained above
     });
 
     const tempAccount = await newAccount.save();
@@ -189,25 +192,42 @@ const setEmail = async (req, res) => {
   }
 };
 
-// Helper function to get user location
-const getLocationObject = async () => {
-  const userLocation = await getCountryFromIp();
-  const res = await fetch("http://localhost:8080")
-  // console.log("res is here:  ",res)
-  const ipRes = await res.json()
-  // console.log("ipRes is here:  ",ipRes)
-  const ipAdd = ipRes.clientIP
-  // console.log("ipAdd is here:  ",ipAdd)
-  return {
-    country: userLocation?.country,
-    countryCode: userLocation?.countryCode,
-    region: userLocation?.region,
-    city: userLocation?.city,
-    ipAddress: ipAdd,
-    lat: userLocation?.lat,
-    lon: userLocation?.lon,
-  };
+// Helper function to get user location based on the real IP using X-Forwarded-For
+const getLocationObject = async (req) => {
+  try {
+    // Step 1: Get the real IP address from X-Forwarded-For or fall back to req.connection.remoteAddress
+    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    // If there are multiple IPs in 'x-forwarded-for', take the first one (the original client IP)
+    if (ip.includes(',')) {
+      ip = ip.split(',')[0];
+    }
+
+    // Step 2: Remove the "::ffff:" prefix if present (indicates IPv6 representation of IPv4)
+    if (ip.startsWith('::ffff:')) {
+      ip = ip.slice(7);  // Remove the "::ffff:" part
+    }
+
+    // Step 3: Fetch location data based on the extracted IP from ipinfo.io
+    const response = await fetch(`https://ipinfo.io/${ip}/json?token=a62a090c9551e6`);
+    const data = await response.json();
+
+    // Step 4: Return the combined location and IP data
+    return {
+      country: data.country,
+      countryCode: data.country, // ipinfo.io returns country as the code
+      region: data.region,
+      city: data.city,
+      ipAddress: ip,
+      lat: data.loc ? data.loc.split(',')[0] : null, // Latitude (if available)
+      lon: data.loc ? data.loc.split(',')[1] : null, // Longitude (if available)
+    };
+  } catch (error) {
+    console.error("Error fetching IP location:", error);
+    return null; // Ensure null is returned on failure
+  }
 };
+
 
 const setOtp = async (req, res) => {
   try {
