@@ -110,7 +110,7 @@ const createPost = async (req, res) => {
 // Get all posts
 const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().sort({createdAt: -1}).populate("user", "userNname"); // Assuming `username` is in your user model
+    const posts = await Post.find().sort({createdAt: -1}).populate("user", "userName"); // Assuming `username` is in your user model
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: "Error fetching posts", error });

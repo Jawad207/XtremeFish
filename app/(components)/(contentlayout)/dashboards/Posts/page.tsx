@@ -95,7 +95,7 @@ function page() {
                       posts?.map((post: any) => (
                         <tr key={post._id}>
                           <td>
-                          test
+                          {post?.user?.userName}
                           </td>
                           <td>{post && <span>{post?.title}</span>}</td>
                           <td>{post?.description}</td>
