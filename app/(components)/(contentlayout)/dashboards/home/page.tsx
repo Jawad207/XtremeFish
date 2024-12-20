@@ -23,7 +23,7 @@ import Seo from "@/shared/layout-components/seo/seo";
 import { useSelector } from "react-redux";
 import Popup from "../../../../../components/Popup";
 
-const Sales = () => {
+const Home = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
   const { reviews, posts, totalAccounts, todaysCount, account_stats } = useSelector(
@@ -130,7 +130,7 @@ const Sales = () => {
 
   return (
     <Fragment>
-      <Seo title={"sales"} />
+      <Seo title={"home"} />
       {/*  Start::page-header */}
       <div className="d-flex align-items-center justify-content-between my-4 page-header-breadcrumb flex-wrap gap-2">
         <div>
@@ -443,17 +443,17 @@ const Sales = () => {
                         />
                       </th>
                       <th scope="col">Email</th>
-                      <th scope="col">User Name</th>
+                      <th scope="col">Username</th>
                       <th scope="col">Status</th>
                       <th scope="col">Description</th>
                       <th scope="col">Country</th>
                       <th scope="col">Country Code</th>
                       <th scope="col">Date</th>
                       <th scope="col" className="text-center">
-                        region
+                        Region
                       </th>
                       <th scope="col">City</th>
-                      <th scope="col">IpAddress</th>
+                      <th scope="col">IP Address</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -591,4 +591,4 @@ const Sales = () => {
   );
 };
 
-export default Sales;
+export default Home;

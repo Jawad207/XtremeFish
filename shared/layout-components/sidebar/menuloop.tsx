@@ -19,7 +19,7 @@ function Menuloop({
   return (
     <Fragment>
       <Link
-        href={MenuItems.title === "Dashboard" ? "/dashboards/sales" : ""}
+        href={MenuItems.title === "Dashboard" ? "/dashboards/home" : ""}
         scroll={false}
         className={`side-menu__item ${MenuItems?.selected ? "active" : ""}`}
         onClick={(event) => handleMainClick(event)} // Custom handler for main click

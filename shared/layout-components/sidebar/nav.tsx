@@ -92,7 +92,14 @@ export const MenuItems: any = [
         dirchange: false,
         title: "Links",
       },
-
+      {
+        path: "/dashboards/Posts",
+        type: "link",
+        active: false,
+        selected: false,
+        dirchange: false,
+        title: "Posts",
+      },
       {
         path: "/dashboards/blocked-users",
         type: "link",

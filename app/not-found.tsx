@@ -6,7 +6,7 @@ export default function NotFound() {
       <div>
         <div className="">
           <p>The Above Url Can't Found</p>
-          <Link href="/dashboards/sales" className="btn btn-primary">
+          <Link href="/dashboards/home" className="btn btn-primary">
             Return Home
           </Link>
         </div>

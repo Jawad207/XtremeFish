@@ -9,7 +9,7 @@ const Footer = () => {
                 <span className="text-muted"> Copyright © <span id="year">2024 </span> 
                 <Link scroll={false} href="#!" className="text-dark fw-medium">XtremeFish</Link>.
                 Designed with <span className="bi bi-heart-fill text-danger"></span> by 
-                <Link scroll={false} href="/dashboards/sales">
+                <Link scroll={false} href="/dashboards/home">
                     <span className="fw-medium text-primary mx-1">XtremeFish</span>
                 </Link> All
                 rights
