@@ -5,7 +5,7 @@ import { Button, Card, Col, Row } from "react-bootstrap";
 import { SquarePlus, Trash2, Pencil, RotateCcw } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import { getUrls, deleteUrl, getPosts } from "@/shared/Api/dashboard";
+import { getUrls, deleteUrl, getPosts, deletePost } from "@/shared/Api/dashboard";
 import { getIps } from "@/shared/Api/dashboard";
 import Popup from "@/components/Popup";
 
@@ -17,8 +17,6 @@ function page() {
   const [postPopup, setPostPopup] = useState(true);
   const [newPost, setNewPost] = useState([]);
   const [val, setVal] = useState("");
-
-
 
   const dispatch = useDispatch();
   const { posts } = useSelector((state: any) => state.dash);
@@ -37,6 +35,17 @@ function page() {
   };
   const handleClosePopup = () => {
     setIsPopupOpen(false);
+  };
+
+  const filterPosts = (postToDelete: any) => {
+    deletePost({ id: postToDelete?._id }, dispatch);
+  };
+
+  const handleUpdate = (post: any) => {
+    setVal(post?.title);
+    setDescVal(post?.description);
+    setUpdate(post?._id);
+    handleOpenPopup();
   };
 
   return (
@@ -88,15 +97,14 @@ function page() {
                     <th>Title</th>
                     <th>Description</th>
                     <th>Date</th>
+                    <th>Actions</th>
                   </thead>
                   <tbody>
                     {posts &&
                       posts?.length > 0 &&
                       posts?.map((post: any) => (
                         <tr key={post._id}>
-                          <td>
-                          {post?.user?.userName}
-                          </td>
+                          <td>{post?.user?.userName}</td>
                           <td>{post && <span>{post?.title}</span>}</td>
                           <td>{post?.description}</td>
                           <td>
@@ -104,6 +112,22 @@ function page() {
                               {moment(post?.createdAt).format(
                                 "ddd, MMM DD, YYYY, hh:mm A"
                               )}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="flex py-2 justify-start gap-2 ">
+                              <button
+                                className="text-red-500 mr-2"
+                                onClick={() => filterPosts(post)}
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                              <button
+                                className="text-blue-500"
+                                onClick={() => handleUpdate(post)}
+                              >
+                                <Pencil size={14} />
+                              </button>
                             </div>
                           </td>
                         </tr>

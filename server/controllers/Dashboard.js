@@ -162,7 +162,7 @@ const updatePost = async (req, res) => {
       req?.query?.id,
       { title, description, timestamp: Date.now(), user: userId },
       { new: true }
-    );
+    ).populate('user', 'userName');
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
