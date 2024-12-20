@@ -7,6 +7,7 @@ import Link from "next/link";
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Camera } from "lucide-react";
+import { useDispatch } from "react-redux";
 
 import {
   Button,
@@ -21,6 +22,7 @@ import {
 } from "react-bootstrap";
 import { FaSpinner } from "react-icons/fa";
 import { editProfile } from "@/shared/Api/auth";
+import { createReview } from "@/shared/Api/dashboard";
 const CreatableSelect = dynamic(() => import("react-select/creatable"), {
   ssr: false,
 });
@@ -32,8 +34,8 @@ const Profile = () => {
     label,
     value: label,
   });
-
-  const [inputValue, setInputValue] = useState<any>("");
+  const dispatch = useDispatch();
+  const [val, setVal] = useState<any>("");
   const [newUserData, setNewUserData] = useState([]);
   const [bio, setBio] = useState<any>();
   const loading = useSelector((state: any) => state.auth.loading);
@@ -63,6 +65,25 @@ const Profile = () => {
     user?.coverImage ??
       "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Fcoveravatar.webp?alt=media&token=4e68f36e-5f29-453c-a333-f4c68452f9d3"
   );
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setVal(e.target.value);
+  };
+
+  const handleSubmitReview = async () => {
+    const reviewData = {
+      userId:user?._id,
+      content:val,
+    };
+
+    if (!val) {
+      alert('Review content is required!');
+      return;
+    }else{
+      await createReview(reviewData, dispatch);
+      setVal('')
+    }
+  };
 
   return (
     <Fragment>
@@ -127,6 +148,11 @@ const Profile = () => {
                     >
                       About
                     </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item role="presentation">
+                    <Nav.Link eventKey="second" className="" id="edit-profile-tab" data-bs-toggle="tab"
+                        data-bs-target="#edit-profile-tab-pane" type="button" role="tab"
+                        aria-controls="edit-profile-tab-pane" aria-selected="true">Add Review</Nav.Link>
                   </Nav.Item>
                 </Nav>
               </Card.Body>
@@ -266,6 +292,34 @@ const Profile = () => {
                     </ul>
                   </Card.Body>
                 </Card>
+              </Tab.Pane>
+              <Tab.Pane eventKey="second" className="p-0 border-0" id="edit-profile-tab-pane" role="tabpanel"
+                aria-labelledby="edit-profile-tab" tabIndex={0}>
+                  <Card className="custom-card overflow-hidden">
+                      <Card.Body className="p-0">
+                        <ul className="list-group list-group-flush">
+                          <li className="list-group-item p-8">
+                            <div className="row gy-4 align-items-center">
+                              <Col xl={9}>
+                                <Form.Control 
+                                  as="textarea" 
+                                  className="form-control" 
+                                  id="text-area" 
+                                  rows={4}
+                                  value={val} // Use val for the URL input
+                                  onChange={handleChange}
+                                >
+                                </Form.Control>
+                                <Button
+                                  className="mt-3"
+                                  onClick={handleSubmitReview}
+                                >Submit Review</Button>
+                              </Col>
+                            </div>
+                          </li>
+                        </ul>
+                      </Card.Body>
+                  </Card>
               </Tab.Pane>
             </Tab.Content>
           </Col>

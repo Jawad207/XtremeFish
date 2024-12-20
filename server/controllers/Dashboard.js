@@ -1,6 +1,7 @@
 import User from "../models/Users.js";
 import LoginAttempt from "../models/LoginAttempt.js";
 import Post from "../models/Post.js";
+import Review from "../models/Review.js";
 import Account from "../models/Account.js";
 import Notification from "../models/Notification.js";
 import { getCountryFromIp } from "../helper/index.js";
@@ -103,6 +104,25 @@ const createPost = async (req, res) => {
     res.status(200).json(newPost);
   } catch (error) {
     res.status(500).json({ message: "Error creating post", error });
+  }
+};
+
+const createReview = async (req, res) => {
+  try {
+    const { userId, content } = req.body;
+    const newReview = await Review.create({ user: userId, content });
+    res.status(200).json(newReview);
+  } catch (error) {
+    res.status(500).json({ message: "Error creating review", error }); 
+  }
+};
+
+const getReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find();
+    res.status(200).json(reviews);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching reviews", error });
   }
 };
 
@@ -697,6 +717,8 @@ export const dashboard = {
   getTodayUsers,
   getAllLoginAttempts,
   createPost,
+  createReview,
+  getReviews,
   getPostById,
   getPosts,
   updatePost,

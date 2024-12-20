@@ -32,6 +32,14 @@ export const CREATE_POST_INIT = "CREATE_POST_INIT";
 export const CREATE_POST_SUCCESS = "CREATE_POST_SUCCESS";
 export const CREATE_POST_FAILURE = "CREATE_POST_FAILURE";
 
+export const CREATE_REVIEW_INIT = "CREATE_REVIEW_INIT";
+export const CREATE_REVIEW_SUCCESS = "CREATE_REVIEW_SUCCESS";
+export const CREATE_REVIEW_FAILURE = "CREATE_REVIEW_FAILURE";
+
+export const GET_REVIEWS_INIT = "GET_REVIEWS_INIT";
+export const GET_REVIEWS_SUCCESS = "GET_REVIEWS_SUCCESS";
+export const GET_REVIEWS_FAILURE = "GET_REVIEWS_FAILURE";
+
 export const CREATE_URL_INIT = "CREATE_URL_INIT";
 export const CREATE_URL_SUCCESS = "CREATE_URL_SUCCESS";
 export const CREATE_URL_FAILURE = "CREATE_URL_FAILURE";
@@ -348,6 +356,35 @@ interface CreatePostFailureAction {
   type: typeof CREATE_POST_FAILURE;
   payload: any;
 }
+
+interface CreateReviewInitAction {
+  type: typeof CREATE_REVIEW_INIT;
+}
+
+interface CreateReviewSuccessAction {
+  type: typeof CREATE_REVIEW_SUCCESS;
+  payload: any; // Replace `any` with a specific type if the response data has a defined structure
+}
+
+interface CreateReviewFailureAction {
+  type: typeof CREATE_REVIEW_FAILURE;
+  payload: any; // Replace `any` with a specific type if the error message has a defined structure
+}
+
+interface GetReviewsInitAction {
+  type: typeof GET_REVIEWS_INIT;
+}
+
+interface GetReviewsSuccessAction {
+  type: typeof GET_REVIEWS_SUCCESS;
+  payload: any; // Replace `any` with a specific type if the response data has a defined structure
+}
+
+interface GetReviewsFailureAction {
+  type: typeof GET_REVIEWS_FAILURE;
+  payload: any; // Replace `any` with a specific type if the error message has a defined structure
+}
+
 interface CreateUrlInitAction {
   type: typeof CREATE_URL_INIT;
 }
@@ -590,4 +627,10 @@ export type DashActionTypes =
   | getTodayAccountFailureAction
   | getAccountstatisticsInitAction
   | getAccountstatisticsSuccessAction
+  | CreateReviewInitAction
+  | CreateReviewSuccessAction
+  | CreateReviewFailureAction
+  | GetReviewsInitAction
+  | GetReviewsSuccessAction
+  | GetReviewsFailureAction
   | getAccountstatisticsFailureAction;

@@ -128,6 +128,67 @@ export const getTodayuserCount = async (dispatch: any) => {
   }
 };
 
+export const createReview = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: "CREATE_REVIEW_INIT" }); // Start creating a review
+    const response = await apiClient.post("/dashboard/createReview", data);
+
+    if (response.status === 200) {
+      dispatch({
+        type: "CREATE_REVIEW_SUCCESS",
+        payload: response.data, // Pass the created review
+      });
+    }
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      dispatch({
+        type: "CREATE_REVIEW_FAILURE",
+        payload: error.response.data.message,
+      });
+      return error.response.data.message;
+    } else {
+      dispatch({
+        type: "CREATE_REVIEW_FAILURE",
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+
+export const getReviews = async (dispatch: any) => {
+  try {
+    dispatch({ type: "GET_REVIEWS_INIT" }); // Dispatch an action to initialize the review fetching process
+    const response = await apiClient.get("/dashboard/getReviews"); // Replace with the correct API endpoint
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: "GET_REVIEWS_SUCCESS", payload: response.data }); // Dispatch success action with the response payload
+    }
+    return response.data; // Return the response data
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: "GET_REVIEWS_FAILURE",
+        payload: error.response.data.message,
+      });
+      console.error("Review fetch failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: "GET_REVIEWS_FAILURE",
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+
 export const createPost = async (data: any, dispatch: any) => {
   try {
     dispatch({ type: CREATE_POST_INIT });

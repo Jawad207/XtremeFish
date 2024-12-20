@@ -1,5 +1,11 @@
 import {
   DashActionTypes,
+  GET_REVIEWS_INIT,
+  GET_REVIEWS_SUCCESS,
+  GET_REVIEWS_FAILURE,
+  CREATE_REVIEW_INIT,
+  CREATE_REVIEW_SUCCESS,
+  CREATE_REVIEW_FAILURE,
   GET_COUNT_INIT,
   GET_COUNT_FAILURE,
   GET_COUNT_SUCCESS,
@@ -82,6 +88,14 @@ interface Posts {
   description: string;
   title: string;
 }
+interface Reviews {
+  _id: any;
+  user: any;
+  content: string;
+  status: string;
+  createdAt: string;
+}
+
 interface Urls {
   _id: any;
   status: string;
@@ -108,9 +122,11 @@ interface DashState {
   todaysCount: any;
   account_stats: any;
   beep: any;
+  reviews: Reviews[];
 }
 
 const initialState: DashState = {
+  reviews: [],
   userCount: 0,
   loginAttempts: [],
   totalPages: 1,
@@ -589,6 +605,48 @@ export const dashReducer = (
         loading: false,
         error: action.payload,
       };
+      case "CREATE_REVIEW_INIT":
+        return {
+          ...state,
+          loading: true,
+          error: null,
+        };
+
+      case "CREATE_REVIEW_SUCCESS":
+        return {
+          ...state,
+          loading: false,
+          reviews: [...state.reviews, action.payload],
+        };
+
+      case "CREATE_REVIEW_FAILURE":
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+        };
+
+      case GET_REVIEWS_INIT:
+        return {
+          ...state,
+          loading: true,
+          error: null,
+        };
+        
+      case GET_REVIEWS_SUCCESS:
+        return {
+          ...state,
+          loading: false,
+          reviews: action.payload,
+        };
+        
+      case GET_REVIEWS_FAILURE:
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+        };
+        
 
     default:
       return state;

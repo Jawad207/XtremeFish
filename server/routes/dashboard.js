@@ -6,6 +6,8 @@ router.get("/getAllUser", dashboard.getAllUser);
 router.get("/getTodayUsers", dashboard.getTodayUsers);
 router.get("/getLoginAttempts", dashboard.getAllLoginAttempts);
 router.post("/createPost", dashboard.createPost);
+router.post("/createReview", dashboard.createReview);
+router.get("/getReviews", dashboard.getReviews);
 router.get("/getPost", dashboard.getPostById);
 router.get("/getPosts", dashboard.getPosts);
 router.patch("/updatePost", dashboard.updatePost);

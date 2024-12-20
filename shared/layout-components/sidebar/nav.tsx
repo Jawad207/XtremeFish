@@ -90,7 +90,7 @@ export const MenuItems: any = [
         active: false,
         selected: false,
         dirchange: false,
-        title: "URLS",
+        title: "Links",
       },
 
       {

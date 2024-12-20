@@ -253,7 +253,7 @@ function CallLogsPage() {
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
-              <Card.Title>View Your Logs</Card.Title>
+              <Card.Title className="flex gap-3"><h1>View Your Logs</h1> <span className="text-blue-500">{totalAccounts}</span></Card.Title>
               <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
                   <input
@@ -570,7 +570,7 @@ function CallLogsPage() {
                 </table>
               </div>
             </Card.Body>
-            <Card.Footer>
+            {/* <Card.Footer>
               <div className="d-flex align-items-center">
                 <div>
                   Showing {totalAccounts} Entries{" "}
@@ -607,7 +607,7 @@ function CallLogsPage() {
                   </nav>
                 </div>
               </div>
-            </Card.Footer>
+            </Card.Footer> */}
           </Card>
         </Col>
       </Row>

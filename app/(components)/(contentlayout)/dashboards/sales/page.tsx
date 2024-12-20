@@ -8,6 +8,7 @@ import {
   getAlluserCount,
   getLoginAttempts,
   getPosts,
+  getReviews,
   deletePost,
   getAccounts,
   getTodayuserCount,
@@ -27,7 +28,7 @@ import { json } from "stream/consumers";
 const Sales = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
-  const { posts, totalAccounts, todaysCount, account_stats } = useSelector(
+  const { reviews, posts, totalAccounts, todaysCount, account_stats } = useSelector(
     (state: any) => state.dash
   );
   const [allCounts, setAllcounts] = useState<number>(0);
@@ -35,6 +36,7 @@ const Sales = () => {
     totalPercentage: 0,
     accountPercentage: 0,
   });
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [userName, setUserName] = useState<string>("");
   const [loginAttempt, setLoginAttempts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,13 +52,22 @@ const Sales = () => {
   const [newPost, setNewPost] = useState([]);
   const [updateId, setUpdate] = useState("");
   const [postPopup, setPostPopup] = useState(true);
+  const currentReview = reviews[currentIndex];
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+    }, 5000); // Change review every 5 seconds
+
+    return () => clearInterval(interval); // Cleanup on component unmount
+  }, [reviews.length]);
   useEffect(() => {
     fetchAccounts(1);
     getAllusersCount();
     getAllPosts();
+    getAllReviews();
   }, []);
-
+  console.log("Reviews are here:   ",reviews)
   // Fetch accounts with pagination
   const fetchAccounts = async (page: number) => {
     const response = await getAccounts(auth?._id, page, 10, dispatch);
@@ -100,6 +111,9 @@ const Sales = () => {
   };
   const getAllPosts = async () => {
     await getPosts(dispatch);
+  };
+  const getAllReviews = async () => {
+    await getReviews(dispatch);
   };
   const getAllLoginAttempts = async () => {
     await getLoginAttempts(
@@ -337,28 +351,33 @@ const Sales = () => {
               <Card.Title>Reviews</Card.Title>
             </Card.Header>
             <Card.Body>
-            <div className="card shadow-none mb-0 border-0 bg-primary">
-              <div className="card-body text-center p-5">
-                  <img src="../../assets/images/faces/1.jpg" alt="img" className="mx-auto text-center avatar avatar-xl rounded-circle mb-4"/>
-                  <div className="mb-2 text-warning fs-15">
-                      <i className="ri-star-fill me-1"></i>
-                      <i className="ri-star-fill me-1"></i>
-                      <i className="ri-star-fill me-1"></i>
-                      <i className="ri-star-fill me-1"></i>
-                      <i className="ri-star-half-line"></i>
+            <Card className="mb-0 border-0 shadow-none bg-[#546dfe] overflow-hidden">
+              <Card.Body className="p-4">
+                <p className="mb-3">"{currentReview?.content}"</p>
+                <div className="d-flex justify-content-between flex-wrap gap-3">
+                  <div className="d-flex">
+                    <img
+                      src={currentReview?.user?.avatar || "../../assets/images/faces/1.jpg"}
+                      alt="img"
+                      className="avatar avatar-md avatar-rounded"
+                    />
+                    <div className="ms-2 my-auto mb-0">
+                      <h6 className="mb-0 lh-1">{userName}</h6>
+                      <p className="fs-14 mb-0">{currentReview?.user?.role || "Client"}</p>
+                    </div>
                   </div>
-                  <p className="text-fixed-white op-8 fs-14">
-                      This product has made a difference in my daily routine. Simple, effective, and worth every penny
-                  </p>
-                  <div className="d-flex align-items-center justify-content-start">
-                      <div className="flex-grow-1">
-                          <h6 className="mb-1 text-fixed-white">Allie Grater</h6>
-                          <span className="fs-14 fw-normal text-fixed-white op-7">Client</span>
-                      </div>
-                      <i className="bx bxs-quote-alt-left review-quote gradient"></i>
-                  </div>
-              </div>
-          </div>
+                  {/* Uncomment below if you want to include ratings */}
+                  {/* <div className="mb-0 text-warning fs-12 my-auto">
+                    {[...Array(5)].map((_, i) => (
+                      <i
+                        key={i}
+                        className={`ri-star${i < currentReview?.rating ? "-fill" : "-line"} me-1`}
+                      ></i>
+                    ))}
+                  </div> */}
+                </div>
+              </Card.Body>
+            </Card>
               {/* <div className="row mt-0">
                 <div className="col-6 border-end border-inline-end-dashed text-center">
                   <p className="text-muted mb-1 fs-12">This Month</p>
@@ -377,7 +396,7 @@ const Sales = () => {
         <Col xl={3}>
           <Card className="custom-card">
             <Card.Header className="flex justify-between">
-              <Card.Title>Posts</Card.Title>
+              <Card.Title>News</Card.Title>
               <button
                 title="Add Post"
                 onClick={handleOpenPopup}
@@ -450,7 +469,7 @@ const Sales = () => {
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
               <Card.Title>RECENT LOGINS</Card.Title>
-              <div className="d-flex flex-wrap gap-2">
+              {/* <div className="d-flex flex-wrap gap-2">
                 <div>
                   <input
                     className="form-control form-control-sm"
@@ -461,7 +480,7 @@ const Sales = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
-              </div>
+              </div> */}
             </Card.Header>
             <Card.Body className="p-0">
               <div className="table-responsive">

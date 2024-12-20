@@ -134,7 +134,7 @@ function page() {
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
-              <Card.Title>urls</Card.Title>
+              <Card.Title>links</Card.Title>
               <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
                   <button
@@ -156,14 +156,14 @@ function page() {
                     ipBlock={ipBlock}
                     setIpBlock={setIpBlock}
                   />
-                  {Urls?.length ? (
+                  {/* {Urls?.length ? (
                     <input
                       className="form-control form-control-sm"
                       type="text"
                       placeholder="Search Here"
                       aria-label=".form-control-sm example"
                     />
-                  ) : null}
+                  ) : null} */}
                 </div>
               </div>
             </Card.Header>
@@ -171,7 +171,7 @@ function page() {
               <div className="table-responsive">
                 <table className="table text-nowrap">
                   <thead>
-                    <th>URL</th>
+                    <th>LINK</th>
                     <th>Date</th>
                     <th>Actions</th>
                   </thead>
