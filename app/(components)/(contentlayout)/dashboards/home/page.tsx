@@ -26,8 +26,7 @@ import Popup from "../../../../../components/Popup";
 const Home = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
-  const { reviews, posts, totalAccounts, todaysCount, account_stats } =
-    useSelector((state: any) => state.dash);
+  const { reviews = [], posts, totalAccounts, todaysCount, account_stats } = useSelector((state: any) => state.dash); // Default reviews to an empty array if undefined
   const [allCounts, setAllcounts] = useState<number>(0);
   const [percentage, setPercentage] = useState<any>({
     totalPercentage: 0,
@@ -47,22 +46,28 @@ const Home = () => {
   const [newPost, setNewPost] = useState([]);
   const [updateId, setUpdate] = useState("");
   const [postPopup, setPostPopup] = useState(true);
-  const currentReview = reviews[currentIndex];
+
+  const currentReview = reviews?.[currentIndex] || null; // Ensure reviews is defined
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+      if (reviews.length > 0) {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length); // Safeguard against empty reviews array
+      }
     }, 5000); // Change review every 5 seconds
 
     return () => clearInterval(interval); // Cleanup on component unmount
   }, [reviews.length]);
+
   useEffect(() => {
     fetchAccounts(1);
     getAllusersCount();
     getAllPosts();
     getAllReviews();
   }, []);
-  console.log("Reviews are here:   ", reviews);
+
+  console.log("Reviews are here: ", reviews);
+
   // Fetch accounts with pagination
   const fetchAccounts = async (page: number) => {
     const response = await getAccounts(auth?._id, page, 10, dispatch);
@@ -71,6 +76,7 @@ const Home = () => {
       accountPercentage: response?.percentageChange,
     });
   };
+
 
   useEffect(() => {
     const results = loginAttempt?.filter((attempt: any) => {
