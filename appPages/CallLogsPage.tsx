@@ -252,7 +252,7 @@ function CallLogsPage() {
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
-              <Card.Title className="flex gap-3"><h1>View Your Logs</h1> <span className="text-blue-500">{totalAccounts}</span></Card.Title>
+              <Card.Title className="flex gap-2"><h1>View Your Logs</h1> <span className="text-blue-500">{totalAccounts}</span></Card.Title>
               <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
                   <input

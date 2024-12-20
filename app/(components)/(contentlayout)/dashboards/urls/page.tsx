@@ -16,7 +16,6 @@ function page() {
 
   const [descVal, setDescVal] = useState("");
   const [updateId, setUpdate] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
   const [urls, setUrls] = useState<any>();
   const Urls = useSelector((state: any) => state.dash.urls);
   const Ips = useSelector((state: any) => state.dash.ips);
@@ -26,9 +25,6 @@ function page() {
     setIsPopupOpen(true);
   };
 
-  const filteredUrls = Urls.filter((url: any) =>
-    url.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
   const handleUpdate = (post: any) => {
     setDescVal(post?.description);
     setUpdate(post?._id);
@@ -135,15 +131,18 @@ function page() {
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
               <Card.Title>links</Card.Title>
-              {user?.role?.toLowerCase() === 'admin' && <div className="d-flex flex-wrap gap-2">
+
+              <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
-                  <button
-                    className="title:rounded-md"
-                    onClick={handleOpenPopup}
-                    title={"Add Url"}
-                  >
-                    <SquarePlus size={30} className="hover:text-blue-400" />
-                  </button>
+                  {user?.role?.toLowerCase() === "admin" && (
+                    <button
+                      className="title:rounded-md"
+                      onClick={handleOpenPopup}
+                      title={"Add Url"}
+                    >
+                      <SquarePlus size={30} className="hover:text-blue-400" />
+                    </button>
+                  )}
                   <Popup
                     isOpen={isPopupOpen}
                     onClose={handleClosePopup}
@@ -157,7 +156,7 @@ function page() {
                     setIpBlock={setIpBlock}
                   />
                 </div>
-              </div>}
+              </div>
             </Card.Header>
             <Card.Body className="p-0">
               <div className="table-responsive">
@@ -203,21 +202,32 @@ function page() {
                             </div>
                           </td>
                           <td>
-                            <Tooltip title="click">
-                              <Button
-                                onClick={() => {
-                                  goToRunEscape(url.description);
-                                }}
-                              >
-                                <RotateCcw size={16} className="font-bold" />
-                              </Button>
-                            </Tooltip>
-                            {/* <button
-                              className="text-blue-500 ml-4"
-                              onClick={() => filterUrls(url)}
-                              >
-                                <Trash2 size={14} />
-                            </button> */}
+                            {user?.role?.toLowerCase() === "basic" ? (
+                              <Tooltip title="click">
+                                <Button
+                                  onClick={() => {
+                                    goToRunEscape(url.description);
+                                  }}
+                                >
+                                  <RotateCcw size={16} className="font-bold" />
+                                </Button>
+                              </Tooltip>
+                            ) : (
+                              <div className="flex py-2 justify-start gap-2 ">
+                                <button
+                                  className="text-red-500 mr-2"
+                                  onClick={() => filterUrls(url)}
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                                <button
+                                  className="text-blue-500"
+                                  onClick={() => handleUpdate(url)}
+                                >
+                                  <Pencil size={14} />
+                                </button>
+                              </div>
+                            )}
                           </td>
                         </tr>
                       ))}

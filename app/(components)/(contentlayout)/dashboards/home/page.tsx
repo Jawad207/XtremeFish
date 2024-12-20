@@ -26,9 +26,8 @@ import Popup from "../../../../../components/Popup";
 const Home = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
-  const { reviews, posts, totalAccounts, todaysCount, account_stats } = useSelector(
-    (state: any) => state.dash
-  );
+  const { reviews, posts, totalAccounts, todaysCount, account_stats } =
+    useSelector((state: any) => state.dash);
   const [allCounts, setAllcounts] = useState<number>(0);
   const [percentage, setPercentage] = useState<any>({
     totalPercentage: 0,
@@ -63,7 +62,7 @@ const Home = () => {
     getAllPosts();
     getAllReviews();
   }, []);
-  console.log("Reviews are here:   ",reviews)
+  console.log("Reviews are here:   ", reviews);
   // Fetch accounts with pagination
   const fetchAccounts = async (page: number) => {
     const response = await getAccounts(auth?._id, page, 10, dispatch);
@@ -73,7 +72,6 @@ const Home = () => {
     });
   };
 
- 
   useEffect(() => {
     const results = loginAttempt?.filter((attempt: any) => {
       const userEmail = attempt?.userId?.email?.toLowerCase();
@@ -126,7 +124,6 @@ const Home = () => {
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
-
 
   return (
     <Fragment>
@@ -331,23 +328,28 @@ const Home = () => {
               <Card.Title>Reviews</Card.Title>
             </Card.Header>
             <Card.Body>
-            <Card className="mb-0 border-0 shadow-none bg-[#546dfe] overflow-hidden">
-              <Card.Body className="p-4">
-                <p className="mb-3">"{currentReview?.content}"</p>
-                <div className="d-flex justify-content-between flex-wrap gap-3">
-                  <div className="d-flex">
-                    <img
-                      src={currentReview?.user?.avatar || "../../assets/images/faces/1.jpg"}
-                      alt="img"
-                      className="avatar avatar-md avatar-rounded"
-                    />
-                    <div className="ms-2 my-auto mb-0">
-                      <h6 className="mb-0 lh-1">{userName}</h6>
-                      <p className="fs-14 mb-0">{currentReview?.user?.role || "Client"}</p>
+              <Card className="mb-0 border-0 shadow-none bg-[#546dfe] overflow-hidden">
+                <Card.Body className="p-4">
+                  <p className="mb-3">"{currentReview?.content}"</p>
+                  <div className="d-flex justify-content-between flex-wrap gap-3">
+                    <div className="d-flex">
+                      <img
+                        src={
+                          currentReview?.user?.avatar ||
+                          "../../assets/images/faces/1.jpg"
+                        }
+                        alt="img"
+                        className="avatar avatar-md avatar-rounded"
+                      />
+                      <div className="ms-2 my-auto mb-0">
+                        <h6 className="mb-0 lh-1">{userName}</h6>
+                        <p className="fs-14 mb-0">
+                          {currentReview?.user?.role || "Client"}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  {/* Uncomment below if you want to include ratings */}
-                  {/* <div className="mb-0 text-warning fs-12 my-auto">
+                    {/* Uncomment below if you want to include ratings */}
+                    {/* <div className="mb-0 text-warning fs-12 my-auto">
                     {[...Array(5)].map((_, i) => (
                       <i
                         key={i}
@@ -355,9 +357,9 @@ const Home = () => {
                       ></i>
                     ))}
                   </div> */}
-                </div>
-              </Card.Body>
-            </Card>
+                  </div>
+                </Card.Body>
+              </Card>
               {/* <div className="row mt-0">
                 <div className="col-6 border-end border-inline-end-dashed text-center">
                   <p className="text-muted mb-1 fs-12">This Month</p>
@@ -433,7 +435,7 @@ const Home = () => {
                 <table className="table text-nowrap">
                   <thead>
                     <tr>
-                      <th scope="row" className="ps-4">
+                      {/* <th scope="row" className="ps-4">
                         <input
                           className="form-check-input"
                           type="checkbox"
@@ -441,7 +443,7 @@ const Home = () => {
                           value=""
                           aria-label="..."
                         />
-                      </th>
+                      </th> */}
                       <th scope="col">Email</th>
                       <th scope="col">Username</th>
                       <th scope="col">Status</th>
@@ -466,7 +468,7 @@ const Home = () => {
                           )
                           ?.map((attempt: any) => (
                             <tr key={attempt._id}>
-                              <td className="ps-4">
+                              {/* <td className="ps-4">
                                 <input
                                   className="form-check-input"
                                   type="checkbox"
@@ -474,12 +476,15 @@ const Home = () => {
                                   value=""
                                   aria-label="..."
                                 />
-                              </td>
+                              </td> */}
                               <td>
                                 <div className="d-flex">
-                                  <span className="avatar avatar-md">
+                                  <span className="avatar avatar-md mr-3">
                                     <img
-                                      src="../../assets/images/ecommerce/jpg/1.jpg"
+                                      src={
+                                        auth?.profileImage ??
+                                        "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
+                                      }
                                       className=""
                                       alt="..."
                                     />
