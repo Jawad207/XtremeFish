@@ -302,8 +302,7 @@ const editProfile = async (req, res) => {
     }
 
     if (password) {
-      console.log('password exist brother', password)
-      // user.password = await bcrypt.hash(password, 10); // Update the password
+      user.password = await bcrypt.hash(password, 10); // Update the password
     }
 
     if (userName) {
