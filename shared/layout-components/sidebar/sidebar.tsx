@@ -722,7 +722,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
       { ...user, role: user?.role == 'admin' ? 'basic' : 'admin' },
       dispatch
     );
-    // window.location.reload();
+    window.location.reload();
   };
   const handleClick = (event: any) => {
     // Your logic here
