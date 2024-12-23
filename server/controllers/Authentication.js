@@ -346,7 +346,7 @@ const getGlobalUser = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      users,
+      allUsers: users,
     });
   } catch (error) {
     console.error("Error fetching global users:", error);

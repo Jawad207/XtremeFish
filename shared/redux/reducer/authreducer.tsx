@@ -142,6 +142,7 @@ export const authReducer = (
         loading: true,
       };
     case GET_GLOBAL_USER_SUCCESS:
+      console.log('action pa', action?.payload)
       return {
         ...state,
         loading: false,

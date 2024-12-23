@@ -222,12 +222,14 @@ export const deleteProfile = async (data: any, dispatch: any) => {
 
 export const getGlobalUser = async (dispatch: any) => {
   try {
+
     dispatch({ type: GET_GLOBAL_USER_INIT });
-    const response = await apiClient.get("/dashboard/get-global-user");
+    const response = await apiClient.get("/auth/get-global-user");
 
     // If the request was successful
 
     if (response.status === 200) {
+      console.log('all users ', response)
       dispatch({ type: GET_GLOBAL_USER_SUCCESS, payload: response.data });
     }
     return response.data.loginAttempts;

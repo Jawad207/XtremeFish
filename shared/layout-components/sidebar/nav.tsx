@@ -32,15 +32,14 @@ const NestedmenuIcon = (
 const getUserRole = (): boolean => {
   const userRole = localStorage.getItem("UserRole");
   const finalRole = userRole ? JSON.parse(userRole) : null;
-  console.log('finalRole in hee', finalRole)
+  console.log("finalRole in hee", finalRole);
   return finalRole === "basic"; // Adjust conditions as needed
 };
 
 export const MenuItems: any = [
-
-  {
-    menutitle: "MAIN",
-  },
+  // {
+  //   menutitle: "MAIN",
+  // },
 
   {
     icon: DashboardIcon,
@@ -108,18 +107,14 @@ export const MenuItems: any = [
         dirchange: false,
         title: "Blocker",
       },
-      // ...(getUserRole() //need to add the role of user in here
-      //   ? [
-      //       {
-      //         path: "/dashboards/blocked-users",
-      //         type: "link",
-      //         active: false,
-      //         selected: false,
-      //         dirchange: false,
-      //         title: "User Management",
-      //       },
-      //     ]
-      //   : []),
+      {
+        path: "/dashboards/user-managment",
+        type: "link",
+        active: false,
+        selected: false,
+        dirchange: false,
+        title: "User Management",
+      },
     ],
   },
 ];
