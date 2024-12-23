@@ -17,6 +17,8 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
 
   const theme = useSelector((state: any) => state.theme);
   const [menuitems, setMenuitems] = useState(MenuItems);
+  const user = useSelector((state: any) => state.auth.user);
+  console.log("user in here", user?.admin);
 
   function closeMenu() {
     const closeMenudata = (items: any) => {
@@ -49,7 +51,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
     };
   }, []);
 
-  const router = useRouter();
+  // const router = useRouter();
   const pathname = usePathname();
 
   function Onhover() {
@@ -512,7 +514,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
     ) {
       // {
       for (const item of MenuItems) {
-        item.selected = !item.selected
+        item.selected = !item.selected;
 
         if (item === targetObject) {
           if (theme.dataVerticalStyle == "doublemenu" && item.active) {
@@ -520,7 +522,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
           }
           item.active = !item.active;
           if (item.active) {
-            item.selected=true
+            item.selected = true;
             closeOtherMenus(MenuItems, item);
           } else {
             if (theme.dataVerticalStyle == "doublemenu") {
@@ -529,7 +531,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
           }
           setAncestorsActive(MenuItems, item);
         } else if (!item.active) {
-          item.selected=false
+          item.selected = false;
           if (theme.dataVerticalStyle != "doublemenu") {
             item.active = false; // Set active to false for items not matching the target
           }
@@ -712,6 +714,10 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
       }
     }
   }
+
+  const handleReload = () => {
+    window.location.reload(); // Reloads the entire page
+  };
   const handleClick = (event: any) => {
     // Your logic here
     event.preventDefault(); // Prevents the default anchor behavior (navigation)
@@ -733,11 +739,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
       >
         {/* Start::main-sidebar-header  */}
         <div className="main-sidebar-header">
-          <Link
-            scroll={false}
-            href="/dashboards/home/"
-            className="header-logo"
-          >
+          <Link scroll={false} href="/dashboards/home/" className="header-logo">
             {/* <img
               src={`${
                 process.env.NODE_ENV === "production" ? basePath : ""
@@ -752,11 +754,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
               alt="logo"
               className="toggle-dark"
             /> */}
-            <img
-              src={logo}
-              alt="logo"
-              className="desktop-dark"
-            />
+            <img src={logo} alt="logo" className="desktop-dark" />
             {/* <img
               src={`${
                 process.env.NODE_ENV === "production" ? basePath : ""
@@ -892,13 +890,15 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
               ))}
             </ul>
 
-            {/* <ul className="main-menu">
-              <Fragment >
-                <li>
-                  <>Go to Admin</>
-                </li>
-              </Fragment>
-            </ul> */}
+            {user?.admin == false && (
+              <ul className="main-menu" onClick={() => handleReload()}>
+                <Fragment>
+                  <li className="side-menu__item">
+                    <span className="side-menu__button cursor-pointer bg-white">Go to Admin</span>
+                  </li>
+                </Fragment>
+              </ul>
+            )}
 
             <div
               className="slide-right"

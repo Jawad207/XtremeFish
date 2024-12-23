@@ -59,7 +59,7 @@ import dashboard from "./routes/dashboard.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-import fs from "fs";
+
 import https from "https";
 
 dotenv.config();

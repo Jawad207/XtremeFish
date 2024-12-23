@@ -2,7 +2,7 @@ import { ThemeChanger } from "@/shared/redux/action";
 import Link from "next/link";
 import { Fragment } from "react";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 
 function Menuloop({
   local_varaiable,
@@ -11,9 +11,19 @@ function Menuloop({
   level,
   HoverToggleInnerMenuFn,
 }: any) {
+  const user = useSelector((state: any) => state.auth.user);
   const handleMainClick = (event: any) => {
     // Open the menu on click
     toggleSidemenu(event, MenuItems);
+  };
+
+  const filterMenuItems = (children: any) => {
+    if (user?.role === "admin") {
+      return children.filter(
+        (item: any) => item.title !== "User Management" && item.title !== "News"
+      );
+    }
+    return children;
   };
 
   return (
@@ -67,72 +77,74 @@ function Menuloop({
         ) : (
           ""
         )}
-        {MenuItems.children.map((firstlevel: any, index: any) => (
-          <li
-            className={`${firstlevel.menutitle ? "slide__category" : ""} ${
-              firstlevel?.type === "empty" ? "slide" : ""
-            } ${firstlevel?.type === "link" ? "slide" : ""} ${
-              firstlevel?.type === "sub" ? "slide has-sub" : ""
-            } ${firstlevel?.active ? "open" : ""} ${
-              firstlevel?.selected ? "active" : ""
-            }`}
-            key={index}
-          >
-            {firstlevel.type === "link" ? (
-              <Link
-                href={firstlevel.path}
-                className={`side-menu__item ${
-                  firstlevel.selected ? "active" : ""
-                }`}
-              >
-                {firstlevel.icon}
-                <span className="">
-                  {firstlevel.title}
-                  {firstlevel.badgetxt ? (
-                    <span className={firstlevel.class}>
-                      {firstlevel.badgetxt}
-                    </span>
-                  ) : (
-                    ""
-                  )}
-                </span>
-              </Link>
-            ) : (
-              ""
-            )}
-            {firstlevel.type === "empty" ? (
-              <Link
-                href="#!"
-                className="side-menu__item"
-                onClick={handleMainClick}
-              >
-                {firstlevel.icon}
-                <span className="">
-                  {firstlevel.title}
-                  {firstlevel.badgetxt ? (
-                    <span className={firstlevel.class}>
-                      {firstlevel.badgetxt}
-                    </span>
-                  ) : (
-                    ""
-                  )}
-                </span>
-              </Link>
-            ) : (
-              ""
-            )}
-            {firstlevel.type === "sub" ? (
-              <Menuloop
-                MenuItems={firstlevel}
-                toggleSidemenu={toggleSidemenu}
-                HoverToggleInnerMenuFn={HoverToggleInnerMenuFn}
-                level={level + 1}
-              />
-            ) : (
-              ""
-            )}
-          </li>
-        ))}
+        {filterMenuItems(MenuItems.children)?.map(
+          (firstlevel: any, index: any) => (
+            <li
+              className={`${firstlevel.menutitle ? "slide__category" : ""} ${
+                firstlevel?.type === "empty" ? "slide" : ""
+              } ${firstlevel?.type === "link" ? "slide" : ""} ${
+                firstlevel?.type === "sub" ? "slide has-sub" : ""
+              } ${firstlevel?.active ? "open" : ""} ${
+                firstlevel?.selected ? "active" : ""
+              }`}
+              key={index}
+            >
+              {firstlevel.type === "link" ? (
+                <Link
+                  href={firstlevel.path}
+                  className={`side-menu__item ${
+                    firstlevel.selected ? "active" : ""
+                  }`}
+                >
+                  {firstlevel.icon}
+                  <span className="">
+                    {firstlevel.title}
+                    {firstlevel.badgetxt ? (
+                      <span className={firstlevel.class}>
+                        {firstlevel.badgetxt}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </span>
+                </Link>
+              ) : (
+                ""
+              )}
+              {firstlevel.type === "empty" ? (
+                <Link
+                  href="#!"
+                  className="side-menu__item"
+                  onClick={handleMainClick}
+                >
+                  {firstlevel.icon}
+                  <span className="">
+                    {firstlevel.title}
+                    {firstlevel.badgetxt ? (
+                      <span className={firstlevel.class}>
+                        {firstlevel.badgetxt}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </span>
+                </Link>
+              ) : (
+                ""
+              )}
+              {firstlevel.type === "sub" ? (
+                <Menuloop
+                  MenuItems={firstlevel}
+                  toggleSidemenu={toggleSidemenu}
+                  HoverToggleInnerMenuFn={HoverToggleInnerMenuFn}
+                  level={level + 1}
+                />
+              ) : (
+                ""
+              )}
+            </li>
+          )
+        )}
       </ul>
     </Fragment>
   );
