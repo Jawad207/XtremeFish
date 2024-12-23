@@ -13,6 +13,7 @@ import {
   getAccounts,
   getTodayuserCount,
   getAccountsStatistics,
+  getGlobalLoginAttempts,
 } from "@/shared/Api/dashboard";
 import moment from "moment";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -66,7 +67,10 @@ const Home = () => {
     getAllReviews();
   }, []);
 
-  console.log("Reviews are here: ", reviews);
+  useEffect(() => {
+    getAllLoginAttempts();
+    setUserName(auth?.userName);
+  }, [auth, currentPage]);
 
   // Fetch accounts with pagination
   const fetchAccounts = async (page: number) => {
@@ -105,27 +109,38 @@ const Home = () => {
     await getReviews(dispatch);
   };
   const getAllLoginAttempts = async () => {
-    await getLoginAttempts(
-      { id: auth?._id, page: currentPage, limit: recordsPerPage },
-      dispatch
-    );
+    if (auth?.role == "basic") {
+      await getGlobalLoginAttempts(
+        { id: auth?._id, page: currentPage, limit: recordsPerPage },
+        dispatch
+      );
+    } else {
+      await getLoginAttempts(
+        { id: auth?._id, page: currentPage, limit: recordsPerPage },
+        dispatch
+      );
+    }
     await getTodayuserCount(dispatch);
     await getAccountsStatistics(dispatch);
   };
 
   useEffect(() => {
-    if (loginAttemptData?.loginAttempts?.length) {
-      setTotalRecords(loginAttemptData?.loginAttempts?.length);
-      setLoginAttempts(loginAttemptData?.loginAttempts);
-      setFilteredAttempts(loginAttemptData?.loginAttempts);
-      setTotalPages(loginAttemptData?.totalPages);
+    if (auth?.role == "basic") {
+      if (loginAttemptData?.loginAttempts?.length) {
+        setTotalRecords(loginAttemptData?.loginAttempts?.length);
+        setLoginAttempts(loginAttemptData?.loginAttempts);
+        setFilteredAttempts(loginAttemptData?.loginAttempts);
+        setTotalPages(loginAttemptData?.totalPages);
+      }
+    } else if (auth?.role == "admin") {
+      if (loginAttemptData?.globalLoginAttempts?.length) {
+        setTotalRecords(loginAttemptData?.globalLoginAttempts?.length);
+        setLoginAttempts(loginAttemptData?.globalLoginAttempts);
+        setFilteredAttempts(loginAttemptData?.globalLoginAttempts);
+        setTotalPages(loginAttemptData?.globaltotalPages);
+      }
     }
-  }, [loginAttemptData]);
-
-  useEffect(() => {
-    getAllLoginAttempts();
-    setUserName(auth?.userName);
-  }, [auth, currentPage]);
+  }, [loginAttemptData, auth]);
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -502,8 +517,12 @@ const Home = () => {
                                       </Link>
                                     </p>
                                     <p className="fs-12 text-muted mb-0">
-                                      {attempt.location?.city},{" "}
-                                      {attempt.location?.region}
+                                      {attempt?.location?.city}
+                                      {attempt?.location?.city &&
+                                      attempt?.location?.region
+                                        ? ", "
+                                        : ""}
+                                      {attempt?.location?.region}
                                     </p>
                                   </div>
                                 </div>

@@ -72,6 +72,9 @@ import {
   GET_ACCOUNT_STATISTICS_FAILURE,
   GET_ACCOUNT_STATISTICS_INIT,
   GET_ACCOUNT_STATISTICS_SUCCESS,
+  GET_GLOBAL_LOGINATTEMPT_INIT,
+  GET_GLOBAL_LOGINATTEMPT_SUCCESS,
+  GET_GLOBAL_LOGINATTEMPT_FAILURE,
 } from "../types";
 
 interface LoginAttempt {
@@ -119,9 +122,12 @@ interface DashState {
   currentUrl: any;
   ips: any;
   topUsers: any;
+  globaltotalPages: any;
+  globalCurrentPage: any;
   todaysCount: any;
   account_stats: any;
   beep: any;
+  globalLoginAttempts: LoginAttempt[];
   reviews: Reviews[];
 }
 
@@ -129,8 +135,11 @@ const initialState: DashState = {
   reviews: [],
   userCount: 0,
   loginAttempts: [],
+  globalLoginAttempts: [],
   totalPages: 1,
   currentPage: 1,
+  globaltotalPages: 1,
+  globalCurrentPage: 1,
   loading: false,
   error: null,
   posts: [],
@@ -230,6 +239,27 @@ export const dashReducer = (
         loginAttempts: [],
         error: action.payload,
       };
+    case GET_GLOBAL_LOGINATTEMPT_INIT:
+      return {
+        ...state,
+        loading: true,
+      };
+    case GET_GLOBAL_LOGINATTEMPT_SUCCESS:
+      return {
+        ...state,
+        globaltotalPages: action?.payload?.globaltotalPages,
+        globalCurrentPage: action?.payload?.globalCurrentPage,
+        globalLoginAttempts: action.payload?.globalLoginAttempts,
+        loading: false,
+        error: null,
+      };
+    case GET_GLOBAL_LOGINATTEMPT_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        globalLoginAttempts: [],
+        error: action.payload,
+      };
 
     case GET_POSTS_INIT:
       return {
@@ -263,7 +293,7 @@ export const dashReducer = (
       return {
         ...state,
         loading: false,
-        posts: [...state.posts, action.payload],
+        posts: [action.payload, ...state.posts],
       };
 
     case CREATE_POST_FAILURE:
@@ -605,48 +635,47 @@ export const dashReducer = (
         loading: false,
         error: action.payload,
       };
-      case "CREATE_REVIEW_INIT":
-        return {
-          ...state,
-          loading: true,
-          error: null,
-        };
+    case "CREATE_REVIEW_INIT":
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
 
-      case "CREATE_REVIEW_SUCCESS":
-        return {
-          ...state,
-          loading: false,
-          reviews: [...state.reviews, action.payload],
-        };
+    case "CREATE_REVIEW_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        reviews: [...state.reviews, action.payload],
+      };
 
-      case "CREATE_REVIEW_FAILURE":
-        return {
-          ...state,
-          loading: false,
-          error: action.payload,
-        };
+    case "CREATE_REVIEW_FAILURE":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
 
-      case GET_REVIEWS_INIT:
-        return {
-          ...state,
-          loading: true,
-          error: null,
-        };
-        
-      case GET_REVIEWS_SUCCESS:
-        return {
-          ...state,
-          loading: false,
-          reviews: action.payload,
-        };
-        
-      case GET_REVIEWS_FAILURE:
-        return {
-          ...state,
-          loading: false,
-          error: action.payload,
-        };
-        
+    case GET_REVIEWS_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case GET_REVIEWS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        reviews: action.payload,
+      };
+
+    case GET_REVIEWS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
 
     default:
       return state;

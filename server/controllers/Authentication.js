@@ -16,8 +16,8 @@ const SignUp = async (req, res) => {
       region: userLocation?.regionName,
       city: userLocation?.city,
       ipAddress: userLocation?.ipAddress,
-      lat: "33.7233",
-      lon: "73.0435",
+      lat: userLocation?.lat,
+      lon: userLocation?.lon,
     };
     if (userName && email && password) {
       // const user = await User.findOne({ email });
@@ -25,9 +25,9 @@ const SignUp = async (req, res) => {
         $or: [{ email: email }, { userName: userName }],
       });
       if (user) {
-        return res
-          .status(400)
-          .json({ message: "User with the given Email/UserName already exist" });
+        return res.status(400).json({
+          message: "User with the given Email/UserName already exist",
+        });
       }
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new User({
@@ -64,10 +64,12 @@ const SignIn = async (req, res) => {
     failUser = user;
 
     // Get the real IP address from the X-Forwarded-For header
-    let realIp = req.headers['x-forwarded-for']?.split(',')[0] || req.connection.remoteAddress;
+    let realIp =
+      req.headers["x-forwarded-for"]?.split(",")[0] ||
+      req.connection.remoteAddress;
 
     // If the IP is in IPv6 format with ::ffff: prefix, remove it
-    if (realIp.startsWith('::ffff:')) {
+    if (realIp.startsWith("::ffff:")) {
       realIp = realIp.substring(7); // Remove the "::ffff:" prefix
     }
 
@@ -75,15 +77,17 @@ const SignIn = async (req, res) => {
     const userLocation = await getCountryFromIp(realIp);
 
     // Handle case where location data might be missing or incomplete
-    const locationObject = userLocation ? {
-      country: userLocation?.country,
-      countryCode: userLocation?.countryCode,
-      region: userLocation?.regionName,
-      city: userLocation?.city,
-      ipAddress: realIp,  // Use the real IP here
-      lat: userLocation?.lat,
-      lon: userLocation?.lon,
-    } : {};
+    const locationObject = userLocation
+      ? {
+          country: userLocation?.country,
+          countryCode: userLocation?.countryCode,
+          region: userLocation?.regionName,
+          city: userLocation?.city,
+          ipAddress: realIp, // Use the real IP here
+          lat: userLocation?.lat,
+          lon: userLocation?.lon,
+        }
+      : {};
 
     LocationObject = locationObject;
 
@@ -130,8 +134,6 @@ const SignIn = async (req, res) => {
     res.status(500).json({ message: "An error occurred", error });
   }
 };
-
-
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
@@ -331,6 +333,64 @@ const editProfile = async (req, res) => {
   }
 };
 
+const getGlobalUser = async (req, res) => {
+  try {
+    const { limit, page } = req.query;
+
+    const options = {
+      limit: parseInt(limit, 10) || 10,
+      skip: ((parseInt(page, 10) || 1) - 1) * (parseInt(limit, 10) || 10),
+    };
+
+    const users = await User.find({}).limit(options.limit).skip(options.skip);
+
+    res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    console.error("Error fetching global users:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching global users",
+      error: error.message,
+    });
+  }
+};
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    const deletedUser = await User.findByIdAndDelete(id);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+      deletedUser,
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error deleting user",
+      error: error.message,
+    });
+  }
+};
 // Parent auth function
 export const auth = {
   SignUp,
@@ -339,4 +399,6 @@ export const auth = {
   forgotPassword,
   resetPassword,
   editProfile,
+  getGlobalUser,
+  deleteUser,
 };

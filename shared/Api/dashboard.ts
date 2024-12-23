@@ -67,6 +67,9 @@ import {
   GET_ACCOUNT_STATISTICS_INIT,
   GET_ACCOUNT_STATISTICS_SUCCESS,
   GET_ACCOUNT_STATISTICS_FAILURE,
+  GET_GLOBAL_LOGINATTEMPT_INIT,
+  GET_GLOBAL_LOGINATTEMPT_SUCCESS,
+  GET_GLOBAL_LOGINATTEMPT_FAILURE,
 } from "../redux/types";
 
 export const getAlluserCount = async (dispatch: any) => {
@@ -157,7 +160,6 @@ export const createReview = async (data: any, dispatch: any) => {
   }
 };
 
-
 export const getReviews = async (dispatch: any) => {
   try {
     dispatch({ type: "GET_REVIEWS_INIT" }); // Dispatch an action to initialize the review fetching process
@@ -187,7 +189,6 @@ export const getReviews = async (dispatch: any) => {
     }
   }
 };
-
 
 export const createPost = async (data: any, dispatch: any) => {
   try {
@@ -304,15 +305,20 @@ export const getAccounts = async (
     });
 
     if (response.status === 200) {
-      
-      const { accounts, accountsCount, totalPages, percentageChange } = response.data;
+      const { accounts, accountsCount, totalPages, percentageChange } =
+        response.data;
       // Dispatch success with payload containing accounts and pagination info
       dispatch({
         type: GET_ACCOUNTS_SUCCESS,
-        payload: { accounts, accountsCount, currentPage: page,  },
+        payload: { accounts, accountsCount, currentPage: page },
       });
 
-      return { accounts, totalAccounts: accountsCount, totalPages, percentageChange }; // Return necessary data
+      return {
+        accounts,
+        totalAccounts: accountsCount,
+        totalPages,
+        percentageChange,
+      }; // Return necessary data
     }
   } catch (error: any) {
     // Handle server or network errors
@@ -370,9 +376,9 @@ export const deleteNotifications = async (data: any, dispatch: any) => {
 
     const response = await apiClient.patch(
       `/dashboard/deleteNotification`,
-      {}, // Empty body since you're passing only params
+      {},
       {
-        params: { id: data?.id }, // Params go in the config object
+        params: { id: data?.id },
       }
     );
 
@@ -527,6 +533,37 @@ export const getLoginAttempts = async (data: any, dispatch: any) => {
       console.error("Error:", error.message);
       dispatch({
         type: GET_LOGINATTEMPT_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+export const getGlobalLoginAttempts = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: GET_GLOBAL_LOGINATTEMPT_INIT });
+    const response = await apiClient.get("/dashboard/getGlobalLoginAttempts", {
+      params: { page: data?.page, limit: data?.limit },
+    });
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({ type: GET_GLOBAL_LOGINATTEMPT_SUCCESS, payload: response.data });
+    }
+    return response.data.loginAttempts;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_GLOBAL_LOGINATTEMPT_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Login failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_GLOBAL_LOGINATTEMPT_FAILURE,
         payload: error.message,
       });
       return error.message;

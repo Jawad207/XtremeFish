@@ -10,13 +10,21 @@ import {
   EDIT_PROFILE_FAILURE,
   EDIT_PROFILE_INIT,
   EDIT_PROFILE_SUCCESS,
+  GET_GLOBAL_USER_SUCCESS,
+  GET_GLOBAL_USER_INIT,
+  GET_GLOBAL_USER_FAILURE,
+  DELETE_PROFILE_INIT,
+  DELETE_PROFILE_FAILURE,
+  DELETE_PROFILE_SUCCESS,
 } from "../types";
 
 interface AuthState {
   isAuthenticated: boolean;
   user: any;
   loading: boolean;
+  deleteduser: any;
   token: any;
+  allUsers: any;
   error: string | null;
 }
 
@@ -25,6 +33,8 @@ const initialState: AuthState = {
   user: null,
   loading: false,
   token: null,
+  allUsers: [],
+  deleteduser: null,
   error: null,
 };
 
@@ -101,6 +111,44 @@ export const authReducer = (
         error: null,
       };
     case EDIT_PROFILE_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        user: null,
+        error: action.payload,
+      };
+    case DELETE_PROFILE_INIT:
+      return {
+        ...state,
+        loading: true,
+      };
+    case DELETE_PROFILE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        deleteduser: action.payload.deletedUser,
+        error: null,
+      };
+    case DELETE_PROFILE_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        user: null,
+        error: action.payload,
+      };
+    case GET_GLOBAL_USER_INIT:
+      return {
+        ...state,
+        loading: true,
+      };
+    case GET_GLOBAL_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        allUsers: action.payload.allUsers,
+        error: null,
+      };
+    case GET_GLOBAL_USER_FAILURE:
       return {
         ...state,
         loading: false,

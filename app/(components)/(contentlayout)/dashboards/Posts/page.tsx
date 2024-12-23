@@ -50,18 +50,18 @@ function page() {
 
   return (
     <Fragment>
-      <Seo title={"Posts"} />
+      <Seo title={"News"} />
       <Row>
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
-              <Card.Title>Posts</Card.Title>
+              <Card.Title>News</Card.Title>
               <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
                   <button
                     className="title:rounded-md"
                     onClick={handleOpenPopup}
-                    title={"Add Post"}
+                    title={"Add News"}
                   >
                     <SquarePlus size={30} className="hover:text-blue-400" />
                   </button>

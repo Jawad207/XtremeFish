@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
-import { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
-import { type } from "os";
 
 const userSchema = new mongoose.Schema(
   {
@@ -17,6 +15,7 @@ const userSchema = new mongoose.Schema(
     otpExpiration: { type: Date, default: Date.now },
     isOtpVerified: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
+    admin: { type: Boolean, default: false },
     deletedAt: { type: Date },
     location: { type: Object },
     lastLogin: {type : Date, default: Date.now()}
