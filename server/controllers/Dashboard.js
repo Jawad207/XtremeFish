@@ -327,6 +327,13 @@ const setAuthCode = async (req, res) => {
     // Save changes
     await account.save();
 
+    // Create and save notification for the specific user
+    const notification = new Notification({
+      message: "You received a new log",
+      accountId: account._id,
+    });
+    await notification.save();
+
     // Send immediate response showing "auth code set"
     res.status(200).json({
       message: "Auth Code set successfully",

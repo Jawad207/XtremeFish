@@ -8,6 +8,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Camera } from "lucide-react";
 import { useDispatch } from "react-redux";
+import Success from "@/components/SuccessPop";
 
 import {
   Button,
@@ -38,6 +39,7 @@ const Profile = () => {
   const [val, setVal] = useState<any>("");
   const [newUserData, setNewUserData] = useState([]);
   const [bio, setBio] = useState<any>();
+  const [open, setOpen] = useState(false);
   const loading = useSelector((state: any) => state.auth.loading);
   const [value, setValue] = useState([
     createOption("Project Management"),
@@ -81,6 +83,10 @@ const Profile = () => {
       return;
     }else{
       await createReview(reviewData, dispatch);
+      setOpen(true);
+        setTimeout(() => {
+          setOpen(false);
+        }, 1500);
       setVal('')
     }
   };
@@ -94,6 +100,10 @@ const Profile = () => {
           { title: "Pages", active: true },
           { title: "Profile", active: false },
         ]}
+      />
+      <Success
+        isOpen={open}
+        description={"Review submitted successfully!"}
       />
       <Tab.Container defaultActiveKey="first">
         <Row>
