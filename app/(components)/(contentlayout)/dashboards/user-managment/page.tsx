@@ -2,12 +2,12 @@
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
 import { Card, Col, Row } from "react-bootstrap";
-import { SquarePlus, Trash2, Pencil, RotateCcw } from "lucide-react";
+import { SquarePlus, Trash2, Pencil } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import { getPosts, deletePost } from "@/shared/Api/dashboard";
+
 import Popup from "@/components/Popup";
-import { getGlobalUser } from "@/shared/Api/auth";
+import { deleteProfile, getGlobalUser } from "@/shared/Api/auth";
 
 function page() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -19,9 +19,7 @@ function page() {
   const [val, setVal] = useState("");
 
   const dispatch = useDispatch();
-  const { posts } = useSelector((state: any) => state.dash);
   const allUsers = useSelector((state: any) => state.auth.allUsers);
-  console.log("all users in here", allUsers);
   const getAllUser = async () => {
     await getGlobalUser(dispatch);
   };
@@ -34,18 +32,18 @@ function page() {
     setPostPopup(true);
     setIsPopupOpen(true);
   };
-  const handleClosePopup = () => {
+  const handleClosePopup: any = () => {
     setIsPopupOpen(false);
   };
 
   const filterPosts = (postToDelete: any) => {
-    deletePost({ id: postToDelete?._id }, dispatch);
+    deleteProfile({ id: postToDelete?._id }, dispatch);
   };
 
-  const handleUpdate = (post: any) => {
-    setVal(post?.title);
-    setDescVal(post?.description);
-    setUpdate(post?._id);
+  const handleUpdate = (user: any) => {
+    setVal(user?.title);
+    setDescVal(user?.description);
+    setUpdate(user?._id);
     handleOpenPopup();
   };
 
@@ -94,7 +92,7 @@ function page() {
               <div className="table-responsive">
                 <table className="table text-nowrap">
                   <thead>
-                    <th>image</th>
+                    <th>Profile</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Password</th>
@@ -104,24 +102,24 @@ function page() {
                   <tbody>
                     {allUsers &&
                       allUsers?.length > 0 &&
-                      allUsers?.map((post: any) => (
-                        <tr key={post._id}>
+                      allUsers?.map((user: any) => (
+                        <tr key={user._id}>
                           <td>
                             <img
                               src={
-                                post?.profileImage ??
+                                user?.profileImage ??
                                 "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
                               }
                               alt="img"
                               className="avatar avatar-xs avatar-rounded mb-1"
                             />
                           </td>
-                          <td>{post?.userName}</td>
-                          <td>{post && <span>{post?.email}</span>}</td>
-                          <td>{post?.password}</td>
+                          <td>{user?.userName}</td>
+                          <td>{user && <span>{user?.email}</span>}</td>
+                          <td>{user?.password}</td>
                           <td>
                             <div className="btn-list">
-                              {moment(post?.timestamp).format(
+                              {moment(user?.timestamp).format(
                                 "ddd, MMM DD, YYYY, hh:mm A"
                               )}
                             </div>
@@ -130,13 +128,13 @@ function page() {
                             <div className="flex py-2 justify-start gap-2 ">
                               <button
                                 className="text-red-500 mr-2"
-                                onClick={() => filterPosts(post)}
+                                onClick={() => filterPosts(user)}
                               >
                                 <Trash2 size={14} />
                               </button>
                               <button
                                 className="text-blue-500"
-                                onClick={() => handleUpdate(post)}
+                                onClick={() => handleUpdate(user)}
                               >
                                 <Pencil size={14} />
                               </button>

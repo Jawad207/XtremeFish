@@ -341,8 +341,11 @@ const getGlobalUser = async (req, res) => {
       limit: parseInt(limit, 10) || 10,
       skip: ((parseInt(page, 10) || 1) - 1) * (parseInt(limit, 10) || 10),
     };
-
-    const users = await User.find({}).limit(options.limit).skip(options.skip);
+    const users = await User.find({
+      $or: [{ admin: false }, { admin: { $exists: false } }],
+    })
+      .limit(options.limit)
+      .skip(options.skip);
 
     res.status(200).json({
       success: true,

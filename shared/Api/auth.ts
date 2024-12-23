@@ -194,7 +194,7 @@ export const editProfile = async (data: any, dispatch: any) => {
 export const deleteProfile = async (data: any, dispatch: any) => {
   try {
     dispatch({ type: DELETE_PROFILE_INIT });
-    const response = await apiClient.delete("/auth/delete-profile", {
+    const response = await apiClient.delete("/auth/delete-user", {
       params: { id: data?.id },
     });
     if (response.status === 200) {
@@ -202,7 +202,6 @@ export const deleteProfile = async (data: any, dispatch: any) => {
       return response;
     }
   } catch (error: any) {
-    console.log("error in here", error);
     if (error.response) {
       dispatch({
         type: DELETE_PROFILE_FAILURE,

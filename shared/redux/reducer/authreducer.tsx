@@ -127,6 +127,9 @@ export const authReducer = (
         ...state,
         loading: false,
         deleteduser: action.payload.deletedUser,
+        allUsers: state.allUsers.filter(
+          (user: any) => user._id !== action.payload.deletedUser._id
+        ),
         error: null,
       };
     case DELETE_PROFILE_FAILURE:
