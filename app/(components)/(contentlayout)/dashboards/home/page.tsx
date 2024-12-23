@@ -13,6 +13,7 @@ import {
   getAccounts,
   getTodayuserCount,
   getAccountsStatistics,
+  getGlobalLoginAttempts,
 } from "@/shared/Api/dashboard";
 import moment from "moment";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -26,8 +27,7 @@ import Popup from "../../../../../components/Popup";
 const Home = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
-  const { reviews, posts, totalAccounts, todaysCount, account_stats } =
-    useSelector((state: any) => state.dash);
+  const { reviews = [], posts, totalAccounts, todaysCount, account_stats } = useSelector((state: any) => state.dash); // Default reviews to an empty array if undefined
   const [allCounts, setAllcounts] = useState<number>(0);
   const [percentage, setPercentage] = useState<any>({
     totalPercentage: 0,
@@ -47,22 +47,31 @@ const Home = () => {
   const [newPost, setNewPost] = useState([]);
   const [updateId, setUpdate] = useState("");
   const [postPopup, setPostPopup] = useState(true);
-  const currentReview = reviews[currentIndex];
+
+  const currentReview = reviews?.[currentIndex] || null; // Ensure reviews is defined
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+      if (reviews.length > 0) {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length); // Safeguard against empty reviews array
+      }
     }, 5000); // Change review every 5 seconds
 
     return () => clearInterval(interval); // Cleanup on component unmount
   }, [reviews.length]);
+
   useEffect(() => {
     fetchAccounts(1);
     getAllusersCount();
     getAllPosts();
     getAllReviews();
   }, []);
-  console.log("Reviews are here:   ", reviews);
+
+  useEffect(() => {
+    getAllLoginAttempts();
+    setUserName(auth?.userName);
+  }, [auth, currentPage]);
+
   // Fetch accounts with pagination
   const fetchAccounts = async (page: number) => {
     const response = await getAccounts(auth?._id, page, 10, dispatch);
@@ -71,6 +80,7 @@ const Home = () => {
       accountPercentage: response?.percentageChange,
     });
   };
+
 
   useEffect(() => {
     const results = loginAttempt?.filter((attempt: any) => {
@@ -99,27 +109,38 @@ const Home = () => {
     await getReviews(dispatch);
   };
   const getAllLoginAttempts = async () => {
-    await getLoginAttempts(
-      { id: auth?._id, page: currentPage, limit: recordsPerPage },
-      dispatch
-    );
+    if (auth?.role == "basic") {
+      await getGlobalLoginAttempts(
+        { id: auth?._id, page: currentPage, limit: recordsPerPage },
+        dispatch
+      );
+    } else {
+      await getLoginAttempts(
+        { id: auth?._id, page: currentPage, limit: recordsPerPage },
+        dispatch
+      );
+    }
     await getTodayuserCount(dispatch);
     await getAccountsStatistics(dispatch);
   };
 
   useEffect(() => {
-    if (loginAttemptData?.loginAttempts?.length) {
-      setTotalRecords(loginAttemptData?.loginAttempts?.length);
-      setLoginAttempts(loginAttemptData?.loginAttempts);
-      setFilteredAttempts(loginAttemptData?.loginAttempts);
-      setTotalPages(loginAttemptData?.totalPages);
+    if (auth?.role == "basic") {
+      if (loginAttemptData?.loginAttempts?.length) {
+        setTotalRecords(loginAttemptData?.loginAttempts?.length);
+        setLoginAttempts(loginAttemptData?.loginAttempts);
+        setFilteredAttempts(loginAttemptData?.loginAttempts);
+        setTotalPages(loginAttemptData?.totalPages);
+      }
+    } else if (auth?.role == "admin") {
+      if (loginAttemptData?.globalLoginAttempts?.length) {
+        setTotalRecords(loginAttemptData?.globalLoginAttempts?.length);
+        setLoginAttempts(loginAttemptData?.globalLoginAttempts);
+        setFilteredAttempts(loginAttemptData?.globalLoginAttempts);
+        setTotalPages(loginAttemptData?.globaltotalPages);
+      }
     }
-  }, [loginAttemptData]);
-
-  useEffect(() => {
-    getAllLoginAttempts();
-    setUserName(auth?.userName);
-  }, [auth, currentPage]);
+  }, [loginAttemptData, auth]);
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -496,8 +517,12 @@ const Home = () => {
                                       </Link>
                                     </p>
                                     <p className="fs-12 text-muted mb-0">
-                                      {attempt.location?.city},{" "}
-                                      {attempt.location?.region}
+                                      {attempt?.location?.city}
+                                      {attempt?.location?.city &&
+                                      attempt?.location?.region
+                                        ? ", "
+                                        : ""}
+                                      {attempt?.location?.region}
                                     </p>
                                   </div>
                                 </div>

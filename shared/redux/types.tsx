@@ -80,6 +80,12 @@ export const GET_LOGINATTEMPT_INIT = "GET_LOGINATTEMPT_INIT";
 export const GET_LOGINATTEMPT_SUCCESS = "GET_LOGINATTEMPT_SUCCESS";
 export const GET_LOGINATTEMPT_FAILURE = "GET_LOGINATTEMPT_FAILURE";
 
+export const GET_GLOBAL_LOGINATTEMPT_INIT = "GET_GLOBAL_LOGINATTEMPT_INIT";
+export const GET_GLOBAL_LOGINATTEMPT_SUCCESS =
+  "GET_GLOBAL_LOGINATTEMPT_SUCCESS";
+export const GET_GLOBAL_LOGINATTEMPT_FAILURE =
+  "GET_GLOBAL_LOGINATTEMPT_FAILURE";
+
 export const GET_ACCOUNTS_INIT = "GET_ACCOUNTS_INIT";
 export const GET_ACCOUNTS_SUCCESS = "GET_ACCOUNTS_SUCCESS";
 export const GET_ACCOUNTS_FAILURE = "GET_ACCOUNTS_FAILURE";
@@ -120,6 +126,26 @@ export const GET_ACCOUNT_STATISTICS_INIT = "GET_ACCOUNT_STATISTICS_INIT";
 export const GET_ACCOUNT_STATISTICS_SUCCESS = "GET_ACCOUNT_STATISTICS_SUCCESS";
 export const GET_ACCOUNT_STATISTICS_FAILURE = "GET_ACCOUNT_STATISTICS_FAILURE";
 
+export const DELETE_PROFILE_INIT = "DELETE_PROFILE_INIT";
+export const DELETE_PROFILE_SUCCESS = "DELETE_PROFILE_SUCCESS";
+export const DELETE_PROFILE_FAILURE = "DELETE_PROFILE_FAILURE";
+
+export const GET_GLOBAL_USER_INIT = "GET_GLOBAL_USER_INIT";
+export const GET_GLOBAL_USER_SUCCESS = "GET_GLOBAL_USER_SUCCESS";
+export const GET_GLOBAL_USER_FAILURE = "GET_GLOBAL_USER_FAILURE";
+
+interface getGloalUserInitAction {
+  type: typeof GET_GLOBAL_USER_INIT;
+}
+interface getGlobalUserSuccessAction {
+  type: typeof GET_GLOBAL_USER_SUCCESS;
+  payload: any;
+}
+
+interface getGlobalUserFailureAction {
+  type: typeof GET_GLOBAL_USER_FAILURE;
+  payload: any;
+}
 interface getTopAccountInitAction {
   type: typeof GET_TOPUSER_INIT;
 }
@@ -342,6 +368,19 @@ interface GetLoginAttemptFailureAction {
   type: typeof GET_LOGINATTEMPT_FAILURE;
   payload: any;
 }
+interface GetGlobalLoginAttemptInitAction {
+  type: typeof GET_GLOBAL_LOGINATTEMPT_INIT;
+}
+
+interface GetGlobalLoginAttemptSuccessAction {
+  type: typeof GET_GLOBAL_LOGINATTEMPT_SUCCESS;
+  payload: any;
+}
+
+interface GetGlobalLoginAttemptFailureAction {
+  type: typeof GET_GLOBAL_LOGINATTEMPT_FAILURE;
+  payload: any;
+}
 
 interface CreatePostInitAction {
   type: typeof CREATE_POST_INIT;
@@ -540,6 +579,18 @@ interface getAccountsFailreAction {
   type: typeof GET_ACCOUNTS_FAILURE;
   payload: any;
 }
+
+interface deleteUserInitAction {
+  type: typeof DELETE_PROFILE_INIT;
+}
+interface deleteUserSuccessAction {
+  type: typeof DELETE_PROFILE_SUCCESS;
+  payload: any;
+}
+interface deleteUserFailureAction {
+  type: typeof DELETE_PROFILE_FAILURE;
+  payload: any;
+}
 export type AuthActionTypes =
   | LogOutAction
   | VerifyInitAction
@@ -556,6 +607,12 @@ export type AuthActionTypes =
   | SignUpFailureAction
   | editProfiletInitAction
   | editProfileSuccessAction
+  | deleteUserInitAction
+  | deleteUserSuccessAction
+  | deleteUserFailureAction
+  | getGloalUserInitAction
+  | getGlobalUserSuccessAction
+  | getGlobalUserFailureAction
   | editProfilefailureAction;
 
 export type DashActionTypes =
@@ -633,4 +690,7 @@ export type DashActionTypes =
   | GetReviewsInitAction
   | GetReviewsSuccessAction
   | GetReviewsFailureAction
+  | GetGlobalLoginAttemptInitAction
+  | GetGlobalLoginAttemptSuccessAction
+  | GetGlobalLoginAttemptFailureAction
   | getAccountstatisticsFailureAction;

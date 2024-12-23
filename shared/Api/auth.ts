@@ -18,7 +18,13 @@ import {
   RESET_INIT,
   EDIT_PROFILE_FAILURE,
   EDIT_PROFILE_INIT,
-  EDIT_PROFILE_SUCCESS
+  EDIT_PROFILE_SUCCESS,
+  DELETE_PROFILE_INIT,
+  DELETE_PROFILE_SUCCESS,
+  DELETE_PROFILE_FAILURE,
+  GET_GLOBAL_USER_INIT,
+  GET_GLOBAL_USER_SUCCESS,
+  GET_GLOBAL_USER_FAILURE,
 } from "../redux/types";
 
 export const signIn = async (data: any, dispatch: any) => {
@@ -161,7 +167,7 @@ export const ResetPassword = async (data: any, dispatch: any) => {
 export const editProfile = async (data: any, dispatch: any) => {
   try {
     dispatch({ type: EDIT_PROFILE_INIT });
-    console.log('data in here brother', data)
+    console.log("data in here brother", data);
     const response = await apiClient.post("/auth/edit-profile", data);
     if (response.status === 200) {
       dispatch({ type: EDIT_PROFILE_SUCCESS, payload: response.data });
@@ -179,6 +185,67 @@ export const editProfile = async (data: any, dispatch: any) => {
       console.error("Error:", error.message);
       dispatch({
         type: EDIT_PROFILE_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+export const deleteProfile = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: DELETE_PROFILE_INIT });
+    const response = await apiClient.delete("/auth/delete-profile", {
+      params: { id: data?.id },
+    });
+    if (response.status === 200) {
+      dispatch({ type: DELETE_PROFILE_SUCCESS, payload: response.data });
+      return response;
+    }
+  } catch (error: any) {
+    console.log("error in here", error);
+    if (error.response) {
+      dispatch({
+        type: DELETE_PROFILE_FAILURE,
+        payload: error.response.data.message,
+      });
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: DELETE_PROFILE_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const getGlobalUser = async (dispatch: any) => {
+  try {
+
+    dispatch({ type: GET_GLOBAL_USER_INIT });
+    const response = await apiClient.get("/auth/get-global-user");
+
+    // If the request was successful
+
+    if (response.status === 200) {
+      console.log('all users ', response)
+      dispatch({ type: GET_GLOBAL_USER_SUCCESS, payload: response.data });
+    }
+    return response.data.loginAttempts;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_GLOBAL_USER_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Login failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_GLOBAL_USER_FAILURE,
         payload: error.message,
       });
       return error.message;

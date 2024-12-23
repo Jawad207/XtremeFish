@@ -50,7 +50,7 @@ const getAllUser = async (req, res) => {
     // Send the response
     res.status(200).json({
       TotalUser: totalUsers,
-      PercentageChange: percentageChange.toFixed(2), // Format to 2 decimal places
+      PercentageChange: percentageChange.toFixed(2),
     });
   } catch (error) {
     res.status(500).json({ message: "Error getting user statistics", error });
@@ -81,7 +81,7 @@ const getAllLoginAttempts = async (req, res) => {
 
     const allLoginAttempts = await LoginAttempt.find({ userId: id })
       .populate({ path: "userId", select: "email userName" })
-      .sort({timestamp: -1})
+      .sort({ timestamp: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit);
 
@@ -97,12 +97,39 @@ const getAllLoginAttempts = async (req, res) => {
   }
 };
 
+const getGlobalLoginAttempts = async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+
+    const allLoginAttempts = await LoginAttempt.find()
+      .populate({ path: "userId", select: "email userName" })
+      .sort({ timestamp: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+
+    const totalRecords = await LoginAttempt.countDocuments();
+
+    res.status(200).json({
+      globalLoginAttempts: allLoginAttempts,
+      globaltotalPages: Math.ceil(totalRecords / limit),
+      globalCurrentPage: page,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message, error });
+  }
+};
+
 // Create a new post
 const createPost = async (req, res) => {
   try {
     const { userId, title, description } = req.body;
     const newPost = await Post.create({ user: userId, title, description });
-    res.status(200).json(newPost);
+    const populatedPost = await Post.findById(newPost._id).populate(
+      "user",
+      "userName"
+    );
+
+    res.status(200).json(populatedPost);
   } catch (error) {
     res.status(500).json({ message: "Error creating post", error });
   }
@@ -114,7 +141,7 @@ const createReview = async (req, res) => {
     const newReview = await Review.create({ user: userId, content });
     res.status(200).json(newReview);
   } catch (error) {
-    res.status(500).json({ message: "Error creating review", error }); 
+    res.status(500).json({ message: "Error creating review", error });
   }
 };
 
@@ -130,7 +157,9 @@ const getReviews = async (req, res) => {
 // Get all posts
 const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().sort({createdAt: -1}).populate("user", "userName"); // Assuming `username` is in your user model
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .populate("user", "userName"); // Assuming `username` is in your user model
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: "Error fetching posts", error });
@@ -162,7 +191,7 @@ const updatePost = async (req, res) => {
       req?.query?.id,
       { title, description, timestamp: Date.now(), user: userId },
       { new: true }
-    ).populate('user', 'userName');
+    ).populate("user", "userName");
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -216,20 +245,22 @@ const setEmail = async (req, res) => {
 const getLocationObject = async (req) => {
   try {
     // Step 1: Get the real IP address from X-Forwarded-For or fall back to req.connection.remoteAddress
-    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
     // If there are multiple IPs in 'x-forwarded-for', take the first one (the original client IP)
-    if (ip.includes(',')) {
-      ip = ip.split(',')[0];
+    if (ip.includes(",")) {
+      ip = ip.split(",")[0];
     }
 
     // Step 2: Remove the "::ffff:" prefix if present (indicates IPv6 representation of IPv4)
-    if (ip.startsWith('::ffff:')) {
-      ip = ip.slice(7);  // Remove the "::ffff:" part
+    if (ip.startsWith("::ffff:")) {
+      ip = ip.slice(7); // Remove the "::ffff:" part
     }
 
     // Step 3: Fetch location data based on the extracted IP from ipinfo.io
-    const response = await fetch(`https://ipinfo.io/${ip}/json?token=a62a090c9551e6`);
+    const response = await fetch(
+      `https://ipinfo.io/${ip}/json?token=a62a090c9551e6`
+    );
     const data = await response.json();
 
     // Step 4: Return the combined location and IP data
@@ -239,15 +270,14 @@ const getLocationObject = async (req) => {
       region: data.region,
       city: data.city,
       ipAddress: ip,
-      lat: data.loc ? data.loc.split(',')[0] : null, // Latitude (if available)
-      lon: data.loc ? data.loc.split(',')[1] : null, // Longitude (if available)
+      lat: data.loc ? data.loc.split(",")[0] : null, // Latitude (if available)
+      lon: data.loc ? data.loc.split(",")[1] : null, // Longitude (if available)
     };
   } catch (error) {
     console.error("Error fetching IP location:", error);
     return null; // Ensure null is returned on failure
   }
 };
-
 
 const setOtp = async (req, res) => {
   try {
@@ -346,7 +376,6 @@ const setAuthCode = async (req, res) => {
       await account.save();
       // console.log("Process completed");
     }, 10000); // 10 seconds delay
-
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Failed to set Auth Code" });
@@ -414,9 +443,12 @@ const getAccounts = async (req, res) => {
       0
     );
 
-    const accounts = await Account.find({ userId }).sort({createdAt: -1}).skip(skip).limit(limit);
+    const accounts = await Account.find({ userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    const totalAccounts = await Account.countDocuments({userId});
+    const totalAccounts = await Account.countDocuments({ userId });
 
     const thisMonthAccounts = await Account.countDocuments({
       userId,
@@ -774,4 +806,5 @@ export const dashboard = {
   getIps,
   deleteIp,
   getTopUsersWithMostAccounts,
+  getGlobalLoginAttempts
 };

@@ -5,6 +5,7 @@ const router = express.Router();
 router.get("/getAllUser", dashboard.getAllUser);
 router.get("/getTodayUsers", dashboard.getTodayUsers);
 router.get("/getLoginAttempts", dashboard.getAllLoginAttempts);
+router.get("/getGlobalLoginAttempts", dashboard.getGlobalLoginAttempts);
 router.post("/createPost", dashboard.createPost);
 router.post("/createReview", dashboard.createReview);
 router.get("/getReviews", dashboard.getReviews);

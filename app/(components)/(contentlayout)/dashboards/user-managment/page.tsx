@@ -1,13 +1,13 @@
 "use client";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
-import { Button, Card, Col, Row } from "react-bootstrap";
+import { Card, Col, Row } from "react-bootstrap";
 import { SquarePlus, Trash2, Pencil, RotateCcw } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import { getUrls, deleteUrl, getPosts, deletePost } from "@/shared/Api/dashboard";
-import { getIps } from "@/shared/Api/dashboard";
+import { getPosts, deletePost } from "@/shared/Api/dashboard";
 import Popup from "@/components/Popup";
+import { getGlobalUser } from "@/shared/Api/auth";
 
 function page() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -21,12 +21,12 @@ function page() {
   const dispatch = useDispatch();
   const { posts } = useSelector((state: any) => state.dash);
 
-  const getAllPosts = async () => {
-    await getPosts(dispatch);
+  const getAllUser = async () => {
+    await getGlobalUser(dispatch);
   };
 
   useEffect(() => {
-    getAllPosts();
+    getAllUser();
   }, []);
 
   const handleOpenPopup = () => {
@@ -50,12 +50,12 @@ function page() {
 
   return (
     <Fragment>
-      <Seo title={"News"} />
+      <Seo title={"user-management"} />
       <Row>
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
-              <Card.Title>News</Card.Title>
+              <Card.Title>Users</Card.Title>
               <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
                   <button
@@ -93,9 +93,9 @@ function page() {
               <div className="table-responsive">
                 <table className="table text-nowrap">
                   <thead>
-                    <th>User</th>
-                    <th>Title</th>
-                    <th>Description</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Password</th>
                     <th>Date</th>
                     <th>Actions</th>
                   </thead>

@@ -129,7 +129,7 @@ const Popup = ({
                 <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]"/>
               </button>
             <div className="bg-[#12111d] w-full py-10 rounded-md flex flex-col justify-center items-center gap-4 text-center">
-              <p className="text-lg font-bold">Add New Post</p>
+              <p className="text-lg font-bold">Add New News</p>
               <input
                 type="text"
                 className="form-control rounded-md px-2 py-2 w-4/5"
