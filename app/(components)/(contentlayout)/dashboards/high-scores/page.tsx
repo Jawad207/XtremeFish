@@ -1,7 +1,7 @@
 "use client";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
-import { Card, Col, Row } from "react-bootstrap";
+import { Card, Col, Row, Pagination } from "react-bootstrap";
 // import { SquarePlus, Trash2, Pencil } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 // import { FaTrash } from "react-icons/fa";
@@ -10,7 +10,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { getTopUser } from "@/shared/Api/dashboard";
 const page = () => {
   const topUsers = useSelector((state: any) => state.dash.topUsers);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   // const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
   console.log(topUsers, "===");
@@ -21,6 +22,13 @@ const page = () => {
   useEffect(() => {
     fetchAccounts();
   }, []);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentUsers = topUsers?.topUsers.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   return (
     <Fragment>
       <Seo title={"high-scores"} />
@@ -90,8 +98,8 @@ const page = () => {
                     <th>Accounts</th>
                   </thead>
                   <tbody>
-                    {topUsers?.topUsers?.length > 0 &&
-                      topUsers?.topUsers?.map((account: any) => (
+                    {currentUsers?.length > 0 &&
+                      currentUsers?.map((account: any) => (
                         <tr key={account._id}>
                           <td>
                             <img
@@ -136,14 +144,40 @@ const page = () => {
             <Card.Footer>
               <div className="d-flex align-items-center">
                 <div>
-                  {" "}
+                  Showing {topUsers?.topUsers.length} Entries{" "}
                   <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
                 </div>
                 <div className="ms-auto">
                   <nav
                     aria-label="Page navigation"
                     className="pagination-style-4"
-                  ></nav>
+                  >
+                    <Pagination className="pagination mb-0">
+                      <Pagination.Item
+                        disabled={currentPage === 1}
+                        onClick={() => paginate(currentPage - 1)}
+                      >
+                        Prev
+                      </Pagination.Item>
+                      {Array.from({ length: Math.ceil(topUsers?.topUsers.length / itemsPerPage) }).map(
+                        (_, index) => (
+                          <Pagination.Item
+                            key={index + 1}
+                            active={currentPage === index + 1}
+                            onClick={() => paginate(index + 1)}
+                          >
+                            {index + 1}
+                          </Pagination.Item>
+                        )
+                      )}
+                      <Pagination.Item
+                        disabled={currentPage === Math.ceil(topUsers?.topUsers.length / itemsPerPage)}
+                        onClick={() => paginate(currentPage + 1)}
+                      >
+                        Next
+                      </Pagination.Item>
+                    </Pagination>
+                  </nav>
                 </div>
               </div>
             </Card.Footer>
