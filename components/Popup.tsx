@@ -1,7 +1,13 @@
 import { SquarePlus, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
-import { createUrl, createPost, updatePost, updateUrl, createIp } from "@/shared/Api/dashboard";
+import {
+  createUrl,
+  createPost,
+  updatePost,
+  updateUrl,
+  createIp,
+} from "@/shared/Api/dashboard";
 import { useDispatch, useSelector } from "react-redux";
 import { title } from "process";
 
@@ -19,6 +25,7 @@ const Popup = ({
   setDescVal,
   setUpdate,
   ipBlock,
+  usermanagment,
 }: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const Ips = useSelector((state: any) => state.auth.ips);
@@ -34,7 +41,7 @@ const Popup = ({
     if (updateId) {
       updatePost(
         {
-          title:val,
+          title: val,
           description: descVal,
           userId: user?._id,
           id: updateId,
@@ -43,7 +50,7 @@ const Popup = ({
       );
     } else {
       createPost(
-        { title:val, description: descVal, userId: user?._id },
+        { title: val, description: descVal, userId: user?._id },
         dispatch
       );
     }
@@ -52,7 +59,6 @@ const Popup = ({
     setDescVal("");
     setUpdate("");
   };
-
 
   const handleChangePost = (e: any) => {
     setVal(e.target.value);
@@ -106,28 +112,27 @@ const Popup = ({
     }
   };
   const handleSubmitIp = () => {
-      createIp(
-        { blockerId:user?._id, ip:ipVal },
-        dispatch
-      );
+    createIp({ blockerId: user?._id, ip: ipVal }, dispatch);
     onClose();
     setIpVal("");
   };
- 
+
   return (
     <>
-      {postPopup?(
+      {postPopup ? (
         <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-screen flex justify-center items-center">
           <div className="flex flex-col items-center w-[500px] mt-2">
-              <button 
-                title="close"
-                onClick={()=>{
+            <button
+              title="close"
+              onClick={() => {
                 onClose();
                 setVal("");
                 setDescVal("");
-              }} className="">
-                <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]"/>
-              </button>
+              }}
+              className=""
+            >
+              <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]" />
+            </button>
             <div className="bg-[#12111d] w-full py-10 rounded-md flex flex-col justify-center items-center gap-4 text-center">
               <p className="text-lg font-bold">Add New News</p>
               <input
@@ -157,17 +162,18 @@ const Popup = ({
             </div>
           </div>
         </div>
-  ):(
-      ipPopup?(
+      ) : ipPopup ? (
         <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-full flex justify-center items-center">
           <div className="flex flex-col justify-center items-center w-[500px] mt-2">
-          <button 
+            <button
               title="close"
-              onClick={()=>{
-              onClose();
-              setIpVal("");
-            }} className="">
-              <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]"/>
+              onClick={() => {
+                onClose();
+                setIpVal("");
+              }}
+              className=""
+            >
+              <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]" />
             </button>
             <div className="bg-[#12111d] w-full py-20 rounded-lg flex flex-col justify-center items-center gap-4 text-center">
               <input
@@ -186,85 +192,139 @@ const Popup = ({
               >
                 Block IP
               </button>
-                <div className="flex flex-col gap-4 w-full">
-                  <p>Range IPs</p>
-                  <div className="d-flex gap-3 flex-col justify-center items-center">
-                    <input
-                      type="text"
-                      placeholder="Start Range (e.g., 90.201.1.1)"
-                      // value={startRange}
-                      // onChange={(e) => setStartRange(e.target.value)}
-                      className="form-control rounded-md px-2 py-2 w-4/5"
-                    />
-                    <input
-                      type="text"
-                      placeholder="End Range (e.g., 90.201.999.999)"
-                      // value={endRange}
-                      // onChange={(e) => setEndRange(e.target.value)}
-                      className="form-control rounded-md px-2 py-2 w-4/5"
-                    />
-                  </div>
-                    <div>
-                      <button 
-                        // onClick={blockIpRange} 
-                        className="text-sm font-semibold px-5 py-2 rounded-md bg-[#1c64f2]
-                      hover:bg-gradient-to-bl">
-                        Block Range
-                      </button>
-                    </div>
+              <div className="flex flex-col gap-4 w-full">
+                <p>Range IPs</p>
+                <div className="d-flex gap-3 flex-col justify-center items-center">
+                  <input
+                    type="text"
+                    placeholder="Start Range (e.g., 90.201.1.1)"
+                    // value={startRange}
+                    // onChange={(e) => setStartRange(e.target.value)}
+                    className="form-control rounded-md px-2 py-2 w-4/5"
+                  />
+                  <input
+                    type="text"
+                    placeholder="End Range (e.g., 90.201.999.999)"
+                    // value={endRange}
+                    // onChange={(e) => setEndRange(e.target.value)}
+                    className="form-control rounded-md px-2 py-2 w-4/5"
+                  />
                 </div>
+                <div>
+                  <button
+                    // onClick={blockIpRange}
+                    className="text-sm font-semibold px-5 py-2 rounded-md bg-[#1c64f2]
+                      hover:bg-gradient-to-bl"
+                  >
+                    Block Range
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      ):
-      (ipBlock?(
-      <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-full flex justify-center items-center">
-        <div className="flex flex-col justify-center items-center w-[500px] mt-2">
-        <button 
-              title="close"
-              onClick={()=>{
-              onClose();
-            }} className="cursor-pointer">
-              <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]"/>
-            </button>
-          <div className="bg-[#12111d] w-full py-10 px-5 rounded-lg flex flex-col justify-center items-center text-center text-lg text-red-400 font-semibold">
-            Access Denied: This user has been blocked.
-          </div>
-        </div>
-      </div>
-    ):(
-    <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-full flex justify-center items-center">
-        <div className="flex flex-col justify-center items-center w-[500px] mt-2">
-        <button 
-              title="close"
-              onClick={()=>{
-              onClose();
-              setDescVal("");
-            }} className="cursor-pointer">
-              <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]"/>
-            </button>
-          <div className="bg-[#12111d] w-full py-20 rounded-lg flex flex-col justify-center items-center gap-4 text-center">
-            <input
-              type="text"
-              className="form-control rounded-md px-2 py-2 w-4/5"
-              placeholder="Enter URL"
-              value={descVal} // Use val for the URL input
-              onChange={handleChangeUrl}
-            />
-            {validUrl && (
-              <p className="text-red-400 text-[15px]">Not a valid URL</p>
-            )}
+      ) : ipBlock ? (
+        <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-full flex justify-center items-center">
+          <div className="flex flex-col justify-center items-center w-[500px] mt-2">
             <button
-              onClick={handleSubmitUrl}
-              className="text-sm font-semibold px-5 py-2 rounded-md bg-[#1c64f2] hover:bg-gradient-to-bl"
+              title="close"
+              onClick={() => {
+                onClose();
+              }}
+              className="cursor-pointer"
             >
-              Submit URL
+              <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]" />
             </button>
+            <div className="bg-[#12111d] w-full py-10 px-5 rounded-lg flex flex-col justify-center items-center text-center text-lg text-red-400 font-semibold">
+              Access Denied: This user has been blocked.
+            </div>
           </div>
         </div>
-      </div>)
-        
-      )
+      ) : usermanagment ? (
+        <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-screen flex justify-center items-center">
+          <div className="flex flex-col items-center w-[500px] mt-2">
+            <button
+              title="close"
+              onClick={() => {
+                onClose();
+                setVal("");
+                setDescVal("");
+              }}
+              className=""
+            >
+              <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]" />
+            </button>
+            <div className="bg-[#12111d] w-full py-10 rounded-md flex flex-col justify-center items-center gap-4 text-center">
+              <p className="text-lg font-bold">Edit User</p>
+              <input
+                type="text"
+                className="form-control rounded-md px-2 py-2 w-4/5"
+                placeholder="User Name"
+                value={val}
+                onChange={(e) => {
+                  handleChangePost(e);
+                }}
+              />
+              <input
+                type="email"
+                className="form-control rounded-md px-2 py-2 w-4/5"
+                placeholder="Email"
+                value={descVal}
+                onChange={(e) => {
+                  handleChangePostDesc(e);
+                }}
+              />
+              <input
+                type="text"
+                className="form-control rounded-md px-2 py-2 w-4/5"
+                placeholder="Password"
+                value={descVal}
+                onChange={(e) => {
+                  handleChangePostDesc(e);
+                }}
+              />
+              <button
+                // onClick={handleSubmitPost}
+                className="text-sm font-semibold px-5 py-2 rounded-md bg-[#1c64f2] hover:bg-gradient-to-bl"
+              >
+                Submit post
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-full flex justify-center items-center">
+          <div className="flex flex-col justify-center items-center w-[500px] mt-2">
+            <button
+              title="close"
+              onClick={() => {
+                onClose();
+                setDescVal("");
+              }}
+              className="cursor-pointer"
+            >
+              <X className="rounded-md hover:bg-[#4f5763] relative left-[230px] top-[32px]" />
+            </button>
+            <div className="bg-[#12111d] w-full py-20 rounded-lg flex flex-col justify-center items-center gap-4 text-center">
+              <input
+                type="text"
+                className="form-control rounded-md px-2 py-2 w-4/5"
+                placeholder="Enter URL"
+                value={descVal} // Use val for the URL input
+                onChange={handleChangeUrl}
+              />
+              {validUrl && (
+                <p className="text-red-400 text-[15px]">Not a valid URL</p>
+              )}
+              <button
+                onClick={handleSubmitUrl}
+                className="text-sm font-semibold px-5 py-2 rounded-md bg-[#1c64f2] hover:bg-gradient-to-bl"
+              >
+                Submit URL
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

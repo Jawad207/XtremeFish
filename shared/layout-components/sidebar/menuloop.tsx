@@ -18,7 +18,7 @@ function Menuloop({
   };
 
   const filterMenuItems = (children: any) => {
-    if (user?.role === "admin") {
+    if (user?.role?.toLowerCase() === "basic") {
       return children.filter(
         (item: any) => item.title !== "User Management" && item.title !== "News"
       );

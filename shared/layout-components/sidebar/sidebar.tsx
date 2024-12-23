@@ -6,19 +6,21 @@ import Link from "next/link";
 import SimpleBar from "simplebar-react";
 import Menuloop from "./menuloop";
 import { usePathname, useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 import { MenuItems } from "./nav";
 import nextConfig from "@/next.config.mjs";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { editProfile } from "@/shared/Api/auth";
 
 const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
   let { basePath }: any = nextConfig;
   const logo =
     "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Flogo.png?alt=media&token=c6c65b3d-1b55-49f4-9dcb-da1bcb6907b1";
-
+  const dispatch = useDispatch()
   const theme = useSelector((state: any) => state.theme);
   const [menuitems, setMenuitems] = useState(MenuItems);
   const user = useSelector((state: any) => state.auth.user);
-  console.log("user in here", user?.admin);
+
 
   function closeMenu() {
     const closeMenudata = (items: any) => {
@@ -715,8 +717,12 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
     }
   }
 
-  const handleReload = () => {
-    window.location.reload(); // Reloads the entire page
+  const handleReload = async () => {
+    const response = await editProfile(
+      { ...user, role: user?.role == 'admin' ? 'basic' : 'admin' },
+      dispatch
+    );
+    // window.location.reload();
   };
   const handleClick = (event: any) => {
     // Your logic here
@@ -890,11 +896,13 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
               ))}
             </ul>
 
-            {user?.admin == false && (
+            {user?.admin == true && (
               <ul className="main-menu" onClick={() => handleReload()}>
                 <Fragment>
                   <li className="side-menu__item">
-                    <span className="side-menu__button cursor-pointer bg-white">Go to {user?.role == 'basic' ? 'Admin' : 'user'}</span>
+                    <span className="side-menu__button cursor-pointer bg-white">
+                      Go to {user?.role == "basic" ? "Admin" : "User"}
+                    </span>
                   </li>
                 </Fragment>
               </ul>

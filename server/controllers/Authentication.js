@@ -52,7 +52,6 @@ const SignUp = async (req, res) => {
 // Sign-In Function
 const SignIn = async (req, res) => {
   const { emailOrUsername, email, password, rememberMe } = req.body;
-
   let failUser, LocationObject;
   try {
     const user = await User.findOne({
@@ -288,7 +287,7 @@ const resetPassword = async (req, res) => {
 
 const editProfile = async (req, res) => {
   try {
-    const { email, password, userName, bio, coverImage, profileImage } =
+    const { email, password, userName, bio, coverImage, profileImage, role } =
       req.body;
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
@@ -321,6 +320,10 @@ const editProfile = async (req, res) => {
     if (profileImage) {
       user.profileImage = profileImage;
     }
+    if (role) {
+      user.role = role;
+    }
+
     // Save the updated user
     const updatedUser = await user.save();
     // Generate token

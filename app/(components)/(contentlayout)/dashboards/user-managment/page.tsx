@@ -65,15 +65,8 @@ function page() {
               <Card.Title>Users</Card.Title>
               <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
-                  <button
-                    className="title:rounded-md"
-                    onClick={handleOpenPopup}
-                    title={"Add News"}
-                  >
-                    <SquarePlus size={30} className="hover:text-blue-400" />
-                  </button>
                   <Popup
-                    postPopup={postPopup}
+                    usermanagment={postPopup}
                     isOpen={isPopupOpen}
                     post={newPost}
                     setPost={setNewPost}
@@ -85,14 +78,14 @@ function page() {
                     updateId={updateId}
                     setUpdate={setUpdate}
                   />
-                  {allUsers?.length ? (
+                  {/* {allUsers?.length ? (
                     <input
                       className="form-control form-control-sm"
                       type="text"
                       placeholder="Search Here"
                       aria-label=".form-control-sm example"
                     />
-                  ) : null}
+                  ) : null} */}
                 </div>
               </div>
             </Card.Header>
@@ -103,7 +96,7 @@ function page() {
                     <th>Profile</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Password</th>
+                    {/* <th>Password</th> */}
                     <th>Date</th>
                     <th>Actions</th>
                   </thead>
@@ -124,7 +117,7 @@ function page() {
                           </td>
                           <td>{user?.userName}</td>
                           <td>{user && <span>{user?.email}</span>}</td>
-                          <td>{user?.password}</td>
+                          {/* <td>{user?.password}</td> */}
                           <td>
                             <div className="btn-list">
                               {moment(user?.timestamp).format(
