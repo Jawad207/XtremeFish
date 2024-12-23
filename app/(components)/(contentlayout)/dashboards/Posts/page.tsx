@@ -1,7 +1,7 @@
 "use client";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
-import { Button, Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Row, Pagination } from "react-bootstrap";
 import { SquarePlus, Trash2, Pencil, RotateCcw } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
@@ -10,6 +10,8 @@ import { getIps } from "@/shared/Api/dashboard";
 import Popup from "@/components/Popup";
 
 function page() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const [descVal, setDescVal] = useState("");
@@ -47,6 +49,12 @@ function page() {
     setUpdate(post?._id);
     handleOpenPopup();
   };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentPosts = posts.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <Fragment>
@@ -100,9 +108,9 @@ function page() {
                     <th>Actions</th>
                   </thead>
                   <tbody>
-                    {posts &&
-                      posts?.length > 0 &&
-                      posts?.map((post: any) => (
+                    {currentPosts &&
+                      currentPosts?.length > 0 &&
+                      currentPosts?.map((post: any) => (
                         <tr key={post._id}>
                           <td>{post?.user?.userName}</td>
                           <td>{post && <span>{post?.title}</span>}</td>
@@ -139,14 +147,40 @@ function page() {
             <Card.Footer>
               <div className="d-flex align-items-center">
                 <div>
-                  {" "}
+                  Showing {posts.length} Entries{" "}
                   <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
                 </div>
                 <div className="ms-auto">
                   <nav
                     aria-label="Page navigation"
                     className="pagination-style-4"
-                  ></nav>
+                  >
+                    <Pagination className="pagination mb-0">
+                      <Pagination.Item
+                        disabled={currentPage === 1}
+                        onClick={() => paginate(currentPage - 1)}
+                      >
+                        Prev
+                      </Pagination.Item>
+                      {Array.from({ length: Math.ceil(posts.length / itemsPerPage) }).map(
+                        (_, index) => (
+                          <Pagination.Item
+                            key={index + 1}
+                            active={currentPage === index + 1}
+                            onClick={() => paginate(index + 1)}
+                          >
+                            {index + 1}
+                          </Pagination.Item>
+                        )
+                      )}
+                      <Pagination.Item
+                        disabled={currentPage === Math.ceil(posts.length / itemsPerPage)}
+                        onClick={() => paginate(currentPage + 1)}
+                      >
+                        Next
+                      </Pagination.Item>
+                    </Pagination>
+                  </nav>
                 </div>
               </div>
             </Card.Footer>

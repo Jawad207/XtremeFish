@@ -1,7 +1,7 @@
 "use client";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
-import { Button, Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Row, Pagination } from "react-bootstrap";
 import { SquarePlus, Trash2, Pencil } from 'lucide-react';
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
@@ -10,6 +10,8 @@ import Popup from "@/components/Popup";
 import { FaTrash } from "react-icons/fa";
 
 function Page() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [ipPopup, setIpPopup] = useState(false);
   const [ipVal, setIpVal] = useState("");
@@ -85,6 +87,11 @@ function Page() {
     getAllIps();
   }, []);
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentIps = Ips.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   return (
     <Fragment>
       <Seo title={"blocked-users"} />
@@ -153,8 +160,8 @@ function Page() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Ips?.length > 0 &&
-                      Ips?.map((item: any) => (
+                    {currentIps?.length > 0 &&
+                      currentIps?.map((item: any) => (
                         <tr key={item?._id}>
                           <td>
                             <input
@@ -200,10 +207,40 @@ function Page() {
             <Card.Footer>
               <div className="d-flex align-items-center">
                 <div>
+                  Showing {Ips.length} Entries{" "}
                   <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
                 </div>
                 <div className="ms-auto">
-                  <nav aria-label="Page navigation" className="pagination-style-4"></nav>
+                  <nav
+                    aria-label="Page navigation"
+                    className="pagination-style-4"
+                  >
+                    <Pagination className="pagination mb-0">
+                      <Pagination.Item
+                        disabled={currentPage === 1}
+                        onClick={() => paginate(currentPage - 1)}
+                      >
+                        Prev
+                      </Pagination.Item>
+                      {Array.from({ length: Math.ceil(Ips.length / itemsPerPage) }).map(
+                        (_, index) => (
+                          <Pagination.Item
+                            key={index + 1}
+                            active={currentPage === index + 1}
+                            onClick={() => paginate(index + 1)}
+                          >
+                            {index + 1}
+                          </Pagination.Item>
+                        )
+                      )}
+                      <Pagination.Item
+                        disabled={currentPage === Math.ceil(Ips.length / itemsPerPage)}
+                        onClick={() => paginate(currentPage + 1)}
+                      >
+                        Next
+                      </Pagination.Item>
+                    </Pagination>
+                  </nav>
                 </div>
               </div>
             </Card.Footer>
