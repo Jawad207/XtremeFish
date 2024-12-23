@@ -714,6 +714,10 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
       }
     }
   }
+
+  const handleReload = () => {
+    window.location.reload(); // Reloads the entire page
+  };
   const handleClick = (event: any) => {
     // Your logic here
     event.preventDefault(); // Prevents the default anchor behavior (navigation)
@@ -887,7 +891,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
             </ul>
 
             {user?.admin == false && (
-              <ul className="main-menu">
+              <ul className="main-menu" onClick={() => handleReload()}>
                 <Fragment>
                   <li className="side-menu__item">
                     <span className="side-menu__button cursor-pointer bg-white">Go to Admin</span>
