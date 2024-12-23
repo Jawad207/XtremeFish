@@ -22,13 +22,14 @@ function page() {
 
   const dispatch = useDispatch();
   const allUsers = useSelector((state: any) => state.auth.allUsers);
-  const getAllUser = async () => {
-    await getGlobalUser(dispatch);
+  const allUsersCount = useSelector((state: any) => state.auth.allUsersCount);
+  const getAllUser = async (data: any) => {
+    await getGlobalUser(data, dispatch);
   };
 
   useEffect(() => {
-    getAllUser();
-  }, []);
+    getAllUser({ page: currentPage, limit: 10 });
+  }, [currentPage]);
 
   const handleOpenPopup = () => {
     setPostPopup(true);
@@ -101,9 +102,9 @@ function page() {
                     <th>Actions</th>
                   </thead>
                   <tbody>
-                    {currentUsers &&
-                      currentUsers?.length > 0 &&
-                      currentUsers?.map((user: any) => (
+                    {allUsers &&
+                      allUsers?.length > 0 &&
+                      allUsers?.map((user: any) => (
                         <tr key={user._id}>
                           <td>
                             <img
@@ -150,7 +151,7 @@ function page() {
             <Card.Footer>
               <div className="d-flex align-items-center">
                 <div>
-                  Showing {allUsers.length} Entries{" "}
+                  Showing {allUsersCount} Entries{" "}
                   <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
                 </div>
                 <div className="ms-auto">
@@ -165,19 +166,22 @@ function page() {
                       >
                         Prev
                       </Pagination.Item>
-                      {Array.from({ length: Math.ceil(allUsers.length / itemsPerPage) }).map(
-                        (_, index) => (
-                          <Pagination.Item
-                            key={index + 1}
-                            active={currentPage === index + 1}
-                            onClick={() => paginate(index + 1)}
-                          >
-                            {index + 1}
-                          </Pagination.Item>
-                        )
-                      )}
+                      {Array.from({
+                        length: Math.ceil(allUsersCount / itemsPerPage),
+                      }).map((_, index) => (
+                        <Pagination.Item
+                          key={index + 1}
+                          active={currentPage === index + 1}
+                          onClick={() => paginate(index + 1)}
+                        >
+                          {index + 1}
+                        </Pagination.Item>
+                      ))}
                       <Pagination.Item
-                        disabled={currentPage === Math.ceil(allUsers.length / itemsPerPage)}
+                        disabled={
+                          currentPage ===
+                          Math.ceil(allUsersCount / itemsPerPage)
+                        }
                         onClick={() => paginate(currentPage + 1)}
                       >
                         Next

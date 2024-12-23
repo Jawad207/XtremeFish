@@ -16,11 +16,10 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
   let { basePath }: any = nextConfig;
   const logo =
     "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Flogo.png?alt=media&token=c6c65b3d-1b55-49f4-9dcb-da1bcb6907b1";
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const theme = useSelector((state: any) => state.theme);
   const [menuitems, setMenuitems] = useState(MenuItems);
   const user = useSelector((state: any) => state.auth.user);
-
 
   function closeMenu() {
     const closeMenudata = (items: any) => {
@@ -718,10 +717,14 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
   }
 
   const handleReload = async () => {
-    const response = await editProfile(
-      { ...user, role: user?.role == 'admin' ? 'basic' : 'admin' },
-      dispatch
-    );
+    const updatedUser = {
+      ...user,
+      role: user?.role === "admin" ? "basic" : "admin",
+    };
+
+    const { password, ...userWithoutPassword } = updatedUser;
+
+    const response = await editProfile(userWithoutPassword, dispatch);
     window.location.reload();
   };
   const handleClick = (event: any) => {

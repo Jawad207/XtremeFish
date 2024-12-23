@@ -302,7 +302,8 @@ const editProfile = async (req, res) => {
     }
 
     if (password) {
-      user.password = await bcrypt.hash(password, 10); // Update the password
+      console.log('password exist brother', password)
+      // user.password = await bcrypt.hash(password, 10); // Update the password
     }
 
     if (userName) {
@@ -339,7 +340,6 @@ const editProfile = async (req, res) => {
 const getGlobalUser = async (req, res) => {
   try {
     const { limit, page } = req.query;
-
     const options = {
       limit: parseInt(limit, 10) || 10,
       skip: ((parseInt(page, 10) || 1) - 1) * (parseInt(limit, 10) || 10),
@@ -349,10 +349,14 @@ const getGlobalUser = async (req, res) => {
     })
       .limit(options.limit)
       .skip(options.skip);
+    const allUsersCount = await User.countDocuments({
+      $or: [{ admin: false }, { admin: { $exists: false } }],
+    });
 
     res.status(200).json({
       success: true,
       allUsers: users,
+      allUsersCount
     });
   } catch (error) {
     console.error("Error fetching global users:", error);

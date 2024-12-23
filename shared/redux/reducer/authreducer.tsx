@@ -25,6 +25,7 @@ interface AuthState {
   deleteduser: any;
   token: any;
   allUsers: any;
+  allUsersCount: any;
   error: string | null;
 }
 
@@ -34,6 +35,7 @@ const initialState: AuthState = {
   loading: false,
   token: null,
   allUsers: [],
+  allUsersCount: 0,
   deleteduser: null,
   error: null,
 };
@@ -149,6 +151,7 @@ export const authReducer = (
         ...state,
         loading: false,
         allUsers: action.payload.allUsers,
+        allUsersCount: action.payload.allUsersCount,
         error: null,
       };
     case GET_GLOBAL_USER_FAILURE:

@@ -219,13 +219,15 @@ export const deleteProfile = async (data: any, dispatch: any) => {
   }
 };
 
-export const getGlobalUser = async (dispatch: any) => {
+export const getGlobalUser = async (data: any, dispatch: any) => {
   try {
-
     dispatch({ type: GET_GLOBAL_USER_INIT });
-    const response = await apiClient.get("/auth/get-global-user");
-
-    // If the request was successful
+    const response = await apiClient.get("/auth/get-global-user", {
+      params: {
+        page: data?.page || 1,
+        limit: data?.limit || 10,
+      },
+    });
 
     if (response.status === 200) {
       dispatch({ type: GET_GLOBAL_USER_SUCCESS, payload: response.data });
