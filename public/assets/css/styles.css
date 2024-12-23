@@ -240,6 +240,16 @@ typography
 [data-theme-mode=dark] .app-sidebar .main-sidebar-header .header-logo .toggle-dark {
   display: none;
 }
+
+.main-sidebar .main-menu-container .main-menu .side-menu__item .side-menu__button {
+  background-color: red !important;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 5px
+}
 [data-theme-mode=dark] .btn-close {
   filter: invert(1);
 }
@@ -872,6 +882,7 @@ typography
     border-inline-end: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
+
 
 [data-menu-styles=gradient] {
   --menu-bg: linear-gradient(to bottom, var(--primary-color) 0%, #FF3DBB 100%);

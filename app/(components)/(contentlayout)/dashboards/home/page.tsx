@@ -27,7 +27,13 @@ import Popup from "../../../../../components/Popup";
 const Home = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
-  const { reviews = [], posts, totalAccounts, todaysCount, account_stats } = useSelector((state: any) => state.dash); // Default reviews to an empty array if undefined
+  const {
+    reviews = [],
+    posts,
+    totalAccounts,
+    todaysCount,
+    account_stats,
+  } = useSelector((state: any) => state.dash); // Default reviews to an empty array if undefined
   const [allCounts, setAllcounts] = useState<number>(0);
   const [percentage, setPercentage] = useState<any>({
     totalPercentage: 0,
@@ -41,7 +47,7 @@ const Home = () => {
   const [totalRecords, setTotalRecords] = useState(0);
   const recordsPerPage = 10;
   const loginAttemptData = useSelector((state: any) => state?.dash);
-  const [searchQuery, setSearchQuery] = useState("");
+
   const [filteredAttempts, setFilteredAttempts] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [newPost, setNewPost] = useState([]);
@@ -82,18 +88,6 @@ const Home = () => {
   };
 
 
-  useEffect(() => {
-    const results = loginAttempt?.filter((attempt: any) => {
-      const userEmail = attempt?.userId?.email?.toLowerCase();
-      const userName = attempt?.userId?.userName?.toLowerCase();
-      return (
-        userEmail?.includes(searchQuery?.toLowerCase()) ||
-        userName?.includes(searchQuery?.toLowerCase())
-      );
-    });
-    setFilteredAttempts(results);
-  }, [searchQuery, loginAttempt]);
-
   const getAllusersCount = async () => {
     const { TotalUser, PercentageChange } = await getAlluserCount(dispatch);
     setAllcounts(TotalUser ?? 0);
@@ -109,12 +103,12 @@ const Home = () => {
     await getReviews(dispatch);
   };
   const getAllLoginAttempts = async () => {
-    if (auth?.role == "basic") {
+    if (auth?.role == "admin") {
       await getGlobalLoginAttempts(
         { id: auth?._id, page: currentPage, limit: recordsPerPage },
         dispatch
       );
-    } else {
+    } else if(auth?.role == 'basic'){
       await getLoginAttempts(
         { id: auth?._id, page: currentPage, limit: recordsPerPage },
         dispatch
