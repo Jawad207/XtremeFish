@@ -229,7 +229,6 @@ export const getGlobalUser = async (dispatch: any) => {
     // If the request was successful
 
     if (response.status === 200) {
-      console.log('all users ', response)
       dispatch({ type: GET_GLOBAL_USER_SUCCESS, payload: response.data });
     }
     return response.data.loginAttempts;

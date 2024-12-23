@@ -20,7 +20,8 @@ function page() {
 
   const dispatch = useDispatch();
   const { posts } = useSelector((state: any) => state.dash);
-
+  const allUsers = useSelector((state: any) => state.auth.allUsers);
+  console.log("all users in here", allUsers);
   const getAllUser = async () => {
     await getGlobalUser(dispatch);
   };
@@ -78,7 +79,7 @@ function page() {
                     updateId={updateId}
                     setUpdate={setUpdate}
                   />
-                  {posts?.length ? (
+                  {allUsers?.length ? (
                     <input
                       className="form-control form-control-sm"
                       type="text"
@@ -93,6 +94,7 @@ function page() {
               <div className="table-responsive">
                 <table className="table text-nowrap">
                   <thead>
+                    <th>image</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Password</th>
@@ -100,16 +102,26 @@ function page() {
                     <th>Actions</th>
                   </thead>
                   <tbody>
-                    {posts &&
-                      posts?.length > 0 &&
-                      posts?.map((post: any) => (
+                    {allUsers &&
+                      allUsers?.length > 0 &&
+                      allUsers?.map((post: any) => (
                         <tr key={post._id}>
-                          <td>{post?.user?.userName}</td>
-                          <td>{post && <span>{post?.title}</span>}</td>
-                          <td>{post?.description}</td>
+                          <td>
+                            <img
+                              src={
+                                post?.profileImage ??
+                                "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
+                              }
+                              alt="img"
+                              className="avatar avatar-xs avatar-rounded mb-1"
+                            />
+                          </td>
+                          <td>{post?.userName}</td>
+                          <td>{post && <span>{post?.email}</span>}</td>
+                          <td>{post?.password}</td>
                           <td>
                             <div className="btn-list">
-                              {moment(post?.createdAt).format(
+                              {moment(post?.timestamp).format(
                                 "ddd, MMM DD, YYYY, hh:mm A"
                               )}
                             </div>
