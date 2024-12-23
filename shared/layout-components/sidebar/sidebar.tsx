@@ -894,7 +894,7 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
               <ul className="main-menu" onClick={() => handleReload()}>
                 <Fragment>
                   <li className="side-menu__item">
-                    <span className="side-menu__button cursor-pointer bg-white">Go to Admin</span>
+                    <span className="side-menu__button cursor-pointer bg-white">Go to {user?.role == 'basic' ? 'Admin' : 'user'}</span>
                   </li>
                 </Fragment>
               </ul>
