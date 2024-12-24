@@ -47,7 +47,7 @@ function page() {
 
   const handleUpdate = (user: any) => {
     setUpdate(user?._id);
-    setUserValue({userName: user?.userName, email: user?.email, password: ""});
+    setUserValue({userName: user?.userName, email: user?.email, password: "", bio: user?.bio});
     handleOpenPopup();
   };
 

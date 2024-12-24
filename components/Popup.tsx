@@ -9,6 +9,7 @@ import {
   createIp,
 } from "@/shared/Api/dashboard";
 import { useDispatch, useSelector } from "react-redux";
+import { Card, Col, Form, Nav, Row, Tab } from "react-bootstrap";
 import { editProfile } from "@/shared/Api/auth";
 
 const Popup = ({
@@ -33,17 +34,6 @@ const Popup = ({
 
   const user = useSelector((state: any) => state.auth.user);
   const [validUrl, setValidUrl] = useState(false);
-
-  useEffect(() => {
-    console.log("user in here");
-    if(usermanagment){
-      // setUserValue({
-      //   userName: user?.userName,
-      //   email: user?.email,
-      //   password: "",
-      // });
-    }
-  }, [user]);
 
   if (!isOpen) return null;
 
@@ -70,16 +60,15 @@ const Popup = ({
     setUpdate("");
   };
 
-  const updateUser = async () => { //complete this function hint:  =====> think about payload
-    console.log("userValue: ", userValue);
+  const updateUser = async () => {
     const userPayload = {
       userName: userValue?.userName,
       email: userValue?.email,
       password: userValue?.password,
-    }
+    };
     const response = await editProfile(userPayload, dispatch);
     onClose();
-  }
+  };
 
   const handleChangePost = (e: any) => {
     setVal(e.target.value);
@@ -104,7 +93,6 @@ const Popup = ({
   };
 
   const handleSubmitUrl = () => {
-    console.log("val and other data", descVal, isValidUrl(descVal));
     if (isValidUrl(descVal)) {
       const urlData = {
         description: descVal,
@@ -241,7 +229,7 @@ const Popup = ({
         </div>
       ) : ipBlock ? (
         <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-full flex justify-center items-center">
-          <div className="flex flex-col justify-center items-center w-[500px] mt-2">
+          <div className="flex flex-col justify-center items-center w-[650px] mt-2">
             <button
               title="close"
               onClick={() => {
@@ -257,8 +245,112 @@ const Popup = ({
           </div>
         </div>
       ) : usermanagment ? (
-        <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-screen flex justify-center items-center">
-          <div className="flex flex-col items-center w-[500px] mt-2">
+        <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)']  bg-opacity-30 backdrop-blur-sm z-10 w-full h-screen flex justify-center items-center">
+          <div className="flex flex-col items-center w-[700px] mt-2">
+            <ul className="list-group list-group-flush">
+              <button
+                title="close"
+                onClick={() => {
+                  onClose();
+                }}
+                className="z-10"
+              >
+                <X className="rounded-md hover:bg-[#4f5763] relative left-[650px] top-[32px]" />
+              </button>
+              <li className="list-group-item p-4">
+                <span className="fw-medium fs-15 mb-3">PERSONAL INFO :</span>
+                <div className="row gy-4 align-items-center">
+                  <Col xl={3}>
+                    <div className="lh-1">
+                      <span className="fw-medium">User Name :</span>
+                    </div>
+                  </Col>
+                  <Col xl={9}>
+                    <Form.Control
+                      type="text"
+                      className="form-control"
+                      placeholder="User name"
+                      onChange={(e) =>
+                        setUserValue({ ...userValue, userName: e.target.value })
+                      }
+                      defaultValue={userValue?.userName}
+                    />
+                  </Col>
+                </div>
+              </li>
+              <li className="list-group-item p-4">
+                <span className="fw-medium fs-15 d-block mb-3">
+                  CONTACT INFO :
+                </span>
+                <div className="row gy-4 align-items-center">
+                  <Col xl={3}>
+                    <div className="lh-1">
+                      <span className="fw-medium">Email :</span>
+                    </div>
+                  </Col>
+                  <Col xl={9}>
+                    <Form.Control
+                      type="email"
+                      disabled
+                      className="form-control"
+                      placeholder="email"
+                      defaultValue={userValue?.email}
+                    />
+                  </Col>
+                  <Col xl={3}>
+                    <div className="lh-1">
+                      <span className="fw-medium">Password :</span>
+                    </div>
+                  </Col>
+                  <Col xl={9}>
+                    <Form.Control
+                      type="text"
+                      className="form-control"
+                      placeholder="Password"
+                      defaultValue={userValue?.password}
+                    />
+                  </Col>
+                  <Col xl={3}>
+                    <div className="lh-1">
+                      <span className="fw-medium">Location :</span>
+                    </div>
+                  </Col>
+                  <Col xl={9}>
+                    <Form.Control
+                      type="text"
+                      disabled
+                      className="form-control"
+                      placeholder="location"
+                      defaultValue={[userValue?.city, userValue?.country]}
+                    />
+                  </Col>
+                </div>
+              </li>
+              <li className="list-group-item p-4">
+                <span className="fw-medium fs-15 d-block mb-3">ABOUT :</span>
+                <div className="row gy-4 align-items-center">
+                  <Col xl={3}>
+                    <div className="lh-1">
+                      <span className="fw-medium">Biographical Info :</span>
+                    </div>
+                  </Col>
+                  <Col xl={9}>
+                    <Form.Control
+                      as="textarea"
+                      className="form-control"
+                      id="text-area"
+                      onChange={(e) =>
+                        setUserValue({ ...userValue, bio: e.target.value })
+                      }
+                      rows={4}
+                      defaultValue={userValue?.bio}
+                    ></Form.Control>
+                  </Col>
+                </div>
+              </li>
+            </ul>
+          </div>
+          {/* <div className="flex flex-col items-center w-[500px] mt-2">
             <button
               title="close"
               onClick={() => {
@@ -304,7 +396,7 @@ const Popup = ({
                 UpdateUser
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       ) : (
         <div className="fixed inset-0 bg-['rgba(0, 0, 0, 0.5)'] bg-opacity-30 backdrop-blur-sm z-10 w-full h-full flex justify-center items-center">
