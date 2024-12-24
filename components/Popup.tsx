@@ -36,11 +36,13 @@ const Popup = ({
 
   useEffect(() => {
     console.log("user in here");
-    setUserValue({
-      userName: user?.userName,
-      email: user?.email,
-      password: "",
-    });
+    if(usermanagment){
+      // setUserValue({
+      //   userName: user?.userName,
+      //   email: user?.email,
+      //   password: "",
+      // });
+    }
   }, [user]);
 
   if (!isOpen) return null;
@@ -69,11 +71,14 @@ const Popup = ({
   };
 
   const updateUser = async () => { //complete this function hint:  =====> think about payload
+    console.log("userValue: ", userValue);
     const userPayload = {
       userName: userValue?.userName,
-
+      email: userValue?.email,
+      password: userValue?.password,
     }
     const response = await editProfile(userPayload, dispatch);
+    onClose();
   }
 
   const handleChangePost = (e: any) => {
@@ -258,8 +263,6 @@ const Popup = ({
               title="close"
               onClick={() => {
                 onClose();
-                setVal("");
-                setDescVal("");
               }}
               className=""
             >
@@ -295,7 +298,7 @@ const Popup = ({
                 }}
               />
               <button
-                // onClick={handleSubmitPost}
+                onClick={updateUser}
                 className="text-sm font-semibold px-5 py-2 rounded-md bg-[#1c64f2] hover:bg-gradient-to-bl"
               >
                 UpdateUser
