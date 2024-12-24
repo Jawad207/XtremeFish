@@ -14,7 +14,7 @@ function LinksPage() {
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
-              <Card.Title>Your Logs</Card.Title>
+              <Card.Title>Logs</Card.Title>
               <div className="d-flex flex-wrap gap-2">
                 <div>
                   <input

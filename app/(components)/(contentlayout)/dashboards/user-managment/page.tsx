@@ -10,19 +10,21 @@ import Popup from "@/components/Popup";
 import { deleteProfile, getGlobalUser } from "@/shared/Api/auth";
 
 function page() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  const [descVal, setDescVal] = useState("");
-  const [updateId, setUpdate] = useState("");
-  const [postPopup, setPostPopup] = useState(true);
-  const [newPost, setNewPost] = useState([]);
-  const [val, setVal] = useState("");
-
+  
   const dispatch = useDispatch();
   const allUsers = useSelector((state: any) => state.auth.allUsers);
   const allUsersCount = useSelector((state: any) => state.auth.allUsersCount);
+
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [updateId, setUpdate] = useState("");
+  const [postPopup, setPostPopup] = useState(true);
+  const [userValue, setUserValue] = useState({})
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+
   const getAllUser = async (data: any) => {
     await getGlobalUser(data, dispatch);
   };
@@ -44,17 +46,11 @@ function page() {
   };
 
   const handleUpdate = (user: any) => {
-    setVal(user?.title);
-    setDescVal(user?.description);
     setUpdate(user?._id);
     handleOpenPopup();
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentUsers = allUsers.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <Fragment>
@@ -69,13 +65,9 @@ function page() {
                   <Popup
                     usermanagment={postPopup}
                     isOpen={isPopupOpen}
-                    post={newPost}
-                    setPost={setNewPost}
                     onClose={handleClosePopup}
-                    val={val}
-                    setVal={setVal}
-                    descVal={descVal}
-                    setDescVal={setDescVal}
+                    userValue={userValue}
+                    setUserValue={setUserValue}
                     updateId={updateId}
                     setUpdate={setUpdate}
                   />

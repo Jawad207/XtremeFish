@@ -1,6 +1,6 @@
-import { SquarePlus, X } from "lucide-react";
-import { useState } from "react";
-import { Button } from "react-bootstrap";
+"use client";
+import { X } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   createUrl,
   createPost,
@@ -9,7 +9,7 @@ import {
   createIp,
 } from "@/shared/Api/dashboard";
 import { useDispatch, useSelector } from "react-redux";
-import { title } from "process";
+import { editProfile } from "@/shared/Api/auth";
 
 const Popup = ({
   ipPopup,
@@ -26,18 +26,26 @@ const Popup = ({
   setUpdate,
   ipBlock,
   usermanagment,
+  userValue,
+  setUserValue,
 }: any) => {
-  const user = useSelector((state: any) => state.auth.user);
-  const Ips = useSelector((state: any) => state.auth.ips);
   const dispatch = useDispatch();
+
+  const user = useSelector((state: any) => state.auth.user);
   const [validUrl, setValidUrl] = useState(false);
+
+  useEffect(() => {
+    console.log("user in here");
+    setUserValue({
+      userName: user?.userName,
+      email: user?.email,
+      password: "",
+    });
+  }, [user]);
+
   if (!isOpen) return null;
+
   const handleSubmitPost = () => {
-    // if (post?.length) {
-    //   setPost([...post, val]);
-    // } else {
-    //   setPost([val]);
-    // }
     if (updateId) {
       updatePost(
         {
@@ -60,6 +68,14 @@ const Popup = ({
     setUpdate("");
   };
 
+  const updateUser = async () => { //complete this function hint:  =====> think about payload
+    const userPayload = {
+      userName: userValue?.userName,
+
+    }
+    const response = await editProfile(userPayload, dispatch);
+  }
+
   const handleChangePost = (e: any) => {
     setVal(e.target.value);
   };
@@ -67,10 +83,10 @@ const Popup = ({
     setDescVal(e.target.value);
   };
   const handleChangeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDescVal(e.target.value); // Update URL input state
+    setDescVal(e.target.value);
   };
   const handleChangeIp = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIpVal(e.target.value); // Update URL input state
+    setIpVal(e.target.value);
   };
 
   const isValidUrl = (urlString: string) => {
@@ -85,10 +101,6 @@ const Popup = ({
   const handleSubmitUrl = () => {
     console.log("val and other data", descVal, isValidUrl(descVal));
     if (isValidUrl(descVal)) {
-      // Append to the list of URLs
-      // setUrls((prevUrls: any) => [...(prevUrls || []), descVal]);
-
-      // Handle update or create
       const urlData = {
         description: descVal,
         userId: user?._id,
@@ -101,7 +113,6 @@ const Popup = ({
         createUrl(urlData, dispatch);
       }
 
-      // Close modal and reset form fields
       onClose();
       setDescVal("");
       setUpdate("");
@@ -260,34 +271,34 @@ const Popup = ({
                 type="text"
                 className="form-control rounded-md px-2 py-2 w-4/5"
                 placeholder="User Name"
-                value={val}
+                value={userValue?.userName}
                 onChange={(e) => {
-                  handleChangePost(e);
+                  setUserValue({ ...userValue, userName: e.target.value });
                 }}
               />
               <input
                 type="email"
                 className="form-control rounded-md px-2 py-2 w-4/5"
                 placeholder="Email"
-                value={descVal}
+                value={userValue?.email}
                 onChange={(e) => {
-                  handleChangePostDesc(e);
+                  setUserValue({ ...userValue, email: e.target.value });
                 }}
               />
               <input
                 type="text"
                 className="form-control rounded-md px-2 py-2 w-4/5"
                 placeholder="Password"
-                value={descVal}
+                value={userValue?.password}
                 onChange={(e) => {
-                  handleChangePostDesc(e);
+                  setUserValue({ ...userValue, password: e.target.value });
                 }}
               />
               <button
                 // onClick={handleSubmitPost}
                 className="text-sm font-semibold px-5 py-2 rounded-md bg-[#1c64f2] hover:bg-gradient-to-bl"
               >
-                Submit post
+                UpdateUser
               </button>
             </div>
           </div>

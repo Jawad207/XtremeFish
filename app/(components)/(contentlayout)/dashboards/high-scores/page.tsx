@@ -25,7 +25,7 @@ const page = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentUsers = topUsers?.topUsers.slice(indexOfFirstItem, indexOfLastItem);
+  const currentUsers = topUsers?.topUsers?.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -144,7 +144,7 @@ const page = () => {
             <Card.Footer>
               <div className="d-flex align-items-center">
                 <div>
-                  Showing {topUsers?.topUsers.length} Entries{" "}
+                  {/* Showing {topUsers?.topUsers?.length} Entries{" "} */}
                   <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
                 </div>
                 <div className="ms-auto">
@@ -152,14 +152,14 @@ const page = () => {
                     aria-label="Page navigation"
                     className="pagination-style-4"
                   >
-                    <Pagination className="pagination mb-0">
+                    {/* <Pagination className="pagination mb-0">
                       <Pagination.Item
                         disabled={currentPage === 1}
                         onClick={() => paginate(currentPage - 1)}
                       >
                         Prev
                       </Pagination.Item>
-                      {Array.from({ length: Math.ceil(topUsers?.topUsers.length / itemsPerPage) }).map(
+                      {Array.from({ length: Math.ceil(topUsers?.topUsers?.length / itemsPerPage) }).map(
                         (_, index) => (
                           <Pagination.Item
                             key={index + 1}
@@ -171,12 +171,12 @@ const page = () => {
                         )
                       )}
                       <Pagination.Item
-                        disabled={currentPage === Math.ceil(topUsers?.topUsers.length / itemsPerPage)}
+                        disabled={currentPage === Math.ceil(topUsers?.topUsers?.length / itemsPerPage)}
                         onClick={() => paginate(currentPage + 1)}
                       >
                         Next
                       </Pagination.Item>
-                    </Pagination>
+                    </Pagination> */}
                   </nav>
                 </div>
               </div>

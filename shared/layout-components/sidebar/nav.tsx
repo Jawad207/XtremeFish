@@ -76,12 +76,12 @@ export const MenuItems: any = [
     type: "sub",
     children: [
       {
-        path: "/dashboards/call-logs",
+        path: "/dashboards/logs",
         type: "link",
         active: false,
         selected: false,
         dirchange: false,
-        title: "Your Logs",
+        title: "Logs",
       },
       {
         path: "/dashboards/urls",

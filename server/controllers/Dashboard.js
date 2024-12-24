@@ -425,6 +425,7 @@ const getAccounts = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    let accounts;
 
     const currentDate = new Date();
     const currentMonthStart = new Date(
@@ -442,13 +443,22 @@ const getAccounts = async (req, res) => {
       currentDate.getMonth(),
       0
     );
+    const user = await User.findById(userId);
+    const query = user?.role == "admin" ? {} : { userId };
+    if (user?.role == "admin") {
+      accounts = await Account.find()
+        .populate("userId", "userName")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+    } else {
+      accounts = await Account.find({ userId })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+    }
 
-    const accounts = await Account.find({ userId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const totalAccounts = await Account.countDocuments({ userId });
+    const totalAccounts = await Account.countDocuments(query);
 
     const thisMonthAccounts = await Account.countDocuments({
       userId,
@@ -475,6 +485,7 @@ const getAccounts = async (req, res) => {
       percentageChange: percentageChange.toFixed(2),
     });
   } catch (error) {
+    console.log("error fetching", error?.message);
     return res.status(500).json({ message: "Error fetching accounts", error });
   }
 };
@@ -806,5 +817,5 @@ export const dashboard = {
   getIps,
   deleteIp,
   getTopUsersWithMostAccounts,
-  getGlobalLoginAttempts
+  getGlobalLoginAttempts,
 };

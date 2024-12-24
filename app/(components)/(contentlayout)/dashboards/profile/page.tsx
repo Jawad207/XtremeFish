@@ -21,52 +21,26 @@ import {
   Row,
   Tab,
 } from "react-bootstrap";
-import { FaSpinner } from "react-icons/fa";
-import { editProfile } from "@/shared/Api/auth";
 import { createReview } from "@/shared/Api/dashboard";
-const CreatableSelect = dynamic(() => import("react-select/creatable"), {
-  ssr: false,
-});
+
 const Profile = () => {
-  const components = {
-    DropdownIndicator: null,
-  };
   const createOption = (label: any) => ({
     label,
     value: label,
   });
   const dispatch = useDispatch();
   const [val, setVal] = useState<any>("");
-  const [newUserData, setNewUserData] = useState([]);
-  const [bio, setBio] = useState<any>();
   const [open, setOpen] = useState(false);
-  const loading = useSelector((state: any) => state.auth.loading);
-  const [value, setValue] = useState([
-    createOption("Project Management"),
-    createOption("Data Analysis"),
-    createOption("Marketing Strategy"),
-    createOption("Graphic Design"),
-    createOption("Content Creation"),
-    createOption("Market Research"),
-    createOption("Client Relations"),
-    createOption("Event Planning"),
-    createOption("Budgeting and Finance"),
-    createOption("Negotiation Skills"),
-    createOption("Team Collaboration"),
-    createOption("Adaptability"),
-  ]);
 
   const userData = useSelector((state: any) => state?.auth);
   const user = userData.user;
-
-  const [profileImage, setProfileImage] = useState(
+  const profileImage =
     user?.profileImage ??
-      "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
-  );
-  const [coverImage, setCoverImage] = useState(
+    "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b";
+
+  const coverImage =
     user?.coverImage ??
-      "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Fcoveravatar.webp?alt=media&token=4e68f36e-5f29-453c-a333-f4c68452f9d3"
-  );
+    "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Fcoveravatar.webp?alt=media&token=4e68f36e-5f29-453c-a333-f4c68452f9d3";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setVal(e.target.value);
@@ -74,20 +48,20 @@ const Profile = () => {
 
   const handleSubmitReview = async () => {
     const reviewData = {
-      userId:user?._id,
-      content:val,
+      userId: user?._id,
+      content: val,
     };
 
     if (!val) {
-      alert('Review content is required!');
+      alert("Review content is required!");
       return;
-    }else{
+    } else {
       await createReview(reviewData, dispatch);
       setOpen(true);
-        setTimeout(() => {
-          setOpen(false);
-        }, 1500);
-      setVal('')
+      setTimeout(() => {
+        setOpen(false);
+      }, 1500);
+      setVal("");
     }
   };
 
@@ -101,10 +75,7 @@ const Profile = () => {
           { title: "Profile", active: false },
         ]}
       />
-      <Success
-        isOpen={open}
-        description={"Review submitted successfully!"}
-      />
+      <Success isOpen={open} description={"Review submitted successfully!"} />
       <Tab.Container defaultActiveKey="first">
         <Row>
           <Col xl={12}>
@@ -160,9 +131,19 @@ const Profile = () => {
                     </Nav.Link>
                   </Nav.Item>
                   <Nav.Item role="presentation">
-                    <Nav.Link eventKey="second" className="" id="edit-profile-tab" data-bs-toggle="tab"
-                        data-bs-target="#edit-profile-tab-pane" type="button" role="tab"
-                        aria-controls="edit-profile-tab-pane" aria-selected="true">Add Review</Nav.Link>
+                    <Nav.Link
+                      eventKey="second"
+                      className=""
+                      id="edit-profile-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#edit-profile-tab-pane"
+                      type="button"
+                      role="tab"
+                      aria-controls="edit-profile-tab-pane"
+                      aria-selected="true"
+                    >
+                      Add Review
+                    </Nav.Link>
                   </Nav.Item>
                 </Nav>
               </Card.Body>
@@ -303,33 +284,40 @@ const Profile = () => {
                   </Card.Body>
                 </Card>
               </Tab.Pane>
-              <Tab.Pane eventKey="second" className="p-0 border-0" id="edit-profile-tab-pane" role="tabpanel"
-                aria-labelledby="edit-profile-tab" tabIndex={0}>
-                  <Card className="custom-card overflow-hidden">
-                      <Card.Body className="p-0">
-                        <ul className="list-group list-group-flush">
-                          <li className="list-group-item p-8">
-                            <div className="row gy-4 align-items-center">
-                              <Col xl={9}>
-                                <Form.Control 
-                                  as="textarea" 
-                                  className="form-control" 
-                                  id="text-area" 
-                                  rows={4}
-                                  value={val} // Use val for the URL input
-                                  onChange={handleChange}
-                                >
-                                </Form.Control>
-                                <Button
-                                  className="mt-3"
-                                  onClick={handleSubmitReview}
-                                >Submit Review</Button>
-                              </Col>
-                            </div>
-                          </li>
-                        </ul>
-                      </Card.Body>
-                  </Card>
+              <Tab.Pane
+                eventKey="second"
+                className="p-0 border-0"
+                id="edit-profile-tab-pane"
+                role="tabpanel"
+                aria-labelledby="edit-profile-tab"
+                tabIndex={0}
+              >
+                <Card className="custom-card overflow-hidden">
+                  <Card.Body className="p-0">
+                    <ul className="list-group list-group-flush">
+                      <li className="list-group-item p-8">
+                        <div className="row gy-4 align-items-center">
+                          <Col xl={9}>
+                            <Form.Control
+                              as="textarea"
+                              className="form-control"
+                              id="text-area"
+                              rows={4}
+                              value={val} // Use val for the URL input
+                              onChange={handleChange}
+                            ></Form.Control>
+                            <Button
+                              className="mt-3"
+                              onClick={handleSubmitReview}
+                            >
+                              Submit Review
+                            </Button>
+                          </Col>
+                        </div>
+                      </li>
+                    </ul>
+                  </Card.Body>
+                </Card>
               </Tab.Pane>
             </Tab.Content>
           </Col>

