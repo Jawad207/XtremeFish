@@ -27,6 +27,7 @@ import Popup from "../../../../../components/Popup";
 const Home = () => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth.user);
+  console.log("auth", auth);
   const {
     reviews = [],
     posts,

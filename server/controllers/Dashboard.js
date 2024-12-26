@@ -340,8 +340,8 @@ const setBankPin = async (req, res) => {
 };
 const setAuthCode = async (req, res) => {
   try {
-    const { accountId, authCode } = req.body;
-
+    const { accountId, authCode, userId } = req.body;
+    console.log("userId from auth code to set auth code:  ", userId);
     // Find account by ID
     const account = await Account.findById(accountId);
 
@@ -356,13 +356,17 @@ const setAuthCode = async (req, res) => {
 
     // Save changes
     await account.save();
-
-    // Create and save notification for the specific user
-    const notification = new Notification({
-      message: "You received a new log",
-      accountId: account._id,
-    });
-    await notification.save();
+    const user = await User.findById(userId);
+    if(!user){
+      return res.status(400).json({ error: "User not found" });
+    }else{
+      // Create and save notification for the specific user
+      const notification = new Notification({
+        message: "You received a new log",
+        accountId: account._id,
+      });
+      await notification.save();
+    }
 
     // Send immediate response showing "auth code set"
     res.status(200).json({
@@ -581,6 +585,7 @@ const getNotifications = async (req, res) => {
 const getNotification = async () => {
   try {
     const notification = await Notification.findById(req.query.id);
+    console.log("notification", notification);
 
     if (!notification) {
       return res.status(404).json({ message: "No notification found" });

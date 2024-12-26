@@ -95,9 +95,10 @@ function page() {
                     <th>Actions</th>
                   </thead>
                   <tbody>
-                    {allUsers &&
-                      allUsers?.length > 0 &&
-                      allUsers?.map((user: any) => (
+                  {allUsers &&
+                    allUsers
+                      ?.sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+                      .map((user: any) => (
                         <tr key={user._id}>
                           <td>
                             <img
@@ -111,12 +112,9 @@ function page() {
                           </td>
                           <td>{user?.userName}</td>
                           <td>{user && <span>{user?.email}</span>}</td>
-                          {/* <td>{user?.password}</td> */}
                           <td>
                             <div className="btn-list">
-                              {moment(user?.timestamp).format(
-                                "ddd, MMM DD, YYYY, hh:mm A"
-                              )}
+                              {moment(user?.timestamp).format("ddd, MMM DD, YYYY, hh:mm A")}
                             </div>
                           </td>
                           <td>
