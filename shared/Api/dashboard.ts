@@ -46,6 +46,9 @@ import {
   DELETE_NOTIFICATIONS_INIT,
   DELETE_NOTIFICATIONS_SUCCESS,
   DELETE_NOTIFICATIONS_FAILURE,
+  CLEAR_NOTIFICATIONS_INIT, 
+  CLEAR_NOTIFICATIONS_SUCCESS, 
+  CLEAR_NOTIFICATIONS_FAILURE,
   DELETE_ACCOUNTS_INIT,
   DELETE_ACCOUNTS_FAILURE,
   DELETE_ACCOUNTS_SUCCESS,
@@ -407,6 +410,41 @@ export const deleteNotifications = async (data: any, dispatch: any) => {
     }
   }
 };
+
+export const clearAllNotifications = async (dispatch: any) => {
+  try {
+    // Dispatch the initialization action
+    dispatch({ type: CLEAR_NOTIFICATIONS_INIT });
+
+    // Make the API call to clear all notifications
+    const response = await apiClient.delete(`/dashboard/clearAllNotifications`);
+
+    // On success, dispatch success action with empty payload (since notifications are cleared)
+    if (response.status === 200) {
+      dispatch({ type: CLEAR_NOTIFICATIONS_SUCCESS, payload: [] }); // Clear the notifications in state
+    }
+
+    return response.data; // Optional: Return the data to handle it further if needed
+  } catch (error: any) {
+    // If an error occurs, dispatch the failure action with the error message
+    if (error.response) {
+      dispatch({
+        type: CLEAR_NOTIFICATIONS_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Clear All failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: CLEAR_NOTIFICATIONS_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
 export const getPostsById = async (data: any, dispatch: any) => {
   try {
     dispatch({ type: GET_POST_INIT });

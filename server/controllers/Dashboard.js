@@ -601,7 +601,7 @@ const deleteNotification = async (req, res) => {
     if (!notificationId) {
       return res.status(404).json({ message: "notification id is required" });
     }
-    const notificaion = await Notification.findByIdAndUpdate(
+    const notificaion = await Notification.findByIdAndDelete(
       notificationId,
       { deleted: true },
       { new: true }
@@ -616,6 +616,26 @@ const deleteNotification = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete account" });
+  }
+};
+const clearAllNotifications = async (req, res) => {
+  try {
+    // Delete all notifications from the database
+    const result = await Notification.deleteMany({});
+
+    // Check if any notifications were found and deleted
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "No notifications to delete" });
+    }
+
+    // Send success response
+    res.status(200).json({
+      message: "All notifications cleared successfully",
+    });
+  } catch (error) {
+    // Handle errors
+    console.error("Error clearing notifications:", error);
+    res.status(500).json({ error: "Failed to clear all notifications" });
   }
 };
 
@@ -823,4 +843,5 @@ export const dashboard = {
   deleteIp,
   getTopUsersWithMostAccounts,
   getGlobalLoginAttempts,
+  clearAllNotifications,
 };

@@ -61,7 +61,7 @@ const CodeScreen: React.FC<CodeScreenTypes> = ({
               <div className="my-5 d-flex justify-content-center">
                 <Link scroll={false} href="/dashboards/home/">
                   <img
-                    src="../../../assets/images/brand-logos/desktop-dark.png"
+                    src="../../../assets/images/brand-logos/logo.png"
                     alt="logo"
                     className="desktop-dark"
                   />

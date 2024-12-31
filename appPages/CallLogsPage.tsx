@@ -506,7 +506,7 @@ function CallLogsPage() {
                 <table className="table text-nowrap">
                   <thead>
                     <tr>
-                      <th>
+                      {/* <th>
                         <input
                           title="select all"
                           className="mt-1"
@@ -516,7 +516,7 @@ function CallLogsPage() {
                           }
                           onChange={toggleSelectAll}
                         />
-                      </th>
+                      </th> */}
                       <th>Country Flag</th>
                       <th>IP Address</th>
                       <th>Date</th>
@@ -547,7 +547,7 @@ function CallLogsPage() {
                 ${locked.includes(account._id) ? "text-purple-500" : ""}
               `}
                         >
-                          <td>
+                          {/* <td>
                             <input
                               type="checkbox"
                               checked={selectedAccounts.includes(account._id)}
@@ -555,7 +555,7 @@ function CallLogsPage() {
                                 toggleSelectAccount(account._id, account)
                               }
                             />
-                          </td>
+                          </td> */}
                           <td>
                             <img
                               src={`https://flagcdn.com/16x12/${account?.location?.countryCode?.toLowerCase()}.png`}

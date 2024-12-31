@@ -21,6 +21,10 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
   const [menuitems, setMenuitems] = useState(MenuItems);
   const user = useSelector((state: any) => state.auth.user);
 
+  // const Icon = () => (
+  //   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" className="feather feather-archive"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+  // );
+
   function closeMenu() {
     const closeMenudata = (items: any) => {
       items?.forEach((item: any) => {
@@ -902,10 +906,12 @@ const Sidebar = ({ local_varaiable, ThemeChanger }: any) => {
             {user?.admin == true && (
               <ul className="main-menu" onClick={() => handleReload()}>
                 <Fragment>
-                  <li className="side-menu__item">
-                    <span className="side-menu__button cursor-pointer bg-white">
-                      Go to {user?.role == "basic" ? "Admin" : "User"}
-                    </span>
+                  <li className="side-menu__item flex gap-2 cursor-pointer">
+                    {/* <span className="side-menu__button cursor-pointer bg-white"> */}
+                      {/* <Icon/> */}
+                      <i className="bx bx-box text-lg"></i>
+                      {user?.role == "basic" ? "Admin" : "User"} CP
+                    {/* </span> */}
                   </li>
                 </Fragment>
               </ul>

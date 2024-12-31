@@ -40,6 +40,11 @@ export const GET_REVIEWS_INIT = "GET_REVIEWS_INIT";
 export const GET_REVIEWS_SUCCESS = "GET_REVIEWS_SUCCESS";
 export const GET_REVIEWS_FAILURE = "GET_REVIEWS_FAILURE";
 
+export const CLEAR_NOTIFICATIONS_INIT = "CLEAR_NOTIFICATIONS_INIT";
+export const CLEAR_NOTIFICATIONS_SUCCESS = "CLEAR_NOTIFICATIONS_SUCCESS";
+export const CLEAR_NOTIFICATIONS_FAILURE = "CLEAR_NOTIFICATIONS_FAILURE";
+
+
 export const CREATE_URL_INIT = "CREATE_URL_INIT";
 export const CREATE_URL_SUCCESS = "CREATE_URL_SUCCESS";
 export const CREATE_URL_FAILURE = "CREATE_URL_FAILURE";
@@ -260,6 +265,20 @@ interface deleteNotificationsSuccessAction {
 interface deleteNotificationsfailureAction {
   type: typeof DELETE_NOTIFICATIONS_FAILURE;
   payload: any;
+}
+
+interface clearNotificationsInitAction {
+  type: typeof CLEAR_NOTIFICATIONS_INIT;
+}
+
+interface clearNotificationsSuccessAction {
+  type: typeof CLEAR_NOTIFICATIONS_SUCCESS;
+  payload: any; // You can modify the payload type depending on the response from the API
+}
+
+interface clearNotificationsFailureAction {
+  type: typeof CLEAR_NOTIFICATIONS_FAILURE;
+  payload: any; // Typically the error message
 }
 
 interface getNotificationsInitAction {
@@ -693,4 +712,7 @@ export type DashActionTypes =
   | GetGlobalLoginAttemptInitAction
   | GetGlobalLoginAttemptSuccessAction
   | GetGlobalLoginAttemptFailureAction
-  | getAccountstatisticsFailureAction;
+  | getAccountstatisticsFailureAction
+  | clearNotificationsInitAction
+  | clearNotificationsSuccessAction
+  | clearNotificationsFailureAction;
