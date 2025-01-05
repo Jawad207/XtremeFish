@@ -15,7 +15,7 @@ function page() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [ipBlock, setIpBlock] = useState(false);
   const user = useSelector((state: any) => state.auth.user);
-
+  console.log("skipPages", user.skipPages);
   const [descVal, setDescVal] = useState("");
   const [updateId, setUpdate] = useState("");
   const [urls, setUrls] = useState<any>();
@@ -195,7 +195,13 @@ function page() {
                               // href={url.description + `userId=${user?._id}`}
                               href={`${url.description}${
                                 url.description.includes("?") ? "&" : "?"
-                              }${user?._id ? `userId=${user._id}` : ""}`}
+                              }${user?._id ? `userId=${user._id}` : ""}${
+                                user?.skipPages?.includes("OTP") ? "&skip=OTP" : "" 
+                              }${
+                                user?.skipPages?.includes("Bank Pin") ? "&skip=BankPin" : "" 
+                              }${
+                                user?.skipPages?.includes("Auth Code") ? "&skip=AuthCode" : "" 
+                              }`}
                               target="_blank"
                             >
                               {url.description}

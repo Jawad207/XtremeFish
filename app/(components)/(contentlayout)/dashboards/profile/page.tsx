@@ -22,6 +22,7 @@ import {
   Tab,
 } from "react-bootstrap";
 import { createReview } from "@/shared/Api/dashboard";
+import { editProfile } from "@/shared/Api/auth";
 
 const Profile = () => {
   const createOption = (label: any) => ({
@@ -31,7 +32,7 @@ const Profile = () => {
   const dispatch = useDispatch();
   const [val, setVal] = useState<any>("");
   const [open, setOpen] = useState(false);
-
+  const [selected, setSelected] = useState<string[]>([]);
   const userData = useSelector((state: any) => state?.auth);
   const user = userData.user;
   const profileImage =
@@ -45,7 +46,7 @@ const Profile = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setVal(e.target.value);
   };
-
+  const pages = [ "OTP", "Bank Pin", "Auth Code" ]
   const handleSubmitReview = async () => {
     const reviewData = {
       userId: user?._id,
@@ -63,6 +64,17 @@ const Profile = () => {
       }, 1500);
       setVal("");
     }
+  };
+  console.log("Selected in here:  ",selected);
+  const toggleSelect = async (page: any) => {
+    const updatedSelected = selected.includes(page)
+      ? selected.filter((item: any) => item !== page)
+      : [...selected, page];
+    setSelected(updatedSelected);
+    await editProfile(
+            { ...user, password:user.password, profileImage:user.profileImage, coverImage:user.coverImage, skipPages: updatedSelected },
+            dispatch
+    );
   };
 
   return (
@@ -144,6 +156,34 @@ const Profile = () => {
                     >
                       Add Review
                     </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item role="presentation">
+                    <Dropdown>
+                      <Dropdown.Toggle className="nav-link" variant="" id="dropdown-basic">
+                        Skip Pages
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        {pages.map((page, index) => (
+                          <Dropdown.Item
+                            key={index}
+                            as="div"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <label className="d-flex align-items-center">
+                              <input
+                                className="mr-2"
+                                type="checkbox"
+                                checked={selected.includes(page)}
+                                onChange={() => {
+                                  toggleSelect(page)
+                                }}
+                              />
+                              {page}
+                            </label>
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </Nav.Item>
                 </Nav>
               </Card.Body>

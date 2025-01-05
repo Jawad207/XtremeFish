@@ -529,8 +529,9 @@ const Header = ({ local_varaiable }: any) => {
                   <div className="d-grid">
                     <Link
                       scroll={false}
-                      href="#!"
+                      href="/notifications"
                       className="btn btn-primary btn-wave"
+                      target="_blank"
                     >
                       View All
                     </Link>

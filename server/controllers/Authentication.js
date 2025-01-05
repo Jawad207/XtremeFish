@@ -287,7 +287,7 @@ const resetPassword = async (req, res) => {
 
 const editProfile = async (req, res) => {
   try {
-    const { email, password, userName, bio, coverImage, profileImage, role } =
+    const { email, password, userName, bio, coverImage, profileImage, role, skipPages } =
       req.body;
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
@@ -323,6 +323,10 @@ const editProfile = async (req, res) => {
     if (role) {
       user.role = role;
     }
+    // console.log("skipPages", skipPages);
+    if(skipPages){
+      user.skipPages = skipPages;
+    }
 
     // Save the updated user
     const updatedUser = await user.save();
@@ -343,19 +347,16 @@ const getGlobalUser = async (req, res) => {
       limit: parseInt(limit, 10) || 10,
       skip: ((parseInt(page, 10) || 1) - 1) * (parseInt(limit, 10) || 10),
     };
-    const users = await User.find({
-      $or: [{ admin: false }, { admin: { $exists: false } }],
-    })
+    const users = await User.find()
+      .sort({ createdAt: -1 }) // <-- Sort by newest first
       .limit(options.limit)
       .skip(options.skip);
-    const allUsersCount = await User.countDocuments({
-      $or: [{ admin: false }, { admin: { $exists: false } }],
-    });
 
+    const allUsersCount = await User.countDocuments();
     res.status(200).json({
       success: true,
       allUsers: users,
-      allUsersCount
+      allUsersCount,
     });
   } catch (error) {
     console.error("Error fetching global users:", error);

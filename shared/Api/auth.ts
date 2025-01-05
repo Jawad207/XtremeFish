@@ -226,6 +226,7 @@ export const getGlobalUser = async (data: any, dispatch: any) => {
       params: {
         page: data?.page || 1,
         limit: data?.limit || 10,
+        skipPages: data?.skipPages || [],
       },
     });
 

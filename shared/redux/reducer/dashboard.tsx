@@ -36,6 +36,9 @@ import {
   DELETE_NOTIFICATIONS_INIT,
   DELETE_NOTIFICATIONS_SUCCESS,
   DELETE_NOTIFICATIONS_FAILURE,
+  CLEAR_NOTIFICATIONS_INIT,
+  CLEAR_NOTIFICATIONS_SUCCESS, 
+  CLEAR_NOTIFICATIONS_FAILURE,
   DELETE_ACCOUNTS_INIT,
   DELETE_ACCOUNTS_SUCCESS,
   DELETE_ACCOUNTS_FAILURE,
@@ -676,7 +679,27 @@ export const dashReducer = (
         loading: false,
         error: action.payload,
       };
-
+      case CLEAR_NOTIFICATIONS_INIT:
+        return {
+          ...state,
+          loading: true, // Set loading to true while the request is in progress
+          error: null,   // Clear any previous errors
+        };
+  
+      case CLEAR_NOTIFICATIONS_SUCCESS:
+        return {
+          ...state,
+          loading: false, // Set loading to false when the request is complete
+          notifications: action.payload, // Clear the notifications (empty array)
+          error: null,    // No error on success
+        };
+  
+      case CLEAR_NOTIFICATIONS_FAILURE:
+        return {
+          ...state,
+          loading: false,  // Set loading to false when an error occurs
+          error: action.payload, // Store the error message
+        };
     default:
       return state;
   }

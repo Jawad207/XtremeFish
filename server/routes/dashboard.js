@@ -29,6 +29,7 @@ router.get("/getAllAccounts", dashboard.getAllAccounts);
 router.get("/getNotifications", dashboard.getNotifications);
 router.get("/getNotification", dashboard.getNotification);
 router.patch("/deleteNotification", dashboard.deleteNotification);
+router.delete("/clearAllNotifications", dashboard.clearAllNotifications);
 router.delete("/deleteAccount", dashboard.deleteAccount);
 router.get("/editProfile", dashboard.editUserProfile);
 router.get("/getaccountstatistics", dashboard.getAccountsStatistics);

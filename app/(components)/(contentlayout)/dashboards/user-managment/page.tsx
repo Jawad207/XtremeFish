@@ -13,6 +13,7 @@ function page() {
   
   const dispatch = useDispatch();
   const allUsers = useSelector((state: any) => state.auth.allUsers);
+  console.log("allUsers: ",allUsers);
   const allUsersCount = useSelector((state: any) => state.auth.allUsersCount);
 
 
@@ -95,10 +96,14 @@ function page() {
                     <th>Actions</th>
                   </thead>
                   <tbody>
-                    {allUsers &&
-                      allUsers?.length > 0 &&
-                      allUsers?.map((user: any) => (
-                        <tr key={user._id}>
+                  {allUsers?.slice()
+                      .sort(
+                        (a: any, b: any) => 
+                          new Date(b.createdAt).getTime() -
+                          new Date(a.createdAt).getTime()
+                        )
+                      .map((user: any) => (
+                        <tr  style={{ color: user.role === 'admin' ? 'blue' : 'inherit' }} key={user._id}>
                           <td>
                             <img
                               src={
@@ -109,14 +114,13 @@ function page() {
                               className="avatar avatar-xs avatar-rounded mb-1"
                             />
                           </td>
-                          <td>{user?.userName}</td>
+                          <td>
+                            {user?.userName}
+                          </td>
                           <td>{user && <span>{user?.email}</span>}</td>
-                          {/* <td>{user?.password}</td> */}
                           <td>
                             <div className="btn-list">
-                              {moment(user?.timestamp).format(
-                                "ddd, MMM DD, YYYY, hh:mm A"
-                              )}
+                              {moment(user?.createdAt).format("ddd, MMM DD, YYYY, hh:mm A")}
                             </div>
                           </td>
                           <td>
