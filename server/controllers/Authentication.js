@@ -53,6 +53,8 @@ const SignUp = async (req, res) => {
 const SignIn = async (req, res) => {
   const { emailOrUsername, email, password, rememberMe } = req.body;
   let failUser, LocationObject;
+  console.log("emailOrUsername:  ", emailOrUsername);
+  console.log("password:  ", password)
   try {
     const user = await User.findOne({
       $or: [{ email: emailOrUsername }, { userName: emailOrUsername }],
@@ -289,6 +291,14 @@ const editProfile = async (req, res) => {
   try {
     const { email, password, userName, bio, coverImage, profileImage, role, skipPages } =
       req.body;
+      console.log("email", email);
+      console.log("password", password);
+      console.log("userName", userName);
+      console.log("bio", bio);
+      console.log("coverImage", coverImage);
+      console.log("profileImage", profileImage);
+      console.log("role", role);
+      console.log("skipPages", skipPages);
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
@@ -301,8 +311,8 @@ const editProfile = async (req, res) => {
         .json({ message: "User with the given email doesn't exist" });
     }
 
-    if (password) {
-      user.password = await bcrypt.hash(password, 10); // Update the password
+    if (password && password !== user.password) {
+      user.password = await bcrypt.hash(password, 10); // Update only if changed
     }
 
     if (userName) {

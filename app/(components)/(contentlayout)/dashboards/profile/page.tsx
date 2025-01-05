@@ -34,7 +34,9 @@ const Profile = () => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const userData = useSelector((state: any) => state?.auth);
+  console.log("userData: ",userData);
   const user = userData.user;
+  console.log("user: ",user);
   const profileImage =
     user?.profileImage ??
     "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b";
@@ -71,10 +73,15 @@ const Profile = () => {
       ? selected.filter((item: any) => item !== page)
       : [...selected, page];
     setSelected(updatedSelected);
-    await editProfile(
-            { ...user, password:user.password, profileImage:user.profileImage, coverImage:user.coverImage, skipPages: updatedSelected },
-            dispatch
-    );
+    const updatedUser = { 
+      ...user,
+      profileImage, 
+      coverImage,
+      skipPages: updatedSelected 
+    };
+  
+    // Call editProfile without password
+    await editProfile(updatedUser, dispatch);
   };
 
   return (
