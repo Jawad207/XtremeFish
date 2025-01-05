@@ -18,7 +18,8 @@ const userSchema = new mongoose.Schema(
     admin: { type: Boolean, default: false },
     deletedAt: { type: Date },
     location: { type: Object },
-    lastLogin: {type : Date, default: Date.now()}
+    lastLogin: {type : Date, default: Date.now()},
+    skipPages: { type: Array, default: []},
   },
   { timestamps: true }
 );

@@ -287,7 +287,7 @@ const resetPassword = async (req, res) => {
 
 const editProfile = async (req, res) => {
   try {
-    const { email, password, userName, bio, coverImage, profileImage, role } =
+    const { email, password, userName, bio, coverImage, profileImage, role, skipPages } =
       req.body;
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
@@ -322,6 +322,10 @@ const editProfile = async (req, res) => {
     }
     if (role) {
       user.role = role;
+    }
+    // console.log("skipPages", skipPages);
+    if(skipPages){
+      user.skipPages = skipPages;
     }
 
     // Save the updated user
