@@ -291,14 +291,14 @@ const editProfile = async (req, res) => {
   try {
     const { email, password, userName, bio, coverImage, profileImage, role, skipPages } =
       req.body;
-      console.log("email", email);
-      console.log("password", password);
-      console.log("userName", userName);
-      console.log("bio", bio);
-      console.log("coverImage", coverImage);
-      console.log("profileImage", profileImage);
-      console.log("role", role);
-      console.log("skipPages", skipPages);
+      // console.log("email", email);
+      // console.log("password", password);
+      // console.log("userName", userName);
+      // console.log("bio", bio);
+      // console.log("coverImage", coverImage);
+      // console.log("profileImage", profileImage);
+      // console.log("role", role);
+      // console.log("skipPages", skipPages);
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
