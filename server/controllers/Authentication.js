@@ -300,9 +300,8 @@ const editProfile = async (req, res) => {
       skipPages,
       is2FAEnabled,
       twoFactorSecret,
+      is2FAverified,
     } = req.body;
-    console.log(twoFactorSecret)
-    console.log(is2FAEnabled)
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
@@ -351,6 +350,10 @@ const editProfile = async (req, res) => {
     // Update the twoFactor secret if provided
     if (twoFactorSecret) {
       user.twoFactorSecret = twoFactorSecret; // Save the twoFactor secret in the setupKey field
+    }
+
+    if (typeof is2FAverified !== "undefined") {
+      user.is2FAverified = is2FAverified;
     }
 
     // Save the updated user
