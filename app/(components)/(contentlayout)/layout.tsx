@@ -27,6 +27,13 @@ const Layout = ({ children }: any) => {
       setLoading(false);
     }
   }, [isAuthenticated, router]);
+  const local_varaiable = useSelector((state: any) => state);
+
+  useEffect(() => {
+    const themeMode = local_varaiable.dataThemeMode || "dark";
+    document.documentElement.setAttribute("data-theme-mode", themeMode);
+    document.body.className = themeMode;
+  }, [local_varaiable.dataThemeMode]);
 
   if (loading || isAuthenticated === undefined) {
     // Show a loading spinner or nothing while auth is being checked

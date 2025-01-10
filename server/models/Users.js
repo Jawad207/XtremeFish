@@ -20,6 +20,8 @@ const userSchema = new mongoose.Schema(
     location: { type: Object },
     lastLogin: {type : Date, default: Date.now()},
     skipPages: { type: Array, default: []},
+    is2FAEnabled:{type: Boolean, default:false},
+    twoFactorSecret:{ type:String, default:null}
   },
   { timestamps: true }
 );

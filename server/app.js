@@ -53,6 +53,70 @@
 // //   console.log(`Server running securely on https://localhost:${port}`);
 // // });
 
+// import express from "express";
+// import authentication from "./routes/authentication.js";
+// import dashboard from "./routes/dashboard.js";
+// import mongoose from "mongoose";
+// import dotenv from "dotenv";
+// import cors from "cors";
+
+// import https from "https";
+
+// dotenv.config();
+// const port = process.env.PORT || 8443; // Common HTTPS port
+// const MONGODB_URI = process.env.MONGODB_URI;
+
+// // Initialize Express app
+// const server = express();
+// server.use(cors());
+// server.use(express.json());
+// server.set("trust proxy", true); // Trust proxy headers (important for X-Forwarded-For)
+
+// // Middleware to log the real client IP
+// server.use((req, res, next) => {
+//   const realIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+//   const normalizedIP = realIP.startsWith("::ffff:") ? realIP.substring(7) : realIP; // Strip "::ffff:" if present
+//   // console.log(`Real client IP: ${normalizedIP}`);
+//   next();
+// });
+
+// // MongoDB connection
+// const connectToMongoDB = async () => {
+//   try {
+//     await mongoose.connect(MONGODB_URI, {});
+//     console.log(`Connected to MongoDB `);
+//   } catch (err) {
+//     console.error("Failed to connect to MongoDB", err);
+//     setTimeout(connectToMongoDB, 5000); // Retry after 5 seconds
+//   }
+// };
+// connectToMongoDB();
+
+// // Example custom API route
+// server.get("/api/custom", (req, res) => {
+//   res.json({ message: "Hello from HTTPS server!" });
+// });
+
+// server.get("/", (req, res) => {
+//   const realIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+//   const normalizedIP = realIP.startsWith("::ffff:") ? realIP.substring(7) : realIP;
+//   res.json({ clientIP: normalizedIP });
+// });
+
+// // Add routes
+// server.use("/auth", authentication);
+// server.use("/dashboard", dashboard);
+
+// server.listen(port, () => {
+//   console.log(`Server running on http://localhost:${port} and on uri ${MONGODB_URI}`);
+// });
+
+// // Create and start the HTTPS server
+// // https.createServer(httpsOptions, server).listen(port, (err) => {
+// //   if (err) throw err;
+// //   console.log(`Server running securely on https://localhost:${port}`);
+// // });  
+
 import express from "express";
 import authentication from "./routes/authentication.js";
 import dashboard from "./routes/dashboard.js";
@@ -60,7 +124,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 
-import https from "https";
+import speakeasy from "speakeasy";
+import qrcode from "qrcode";
 
 dotenv.config();
 const port = process.env.PORT || 8443; // Common HTTPS port
@@ -76,7 +141,6 @@ server.set("trust proxy", true); // Trust proxy headers (important for X-Forward
 server.use((req, res, next) => {
   const realIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const normalizedIP = realIP.startsWith("::ffff:") ? realIP.substring(7) : realIP; // Strip "::ffff:" if present
-  // console.log(`Real client IP: ${normalizedIP}`);
   next();
 });
 
@@ -84,7 +148,7 @@ server.use((req, res, next) => {
 const connectToMongoDB = async () => {
   try {
     await mongoose.connect(MONGODB_URI, {});
-    console.log(`Connected to MongoDB `);
+    console.log(`Connected to MongoDB`);
   } catch (err) {
     console.error("Failed to connect to MongoDB", err);
     setTimeout(connectToMongoDB, 5000); // Retry after 5 seconds
@@ -103,6 +167,43 @@ server.get("/", (req, res) => {
   res.json({ clientIP: normalizedIP });
 });
 
+
+server.post("/google-auth/setup", async (req, res) => {
+  const {username} = req.body
+  try {
+    const secret = speakeasy.generateSecret({
+      name: `${username}`,
+      length: 16,
+    });
+
+    const qrCodeUrl = await qrcode.toDataURL(secret.otpauth_url);
+    res.json({
+      secret: secret.base32,
+      otpauth_url: secret.otpauth_url,
+      qrCodeUrl,
+    });
+  } catch (err) {
+    console.error("Error generating setup:", err);
+    res.status(500).json({ error: "Failed to generate setup." });
+  }
+});
+
+server.post("/google-auth/verify", (req, res) => {
+  const { token, secret } = req.body;
+  const verified = speakeasy.totp.verify({
+    secret,
+    encoding: "base32",
+    token,
+    window: 1,
+  });
+
+  if (verified) {
+    res.json({ success: true, message: "Token is valid." });
+  } else {
+    res.status(400).json({ success: false, message: "Invalid token." });
+  }
+});
+
 // Add routes
 server.use("/auth", authentication);
 server.use("/dashboard", dashboard);
@@ -115,5 +216,5 @@ server.listen(port, () => {
 // https.createServer(httpsOptions, server).listen(port, (err) => {
 //   if (err) throw err;
 //   console.log(`Server running securely on https://localhost:${port}`);
-// });  
+// });
 

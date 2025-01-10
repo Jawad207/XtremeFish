@@ -289,16 +289,20 @@ const resetPassword = async (req, res) => {
 
 const editProfile = async (req, res) => {
   try {
-    const { email, password, userName, bio, coverImage, profileImage, role, skipPages } =
-      req.body;
-      // console.log("email", email);
-      // console.log("password", password);
-      // console.log("userName", userName);
-      // console.log("bio", bio);
-      // console.log("coverImage", coverImage);
-      // console.log("profileImage", profileImage);
-      // console.log("role", role);
-      // console.log("skipPages", skipPages);
+    const {
+      email,
+      password,
+      userName,
+      bio,
+      coverImage,
+      profileImage,
+      role,
+      skipPages,
+      is2FAEnabled,
+      twoFactorSecret,
+    } = req.body;
+    console.log(twoFactorSecret)
+    console.log(is2FAEnabled)
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
@@ -312,15 +316,15 @@ const editProfile = async (req, res) => {
     }
 
     if (password && password !== user.password) {
-      user.password = await bcrypt.hash(password, 10); // Update only if changed
+      user.password = await bcrypt.hash(password, 10); // Update password if changed
     }
 
     if (userName) {
-      user.userName = userName; // Update the username
+      user.userName = userName;
     }
 
     if (bio) {
-      user.bio = bio; // Update the bio
+      user.bio = bio;
     }
 
     if (coverImage) {
@@ -330,16 +334,28 @@ const editProfile = async (req, res) => {
     if (profileImage) {
       user.profileImage = profileImage;
     }
+
     if (role) {
       user.role = role;
     }
-    // console.log("skipPages", skipPages);
-    if(skipPages){
+
+    if (skipPages) {
       user.skipPages = skipPages;
+    }
+
+    // Update 2FA status
+    if (typeof is2FAEnabled !== "undefined") {
+      user.is2FAEnabled = is2FAEnabled;
+    }
+
+    // Update the twoFactor secret if provided
+    if (twoFactorSecret) {
+      user.twoFactorSecret = twoFactorSecret; // Save the twoFactor secret in the setupKey field
     }
 
     // Save the updated user
     const updatedUser = await user.save();
+
     // Generate token
     const token = generateToken(updatedUser._id);
 

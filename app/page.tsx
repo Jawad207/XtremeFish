@@ -27,6 +27,10 @@ export default function Home() {
     let path = "/dashboards/home";
     router.push(path);
   };
+  const RouteChangeToVerify = () => {
+    let path = "/verify-2fa";
+    router.push(path);
+  };
   const logo =
     "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Flogo.png?alt=media&token=c6c65b3d-1b55-49f4-9dcb-da1bcb6907b1";
 
@@ -70,7 +74,11 @@ export default function Home() {
       if (response?.user) {
         console.log('first time in here', response?.user?.role)
         localStorage.setItem("UserRole", JSON.stringify(response?.user?.role));
-        return RouteChange();
+        if(response?.user?.is2FAEnabled){
+          RouteChangeToVerify()
+        }else{
+          RouteChange()
+        }
       } else {
         reset();
         setError(response);
