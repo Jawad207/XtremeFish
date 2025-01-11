@@ -21,7 +21,8 @@ const userSchema = new mongoose.Schema(
     lastLogin: {type : Date, default: Date.now()},
     skipPages: { type: Array, default: []},
     is2FAEnabled:{type: Boolean, default:false},
-    twoFactorSecret:{ type:String, default:null}
+    twoFactorSecret:{ type:String, default:null},
+    is2FAverified:{type: Boolean, default:false}
   },
   { timestamps: true }
 );

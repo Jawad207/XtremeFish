@@ -6,12 +6,14 @@ import { Fragment, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Alert, Card, Col } from "react-bootstrap";
 import { FaSpinner } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { editProfile } from "@/shared/Api/auth";
 
 export default function Verify2FA() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch()
   const user = useSelector((state: any) => state.auth.user);
   const RouteChange = () => {
     let path = "/dashboards/home";
@@ -40,7 +42,13 @@ export default function Verify2FA() {
       });
 
       if (response.ok) {
-        return RouteChange();
+        const anotherResponse = await editProfile({
+          ...user,
+          is2FAverified:true
+        },dispatch)
+        if(anotherResponse?.status===200){
+          RouteChange();
+        }
       } else {
         const errorData = await response.json();
         setError(errorData?.message || "Invalid token. Please try again.");
