@@ -3,9 +3,43 @@ import Pageheader from "@/shared/layout-components/page-header/pageheader";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useState } from "react";
 import { Button, Col, Nav, Row, Tab } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { editProfile } from "@/shared/Api/auth";
+import moment from "moment";
+import { FaSpinner } from "react-icons/fa";
 
 const SubscriptionPage = () => {
-  const [selectedPlan, setSelectedPlan] = useState("Basic");
+  const dispatch = useDispatch();
+  const auth = useSelector((state: any) => state.auth);
+  const [loading, setLoading] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(
+    auth?.user?.subscription?.type ?? "Basic"
+  );
+
+  const updateSubscription = async (type: any, duration: any) => {
+    let expireDate;
+    let currentDate = new Date();
+
+    expireDate = new Date(currentDate);
+
+    expireDate.setMonth(currentDate.getMonth() + duration);
+    const payload = {
+      startDate: currentDate,
+      expireDate,
+      type,
+      duration,
+      active: true,
+    };
+    setLoading(type);
+    const profile = await editProfile(
+      { ...auth?.user, subscription: payload },
+      dispatch
+    );
+    if (profile?.status == 200) {
+      setLoading(null);
+    }
+  };
+
   return (
     <Fragment>
       {/* Page Header */}
@@ -116,12 +150,22 @@ const SubscriptionPage = () => {
                 </li>
               </ul>
               <hr className="border-top my-4" />
+
               <Button
                 variant=""
                 type="button"
                 className="btn btn-lg btn-outline-primary d-grid w-100 btn-wave"
+                onClick={() => updateSubscription("basic", 1)}
               >
-                <span className="ms-4 me-4">Start Today</span>
+                {loading == "basic" ? (
+                  <span className="ms-4 me-4">
+                    {" "}
+                    <FaSpinner className="spinner-border spinner-border-sm" />{" "}
+                    Loading...
+                  </span>
+                ) : (
+                  <span className="ms-4 me-4">Start Today</span>
+                )}
               </Button>
             </div>
           </div>
@@ -227,8 +271,17 @@ const SubscriptionPage = () => {
                 variant=""
                 type="button"
                 className="btn btn-lg btn-primary-gradient d-grid w-100 btn-wave"
+                onClick={() => updateSubscription("pro", 3)}
               >
-                <span className="ms-4 me-4">Start Today</span>
+                {loading == "pro" ? (
+                  <span className="ms-4 me-4">
+                    {" "}
+                    <FaSpinner className="spinner-border spinner-border-sm" />{" "}
+                    Loading...
+                  </span>
+                ) : (
+                  <span className="ms-4 me-4">Start Today</span>
+                )}
               </Button>
             </div>
           </div>
@@ -331,8 +384,17 @@ const SubscriptionPage = () => {
                 variant=""
                 type="button"
                 className="btn btn-lg btn-outline-primary d-grid w-100 btn-wave"
+                onClick={() => updateSubscription("premium", 6)}
               >
-                <span className="ms-4 me-4">Start Today</span>
+                {loading == "premium" ? (
+                  <span className="ms-4 me-4">
+                    {" "}
+                    <FaSpinner className="spinner-border spinner-border-sm" />{" "}
+                    Loading...
+                  </span>
+                ) : (
+                  <span className="ms-4 me-4">Start Today</span>
+                )}
               </Button>
             </div>
           </div>

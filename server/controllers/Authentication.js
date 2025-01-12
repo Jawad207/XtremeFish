@@ -301,6 +301,7 @@ const editProfile = async (req, res) => {
       is2FAEnabled,
       twoFactorSecret,
       is2FAverified,
+      subscription
     } = req.body;
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
@@ -354,6 +355,9 @@ const editProfile = async (req, res) => {
 
     if (typeof is2FAverified !== "undefined") {
       user.is2FAverified = is2FAverified;
+    }
+    if(subscription && Object.keys(subscription).length) {
+      user.subscription = subscription
     }
 
     // Save the updated user
