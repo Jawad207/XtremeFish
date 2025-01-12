@@ -132,7 +132,7 @@ function page() {
 
   return (
     <Fragment>
-      <Seo title={"urls"} />
+      <Seo title={"Links"} />
       <Row>
         <Col xl={12}>
           <Card className="custom-card">

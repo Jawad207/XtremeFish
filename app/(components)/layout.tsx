@@ -175,7 +175,6 @@ const Layout = ({ children }: LayoutProps) => {
   const dispatch = useDispatch();
 
   // Debugging state (remove this after testing)
-  console.log("Theme Mode:", local_varaiable.dataThemeMode); // Log current theme mode
 
   // Dynamic styles
   const customstyles: any = {
