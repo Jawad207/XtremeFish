@@ -19,18 +19,10 @@ const EditProfile = () => {
   const dispatch = useDispatch();
   const [password, setPassword] = useState<any>("");
   const [open, setOpen] = useState(false);
-  const [openSuccess, setOpenSuccess] = useState(false);
-  const [showBtn, setShowBtn] = useState(true);
-  const [showBtn2, setShowBtn2] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState<any>("");
   const loading = useSelector((state: any) => state.auth.loading);
   const [error, setError] = useState("");
   const userData = useSelector((state: any) => state?.auth?.user);
-  // console.log(userData)
-  const [qrCodeUrl, setQrCodeUrl] = useState(null);
-  const [setupKey, setSetupKey] = useState(null);
-  const [showSetupKey, setShowSetupKey] = useState(false);
-  const [verificationToken, setVerificationToken] = useState("");
   const [profileImage, setProfileImage] = useState(
     userData?.profileImage ??
       "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
@@ -80,6 +72,19 @@ const EditProfile = () => {
     }
   };
 
+  const handleChange = async() => {
+    if(userData?.is2FAEnabled){
+      await editProfile({
+        ...userData,
+        is2FAEnabled:false
+      },dispatch)
+    }else{
+      await editProfile({
+        ...userData,
+        is2FAEnabled:true
+      },dispatch)
+    }
+  }
   const handleUpdate = async (pass?: boolean) => {
     let boolError = false;
     if (pass) {
@@ -103,102 +108,6 @@ const EditProfile = () => {
     }
   };
 
-  const handleVerificationTokenChange = (e:any) => {
-    setVerificationToken(e.target.value);
-  };
-
-  const handleVerifyToken = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/google-auth/verify", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: verificationToken,
-          secret: userData?.twoFactorSecret,
-        }),
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        const profileResponse = await editProfile(
-          { ...userData, is2FAEnabled: true },
-          dispatch
-        );
-  
-        if (profileResponse?.status === 200) {
-          setOpen(true);
-          setTimeout(() => {
-            setOpen(false);
-            window.location.reload();
-          }, 2000);
-        } else {
-          setError(profileResponse.message)
-        }
-      } else {
-        const errorData = await response.json();
-        setError(errorData?.message)
-      }
-    } catch (error:any) {
-      setError(error)
-    }
-  };
-  console.log("twoFactorSecret:   ",userData?.twoFactorSecret)
-  console.log("is2FAEnabled:    ",userData?.is2FAEnabled)
-
-  const handleGenerateQRCode = async () => {
-    if (!user?.userName) {
-      setError("Username is missing.");
-      return;
-    }
-    setError("");
-
-    try {
-      const response = await fetch("http://localhost:8080/google-auth/setup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username:user?.userName }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate QR code");
-      }
-      setShowBtn(false)
-      setShowBtn2(true)
-      const data = await response.json();
-      setQrCodeUrl(data.qrCodeUrl);
-      setSetupKey(data.secret);
-      await editProfile({
-        ...userData,
-        twoFactorSecret:data.secret
-      },dispatch)
-    } catch (err:any) {
-      setError(err.message || "Failed to generate QR code");
-    }
-  };
-
-
-  const handleShowSetupKey = () => {
-    setShowSetupKey(!showSetupKey); // Show the setup key
-  };
-
-  const handleDisable2FA = async()=>{
-    const response = await editProfile({
-      ...userData,
-      is2FAEnabled:false,
-    },dispatch)
-    if(response?.status===200){
-      setOpen(true)
-      setTimeout(() => {
-        setOpen(false)
-        window.location.reload()
-      }, 2000);
-    }
-  }
-
   return (
     <Fragment>
       {/* Page Header */}
@@ -215,12 +124,6 @@ const EditProfile = () => {
         title={"Profile Edited"}
         description={"Your profile has been updated"}
       />
-      {openSuccess&&
-        <Success
-          title={"Enabled"}
-          description={"You Two-Factor Authentication has been enabled"}
-        />
-      }
       {/* Page Header Close */}
       <Tab.Container defaultActiveKey="first">
         {/* Start:: row-1 */}
@@ -566,112 +469,46 @@ const EditProfile = () => {
                 </Card>
               </Tab.Pane>
               <Tab.Pane
-  eventKey="third"
-  className="p-0 border-0"
-  id="generate-qr-code-tab-pane"
-  role="tabpanel"
-  aria-labelledby="generate-qr-code-tab"
-  tabIndex={0}
->
-  <Card className="custom-card shadow-sm">
-    <Card.Body className="p-4">
-      {userData?.is2FAEnabled?(<div className="d-flex justify-content-center mt-4">
-        <Button
-          variant="primary"
-          onClick={handleDisable2FA}
-          className="w-auto mb-3"
-        >
-          Disable 2FA
-        </Button>
-      </div>):(<>
-        <div className="text-center mb-4">
-        {qrCodeUrl && !showSetupKey && (
-          <img
-            src={qrCodeUrl}
-            alt="QR Code"
-            className="rounded"
-            style={{
-              maxWidth: "200px",
-              maxHeight: "200px",
-              margin: "0 auto", // Centering the QR code
-            }}
-          />
-        )}
-      </div>
-
-      {/* Setup Key Section */}
-      {showSetupKey && setupKey && (
-        <div className="text-center mt-3">
-          <Form.Control
-            type="text"
-            value={setupKey}
-            readOnly
-            className="text-center p-3"
-            style={{
-              fontFamily: "monospace",
-              fontSize: "18px",
-              maxWidth: "300px",
-              margin: "0 auto",
-            }}
-          />
-        </div>
-      )}
-
-      {/* Buttons */}
-      <div className="d-flex justify-content-center mt-4">
-        <Button
-          variant="primary"
-          onClick={handleGenerateQRCode}
-          className="w-auto mb-3" // Use w-auto to make the button smaller
-          disabled={showBtn2}
-        >
-          Generate QR Code
-        </Button>
-      </div>
-      
-      <div className="d-flex justify-content-center">
-        <Button
-          disabled={showBtn}
-          variant="outline-secondary"
-          onClick={handleShowSetupKey}
-          className="w-auto" // Use w-auto to make the button smaller
-        >
-          {showSetupKey ? "Show QR Code" : "Show Setup Key"}
-        </Button>
-      </div>
-
-  {/* Verify Token Section */}
-  <div className="verify-token-section">
-      <form>
-        <div className="mb-3">
-          <label htmlFor="verificationToken">Enter Verification Token</label>
-          <input
-            type="text"
-            id="verificationToken"
-            className="form-control"
-            value={verificationToken}
-            onChange={handleVerificationTokenChange}
-            placeholder="Enter the token received"
-          />
-        </div>
-        {error && (
-          <p className="text-danger text-center mb-4">{error}</p>
-        )}
-        <div className="d-flex justify-content-center">
-          <button
-            type="button"
-            className="btn btn-success w-auto"
-            onClick={handleVerifyToken}
-          >
-            Verify Token
-          </button>
-        </div>
-      </form>
-    </div>
-      </>)}
-    </Card.Body>
-  </Card>
-</Tab.Pane>
+                eventKey="third"
+                className="p-0 border-0"
+                id="generate-qr-code-tab-pane"
+                role="tabpanel"
+                aria-labelledby="generate-qr-code-tab"
+                tabIndex={0}
+              >
+                <Card className="custom-card shadow-sm">
+                  <Card.Body className="p-4">
+                    <li className="list-group-item p-4">
+                <span className="fw-medium fs-15 d-block mb-3">Two-Factor Authentication</span>
+                <div className="row gy-4 align-items-center">
+                  <Col xl={3}>
+                    <div className="lh-1">
+                      <span className="fw-medium">Switch 2FA:</span>
+                    </div>
+                  </Col>
+                  <Col xl={9}>
+                    <div className="form-check form-switch d-flex align-items-center">
+                      <input
+                        className="form-check-input cursor-pointer"
+                        type="checkbox"
+                        id="featureToggle"
+                        onChange={(e) => {
+                          handleChange()
+                        }}
+                        checked={userData?.is2FAEnabled}
+                      />
+                      <label
+                        className="form-check-label ms-1 mt-1 cursor-pointer"
+                        htmlFor="featureToggle"
+                      >
+                      </label>
+                    </div>
+                  </Col>
+                </div>
+              </li>
+                  </Card.Body>
+                </Card>
+              </Tab.Pane>
             </Tab.Content>
           </Col>
         </Row>

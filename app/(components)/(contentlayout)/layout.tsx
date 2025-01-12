@@ -13,6 +13,7 @@ const Layout = ({ children }: any) => {
   const router = useRouter();
   const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
   const user = useSelector((state:any)=>state.auth.user)
+  console.log("User in here:         ",user)
   const isVerified = user?.is2FAverified
   useEffect(() => {
     if(isAuthenticated == undefined) {
@@ -23,21 +24,21 @@ const Layout = ({ children }: any) => {
     }
 
     if (!isAuthenticated) {
-      console.log('is authenticated here', isAuthenticated)
+
       // Redirect to login page if not authenticated
       router.push("/");
     } else {
       // Allow page to load once auth is confirmed
       setLoading(false);
     }
-    // if (!isVerified) {
+    if (user?.is2FAEnabled&&!isVerified) {
 
-    //   // Redirect to login page if not authenticated
-    //   router.push("/");
-    // } else {
-    //   // Allow page to load once auth is confirmed
-    //   setLoading(false);
-    // }
+      // Redirect to login page if not authenticated
+      router.push("/");
+    } else {
+      // Allow page to load once auth is confirmed
+      setLoading(false);
+    }
   }, [isAuthenticated, router, isVerified]);
   const local_varaiable = useSelector((state: any) => state);
 
