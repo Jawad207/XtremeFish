@@ -64,7 +64,7 @@ const Popup = ({
     const userPayload = {
       userName: userValue?.userName,
       email: userValue?.email,
-      password: userValue?.password,
+      password: userValue?.password ?? '',
     };
     const response = await editProfile(userPayload, dispatch);
     onClose();
@@ -345,6 +345,12 @@ const Popup = ({
                       rows={4}
                       defaultValue={userValue?.bio}
                     ></Form.Control>
+                    <button
+                      onClick={updateUser}
+                      className="text-sm font-semibold px-5 mt-8 py-2 rounded-md bg-[#1c64f2] hover:bg-gradient-to-bl"
+                    >
+                      UpdateUser
+                    </button>
                   </Col>
                 </div>
               </li>
