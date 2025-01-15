@@ -22,6 +22,7 @@ export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
   const [showSetupKey, setShowSetupKey] = useState(false);
   const [showPopUp, setShowPopUp] = useState(false);
+  const [banPopup, setBanPopup] = useState(false)
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const loading = useSelector((state: any) => state.auth.loading);
   const userData = useSelector((state: any) => state.auth.user);
@@ -79,10 +80,12 @@ export default function Home() {
       if (response?.user) {
         console.log('first time in here', response?.user?.role)
         localStorage.setItem("UserRole", JSON.stringify(response?.user?.role));
-        if(response?.user?.is2FAEnabled){
-          setShowPopUp(true)
+        if(response?.user?.is2FAEnabled && !response?.user?.isBanned){
+          setShowPopUp(true);
+        }else if(response?.user?.isBanned){
+          setBanPopup(true);
         }else{
-          RouteChange()
+          RouteChange();
         }
       } else {
         reset();
@@ -172,6 +175,35 @@ export default function Home() {
     <Fragment>
       <html data-theme-mode="dark">
         <body className="authentication-background">
+          {banPopup&&<div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg w-full max-w-xl p-6 relative shadow-lg">
+                  <button
+                    onClick={() => setBanPopup(false)}
+                    className="absolute top-4 right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 h-8 w-8 flex items-center justify-center rounded-full shadow z-50"
+                  >
+                    &times;
+                  </button>
+                  <div
+                    className="p-0 border-0"
+                  >
+                    <Card className="custom-card overflow-hidden">
+                      <div className="text-center mt-4">
+                      Your account has been banned by the administrator  
+                    </div>
+                    <div className="d-flex justify-content-center mt-4 gap-2">
+                      <p className="text-red-400">Reason:</p>
+                      <p>{userData?.banReason}</p>
+                    </div>
+                    
+                    <div className="d-flex justify-content-center">
+  
+                    </div>
+                <div className="verify-token-section py-4 px-5">
+                  </div>
+                    </Card>
+                  </div>
+                </div>
+              </div>}
       {showPopUp?(<div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
               <div className="bg-white rounded-lg w-full max-w-xl p-6 relative shadow-lg">
                   <button

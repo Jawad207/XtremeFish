@@ -34,7 +34,9 @@ const userSchema = new mongoose.Schema(
     is2FAEnabled:{type: Boolean, default:false},
     twoFactorSecret:{ type:String, default:null},
     is2FAverified:{type: Boolean, default:false},
-    subscription: {type: Object, default: {}}
+    subscription: {type: Object, default: {}},
+    isBanned:{type:Boolean, default:false},
+    banReason:{type:String, default:""},
   },
   { timestamps: true }
 );

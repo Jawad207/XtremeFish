@@ -13,5 +13,6 @@ router.post("/reset-password", auth.resetPassword)
 router.post("/edit-profile", auth.editProfile)
 router.get("/get-global-user", auth.getGlobalUser)
 router.delete("/delete-user", auth.deleteUser)
+router.post("/ban-user",auth.banUser)
 
 export default router;

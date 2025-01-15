@@ -65,6 +65,14 @@ export const MenuItems: any = [
         dirchange: false,
         title: "High Scores",
       },
+      {
+        path: "/dashboards/redeem-codes",
+        type: "link",
+        active: false,
+        selected: false,
+        dirchange: false,
+        title: "Redeem Codes",
+      },
     ],
   },
 

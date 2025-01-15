@@ -301,7 +301,9 @@ const editProfile = async (req, res) => {
       is2FAEnabled,
       twoFactorSecret,
       is2FAverified,
-      subscription
+      subscription,
+      isBanned,
+      banReason,
     } = req.body;
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
@@ -346,6 +348,16 @@ const editProfile = async (req, res) => {
     // Update 2FA status
     if (typeof is2FAEnabled !== "undefined") {
       user.is2FAEnabled = is2FAEnabled;
+    }
+
+    if (typeof isBanned !== "undefined") {
+      user.isBanned = isBanned;
+    }
+
+    if(banReason){
+      user.banReason=banReason;
+    }else{
+      user.banReason="";
     }
 
     // Update the twoFactor secret if provided
@@ -434,6 +446,39 @@ const deleteUser = async (req, res) => {
     });
   }
 };
+
+const banUser = async (req, res) => {
+  try {
+    const { userId, isBanned, banReason } = req.body;
+    // console.log("userId for ban:  ", userId)
+    // console.log("banReason for ban:  ", banReason)
+    // console.log("IsBanned for ban:  ", isBanned)
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required." });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    if(typeof isBanned !== "undefined"){
+      user.isBanned=isBanned;
+    }
+    if(banReason){
+      user.banReason = banReason;
+    }else{
+      user.banReason = "No reason provided";
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: "User has been banned successfully.", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error banning user.", error });
+  }
+};
 // Parent auth function
 export const auth = {
   SignUp,
@@ -444,4 +489,5 @@ export const auth = {
   editProfile,
   getGlobalUser,
   deleteUser,
+  banUser,
 };

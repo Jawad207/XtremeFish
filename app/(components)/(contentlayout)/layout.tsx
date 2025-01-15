@@ -15,11 +15,15 @@ const Layout = ({ children }: any) => {
   const user = useSelector((state:any)=>state.auth.user)
   console.log("User in here:         ",user)
   const isVerified = user?.is2FAverified
+  const isBanned = user?.isBanned
   useEffect(() => {
     if(isAuthenticated == undefined) {
       console.log('still figuring out')
     }
     if(isVerified == undefined) {
+      console.log('still figuring out')
+    }
+    if(isBanned == undefined) {
       console.log('still figuring out')
     }
 
@@ -37,6 +41,11 @@ const Layout = ({ children }: any) => {
       router.push("/");
     } else {
       // Allow page to load once auth is confirmed
+      setLoading(false);
+    }
+    if(isBanned){
+      router.push("/");
+    }else{
       setLoading(false);
     }
   }, [isAuthenticated, router, isVerified]);

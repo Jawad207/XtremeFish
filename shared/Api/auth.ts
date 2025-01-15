@@ -253,3 +253,16 @@ export const getGlobalUser = async (data: any, dispatch: any) => {
     }
   }
 };
+
+export const banUser = async (data:any) => {
+  // console.log("data::::::::      ",data)
+  try {
+    const response = await apiClient.post("/auth/ban-user", { userId:data.userId, isBanned:data.isBanned, banReason:data.banReason }, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    return { status: response.status, data: response.data };
+  } catch (error:any) {
+    console.error("Error banning user:", error.response?.data || error.message);
+    throw error;
+  }
+};
