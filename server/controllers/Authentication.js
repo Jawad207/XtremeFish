@@ -289,16 +289,22 @@ const resetPassword = async (req, res) => {
 
 const editProfile = async (req, res) => {
   try {
-    const { email, password, userName, bio, coverImage, profileImage, role, skipPages } =
-      req.body;
-      // console.log("email", email);
-      // console.log("password", password);
-      // console.log("userName", userName);
-      // console.log("bio", bio);
-      // console.log("coverImage", coverImage);
-      // console.log("profileImage", profileImage);
-      // console.log("role", role);
-      // console.log("skipPages", skipPages);
+    const {
+      email,
+      password,
+      userName,
+      bio,
+      coverImage,
+      profileImage,
+      role,
+      skipPages,
+      is2FAEnabled,
+      twoFactorSecret,
+      is2FAverified,
+      subscription,
+      isBanned,
+      banReason,
+    } = req.body;
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
@@ -312,15 +318,15 @@ const editProfile = async (req, res) => {
     }
 
     if (password && password !== user.password) {
-      user.password = await bcrypt.hash(password, 10); // Update only if changed
+      user.password = await bcrypt.hash(password, 10); // Update password if changed
     }
 
     if (userName) {
-      user.userName = userName; // Update the username
+      user.userName = userName;
     }
 
     if (bio) {
-      user.bio = bio; // Update the bio
+      user.bio = bio;
     }
 
     if (coverImage) {
@@ -330,16 +336,45 @@ const editProfile = async (req, res) => {
     if (profileImage) {
       user.profileImage = profileImage;
     }
+
     if (role) {
       user.role = role;
     }
-    // console.log("skipPages", skipPages);
-    if(skipPages){
+
+    if (skipPages) {
       user.skipPages = skipPages;
+    }
+
+    // Update 2FA status
+    if (typeof is2FAEnabled !== "undefined") {
+      user.is2FAEnabled = is2FAEnabled;
+    }
+
+    if (typeof isBanned !== "undefined") {
+      user.isBanned = isBanned;
+    }
+
+    if(banReason){
+      user.banReason=banReason;
+    }else{
+      user.banReason="";
+    }
+
+    // Update the twoFactor secret if provided
+    if (twoFactorSecret) {
+      user.twoFactorSecret = twoFactorSecret; // Save the twoFactor secret in the setupKey field
+    }
+
+    if (typeof is2FAverified !== "undefined") {
+      user.is2FAverified = is2FAverified;
+    }
+    if(subscription && Object.keys(subscription).length) {
+      user.subscription = subscription
     }
 
     // Save the updated user
     const updatedUser = await user.save();
+
     // Generate token
     const token = generateToken(updatedUser._id);
 
@@ -411,6 +446,39 @@ const deleteUser = async (req, res) => {
     });
   }
 };
+
+const banUser = async (req, res) => {
+  try {
+    const { userId, isBanned, banReason } = req.body;
+    // console.log("userId for ban:  ", userId)
+    // console.log("banReason for ban:  ", banReason)
+    // console.log("IsBanned for ban:  ", isBanned)
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required." });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    if(typeof isBanned !== "undefined"){
+      user.isBanned=isBanned;
+    }
+    if(banReason){
+      user.banReason = banReason;
+    }else{
+      user.banReason = "No reason provided";
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: "User has been banned successfully.", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error banning user.", error });
+  }
+};
 // Parent auth function
 export const auth = {
   SignUp,
@@ -421,4 +489,5 @@ export const auth = {
   editProfile,
   getGlobalUser,
   deleteUser,
+  banUser,
 };

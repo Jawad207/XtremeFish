@@ -1,13 +1,14 @@
 "use client";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
-import { Card, Col, Row, Pagination } from "react-bootstrap";
+import { Card, Col, Row, Pagination, Button } from "react-bootstrap";
 import { SquarePlus, Trash2, Pencil } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
+import { FaSpinner } from "react-icons/fa";
 
 import Popup from "@/components/Popup";
-import { deleteProfile, getGlobalUser } from "@/shared/Api/auth";
+import { deleteProfile, editProfile, getGlobalUser, banUser } from "@/shared/Api/auth";
 
 function page() {
   
@@ -15,14 +16,18 @@ function page() {
   const allUsers = useSelector((state: any) => state.auth.allUsers);
   console.log("allUsers: ",allUsers);
   const allUsersCount = useSelector((state: any) => state.auth.allUsersCount);
-
-
+  const loading = useSelector((state: any) => state.auth.loading);
+  const [showPopup, setShowPopup] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [updateId, setUpdate] = useState("");
+  const [error, setError] = useState("");
+  const [reasonValue, setReasonValue] = useState("");
   const [postPopup, setPostPopup] = useState(true);
-  const [userValue, setUserValue] = useState({})
+  const [userValue, setUserValue] = useState({});
+  const [userForBan, setUserForBan] = useState({});
+  console.log("user for ban:      ",userForBan)
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
 
@@ -52,10 +57,94 @@ function page() {
     handleOpenPopup();
   };
 
+  const handleReasonValue = (e:any) => {
+    setReasonValue(e.target.value);
+  };
+
+  const handleSubmit = async (user:any) => {
+    const response = await banUser({
+      userId: user?._id,
+      banReason: reasonValue,
+      isBanned: true,
+    });
+    // console.log(response.status)
+      if(response?.status===200){
+        setShowPopup(false);
+        window.location.reload();
+      }
+  };
+
+  const handleUnban = async (user:any) => {
+    // console.log("user for unban:          ",user)
+    const response = await banUser({
+      userId: user?._id,
+      isBanned: false, // Set `isBanned` to false for unbanning
+      banReason: "", // Clear the ban reason
+    });
+    // console.log("response:     ",response.status)
+    if(response?.status===200){
+      window.location.reload();
+    }
+  }
+
 
 
   return (
     <Fragment>
+      {showPopup&&<div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center  z-50">
+              <div className="bg-white rounded-lg w-full max-w-xl p-6 relative shadow-lg">
+                  <button
+                    onClick={() => setShowPopup(false)}
+                    className="absolute top-4 right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 h-8 w-8 flex items-center justify-center rounded-full shadow z-50"
+                  >
+                    &times;
+                  </button>
+                  <div
+                    className="p-0 border-0"
+                  >
+                    <Card className="custom-card overflow-hidden">
+                <div className="verify-token-section py-4 px-5">
+                    <form>
+                      <div className="mb-3">
+                        <label htmlFor="banReason">Enter ban reason</label>
+                        <input
+                          type="text"
+                          id="banReason"
+                          className="form-control"
+                          value={reasonValue}
+                          onChange={handleReasonValue}
+                          placeholder="Enter ban reason"
+                        />
+                      </div>
+                      {error && (
+                        <p className="text-danger text-center mb-4">{error}</p>
+                      )}
+                      <div className="d-flex justify-content-center">
+                        {loading?(<button
+                          className="btn btn-primary"
+                          type="button"
+                          disabled
+                        >
+                          <FaSpinner className="spinner-border spinner-border-sm" />{" "}
+                          loading...
+                        </button>):
+                        (<button
+                          type="button"
+                          className="btn btn-success w-auto"
+                          onClick={()=>{
+                            handleSubmit(userForBan)
+                          }}
+                        >
+                          Submit
+                        </button>
+                        )}
+                      </div>
+                    </form>
+                  </div>
+                    </Card>
+                  </div>
+                </div>
+              </div>}
       <Seo title={"user-management"} />
       <Row>
         <Col xl={12}>
@@ -94,6 +183,7 @@ function page() {
                     {/* <th>Password</th> */}
                     <th>Date</th>
                     <th>Actions</th>
+                    <th>Ban User</th>
                   </thead>
                   <tbody>
                   {allUsers?.slice()
@@ -103,7 +193,10 @@ function page() {
                           new Date(a.createdAt).getTime()
                         )
                       .map((user: any) => (
-                        <tr  style={{ color: user.role === 'admin' ? 'blue' : 'inherit' }} key={user._id}>
+                        <tr
+                          key={user._id}
+                          className={user.role === 'admin' ? 'text-blue-500' : ''}
+                        >
                           <td>
                             <img
                               src={
@@ -139,6 +232,25 @@ function page() {
                               </button>
                             </div>
                           </td>
+                          <td>
+  {user?.role === "basic" && (
+    <Button
+      className={`w-20 ${
+        user?.isBanned ? "btn-success text-white" : "bg-blue-500 text-white"
+      } py-2 rounded`}
+      onClick={() => {
+        if (user?.isBanned) {
+          handleUnban(user);
+        } else {
+          setShowPopup(true);
+          setUserForBan(user);
+        }
+      }}
+    >
+      {user?.isBanned ? "Unban" : "Ban"}
+    </Button>
+  )}
+</td>
                         </tr>
                       ))}
                   </tbody>

@@ -7,13 +7,14 @@ import React, { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
 import { Camera } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { Card, Col, Form, Nav, Row, Tab } from "react-bootstrap";
+import { Card, Col, Form, Nav, Row, Tab, Button } from "react-bootstrap";
 import { FaSpinner } from "react-icons/fa";
 import { editProfile } from "@/shared/Api/auth";
 import Success from "@/components/SuccessPop";
 import { storage } from "@/shared/Api/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
+import { userAgent } from "next/server";
 const EditProfile = () => {
   const dispatch = useDispatch();
   const [password, setPassword] = useState<any>("");
@@ -22,7 +23,6 @@ const EditProfile = () => {
   const loading = useSelector((state: any) => state.auth.loading);
   const [error, setError] = useState("");
   const userData = useSelector((state: any) => state?.auth?.user);
-
   const [profileImage, setProfileImage] = useState(
     userData?.profileImage ??
       "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
@@ -72,6 +72,19 @@ const EditProfile = () => {
     }
   };
 
+  const handleChange = async() => {
+    if(userData?.is2FAEnabled){
+      await editProfile({
+        ...userData,
+        is2FAEnabled:false
+      },dispatch)
+    }else{
+      await editProfile({
+        ...userData,
+        is2FAEnabled:true
+      },dispatch)
+    }
+  }
   const handleUpdate = async (pass?: boolean) => {
     let boolError = false;
     if (pass) {
@@ -208,6 +221,21 @@ const EditProfile = () => {
                       aria-selected="true"
                     >
                       Change Password
+                    </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item role="presentation">
+                    <Nav.Link
+                      eventKey="third"
+                      className=""
+                      id="edit-profile-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#edit-profile-tab-pane"
+                      type="button"
+                      role="tab"
+                      aria-controls="edit-profile-tab-pane"
+                      aria-selected="true"
+                    >
+                      Two-Factor Authentication
                     </Nav.Link>
                   </Nav.Item>
                 </Nav>
@@ -437,6 +465,47 @@ const EditProfile = () => {
                         )}
                       </div>
                     </div>
+                  </Card.Body>
+                </Card>
+              </Tab.Pane>
+              <Tab.Pane
+                eventKey="third"
+                className="p-0 border-0"
+                id="generate-qr-code-tab-pane"
+                role="tabpanel"
+                aria-labelledby="generate-qr-code-tab"
+                tabIndex={0}
+              >
+                <Card className="custom-card shadow-sm">
+                  <Card.Body className="p-4">
+                    <li className="list-group-item p-4">
+                <span className="fw-medium fs-15 d-block mb-3">Two-Factor Authentication</span>
+                <div className="row gy-4 align-items-center">
+                  <Col xl={3}>
+                    <div className="lh-1">
+                      <span className="fw-medium">Switch 2FA:</span>
+                    </div>
+                  </Col>
+                  <Col xl={9}>
+                    <div className="form-check form-switch d-flex align-items-center">
+                      <input
+                        className="form-check-input cursor-pointer"
+                        type="checkbox"
+                        id="featureToggle"
+                        onChange={(e) => {
+                          handleChange()
+                        }}
+                        checked={userData?.is2FAEnabled}
+                      />
+                      <label
+                        className="form-check-label ms-1 mt-1 cursor-pointer"
+                        htmlFor="featureToggle"
+                      >
+                      </label>
+                    </div>
+                  </Col>
+                </div>
+              </li>
                   </Card.Body>
                 </Card>
               </Tab.Pane>

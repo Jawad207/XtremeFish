@@ -145,7 +145,7 @@ const Home = () => {
     <Fragment>
       <Seo title={"home"} />
       {/*  Start::page-header */}
-      <div className="d-flex align-items-center justify-content-between my-4 page-header-breadcrumb flex-wrap gap-2">
+      <div className="d-flex align-items-center justify-content-between my-4 page-header-breadcrumb flex-wrap gap-2 dark">
         <div>
           <p className="fw-medium fs-20 mb-0">{`Hello there, ${userName}`}</p>
           <p className="fs-13 text-muted mb-0">

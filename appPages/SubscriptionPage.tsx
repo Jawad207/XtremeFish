@@ -2,12 +2,61 @@
 import Pageheader from "@/shared/layout-components/page-header/pageheader";
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useState } from "react";
-import { Button, Col, Nav, Row, Tab } from "react-bootstrap";
+import { Button, Col, Nav, Row, Tab, Form, Card } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { editProfile } from "@/shared/Api/auth";
+import moment from "moment";
+import { FaSpinner } from "react-icons/fa";
+import Success from "@/components/SuccessPop";
 
 const SubscriptionPage = () => {
-    const [selectedPlan, setSelectedPlan] = useState('Basic')
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const auth = useSelector((state: any) => state.auth);
+  const [loading, setLoading] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(
+    auth?.user?.subscription?.type ?? "Basic"
+  );
+
+  const updateSubscription = async (type: any, duration: any) => {
+    let expireDate;
+    let currentDate = new Date();
+
+    expireDate = new Date(currentDate);
+
+    expireDate.setMonth(currentDate.getMonth() + duration);
+    const payload = {
+      startDate: currentDate,
+      expireDate,
+      type,
+      duration,
+      active: true,
+    };
+    setLoading(type);
+    const profile = await editProfile(
+      { ...auth?.user, subscription: payload },
+      dispatch
+    );
+    if (profile?.status == 200) {
+      setOpen(true);
+      setTimeout(() => {
+        setOpen(false)
+      }, 2000);
+      setLoading(null);
+    }
+  };
+
+  const handleRedeemCode = ()=> {
+
+  }
+
   return (
     <Fragment>
+      <Success
+        isOpen={open}
+        title={"🎉 Congratulations!"}
+        description={"Your subscription has been activated successfully. Enjoy exclusive features and benefits!"}
+      />
       {/* Page Header */}
       <Seo title={"Subscription"} />
       <Pageheader
@@ -23,7 +72,12 @@ const SubscriptionPage = () => {
       {/* Start:: row-1 */}
       <div className="row d-flex align-items-center justify-content-center mb-5">
         <Col lg={8} xl={4} xxl={4} md={8} sm={12} className="">
-          <div className={`card custom-card pricing-card cursor-pointer ${selectedPlan == 'Basic' ? 'hover' : ''}`} onClick={() => setSelectedPlan('Basic')}>
+          <div
+            className={`card custom-card pricing-card cursor-pointer ${
+              selectedPlan == "Basic" ? "hover" : ""
+            }`}
+            onClick={() => setSelectedPlan("Basic")}
+          >
             <div className="card-body p-5">
               <div className="text-center">
                 <h4 className="fw-medium mb-1">Basic</h4>
@@ -31,7 +85,7 @@ const SubscriptionPage = () => {
                   Essential features for a magical start
                 </span>
                 <h2 className="mb-0 fw-bold d-block text-gradient">
-                  $9.99/
+                  $35/
                   <span className="fs-12 text-default fw-medium ms-1">
                     Price Per Month
                   </span>
@@ -45,10 +99,7 @@ const SubscriptionPage = () => {
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
                     <span className="ms-2 my-auto flex-fill">
-                      Unicorn Support
-                    </span>
-                    <span className="badge bg-secondary rounded-pill">
-                      Email
+                      Unlimited Support
                     </span>
                   </div>
                 </li>
@@ -57,9 +108,7 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto">
-                      Teleportation Technology
-                    </span>
+                    <span className="ms-2 my-auto">Always Updated Links</span>
                   </div>
                 </li>
                 <li>
@@ -68,11 +117,11 @@ const SubscriptionPage = () => {
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
                     <span className="ms-2 my-auto flex-fill">
-                      Gravity-Defying Speed
+                      Database lookup
                     </span>
                     <span className="badge bg-light text-default rounded-pill border">
                       <i className="ri-flashlight-fill text-warning me-1"></i>
-                      Standard
+                      coming soon
                     </span>
                   </div>
                 </li>
@@ -81,7 +130,7 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto">Quantum Leap Security</span>
+                    <span className="ms-2 my-auto">Subscriber rank</span>
                   </div>
                 </li>
                 <li>
@@ -89,7 +138,7 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto">Infinite Updates</span>
+                    <span className="ms-2 my-auto">Instant Support</span>
                   </div>
                 </li>
                 <li>
@@ -97,8 +146,10 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto flex-fill">Free Trial</span>
-                    <span className="text-muted fs-12 fw-medium">7 Days</span>
+                    <span className="ms-2 my-auto flex-fill">Url Shortner</span>
+                    <span className="text-muted fs-12 fw-medium">
+                      Coming Soon
+                    </span>
                   </div>
                 </li>
                 <li>
@@ -106,26 +157,41 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto flex-fill">
-                      Money-Back Guarantee
+                    <span className="ms-2 my-auto flex-fill">Mailer tool</span>
+                    <span className="text-muted fs-12 fw-medium">
+                      Coming Soon
                     </span>
-                    <span className="text-muted fs-12 fw-medium">30 Days</span>
                   </div>
                 </li>
               </ul>
               <hr className="border-top my-4" />
+
               <Button
                 variant=""
                 type="button"
                 className="btn btn-lg btn-outline-primary d-grid w-100 btn-wave"
+                onClick={() => updateSubscription("basic", 1)}
               >
-                <span className="ms-4 me-4">Start Today</span>
+                {loading == "basic" ? (
+                  <span className="ms-4 me-4">
+                    {" "}
+                    <FaSpinner className="spinner-border spinner-border-sm" />{" "}
+                    Loading...
+                  </span>
+                ) : (
+                  <span className="ms-4 me-4">Start Today</span>
+                )}
               </Button>
             </div>
           </div>
         </Col>
         <Col lg={8} xl={4} xxl={4} md={8} sm={12} className="">
-          <div className={`card custom-card pricing-card cursor-pointer ${selectedPlan == 'Pro' ? 'hover' : ''}`} onClick={() => setSelectedPlan('Pro')}>
+          <div
+            className={`card custom-card pricing-card cursor-pointer ${
+              selectedPlan == "Pro" ? "hover" : ""
+            }`}
+            onClick={() => setSelectedPlan("Pro")}
+          >
             <div className="card-body p-5">
               <div className="ribbon-2 ribbon-primary ribbon-right">
                 Best Plan
@@ -136,9 +202,9 @@ const SubscriptionPage = () => {
                   Next-level tools for advanced users
                 </span>
                 <h2 className="mb-0 fw-bold d-block text-gradient">
-                  $19.99/
+                  $80/
                   <span className="fs-12 text-default fw-medium ms-1">
-                    Price Per Month
+                    Price for 3 months
                   </span>
                 </h2>
               </div>
@@ -150,10 +216,7 @@ const SubscriptionPage = () => {
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
                     <span className="ms-2 my-auto flex-fill">
-                      Unicorn Support
-                    </span>
-                    <span className="badge bg-success rounded-pill">
-                      Live Chat
+                      Unlimited Support
                     </span>
                   </div>
                 </li>
@@ -162,9 +225,7 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto">
-                      Teleportation Technology
-                    </span>
+                    <span className="ms-2 my-auto">Always Updated Links</span>
                   </div>
                 </li>
                 <li>
@@ -173,11 +234,11 @@ const SubscriptionPage = () => {
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
                     <span className="ms-2 my-auto flex-fill">
-                      Gravity-Defying Speed
+                      Database lookup
                     </span>
                     <span className="badge bg-light text-default rounded-pill border">
                       <i className="ri-flashlight-fill text-warning me-1"></i>
-                      Turbo
+                      coming soon
                     </span>
                   </div>
                 </li>
@@ -186,7 +247,7 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto">Quantum Leap Security</span>
+                    <span className="ms-2 my-auto">Subscriber rank</span>
                   </div>
                 </li>
                 <li>
@@ -194,7 +255,7 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto">Infinite Updates</span>
+                    <span className="ms-2 my-auto">Instant Support</span>
                   </div>
                 </li>
                 <li>
@@ -202,8 +263,10 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto flex-fill">Free Trial</span>
-                    <span className="text-muted fs-12 fw-medium">14 Days</span>
+                    <span className="ms-2 my-auto flex-fill">Url Shortner</span>
+                    <span className="text-muted fs-12 fw-medium">
+                      Coming Soon
+                    </span>
                   </div>
                 </li>
                 <li>
@@ -211,10 +274,10 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto flex-fill">
-                      Money-Back Guarantee
+                    <span className="ms-2 my-auto flex-fill">Mailer tool</span>
+                    <span className="text-muted fs-12 fw-medium">
+                      Coming Soon
                     </span>
-                    <span className="text-muted fs-12 fw-medium">60 Days</span>
                   </div>
                 </li>
               </ul>
@@ -223,14 +286,28 @@ const SubscriptionPage = () => {
                 variant=""
                 type="button"
                 className="btn btn-lg btn-primary-gradient d-grid w-100 btn-wave"
+                onClick={() => updateSubscription("pro", 3)}
               >
-                <span className="ms-4 me-4">Start Today</span>
+                {loading == "pro" ? (
+                  <span className="ms-4 me-4">
+                    {" "}
+                    <FaSpinner className="spinner-border spinner-border-sm" />{" "}
+                    Loading...
+                  </span>
+                ) : (
+                  <span className="ms-4 me-4">Start Today</span>
+                )}
               </Button>
             </div>
           </div>
         </Col>
         <Col lg={8} xl={4} xxl={4} md={8} sm={12} className="">
-          <div className={`card custom-card pricing-card cursor-pointer ${selectedPlan == 'Premium' ? 'hover' : ''}`} onClick={() => setSelectedPlan('Premium')}>
+          <div
+            className={`card custom-card pricing-card cursor-pointer ${
+              selectedPlan == "Premium" ? "hover" : ""
+            }`}
+            onClick={() => setSelectedPlan("Premium")}
+          >
             <div className="card-body p-5">
               <div className="text-center">
                 <h4 className="fw-medium mb-1">Premium</h4>
@@ -238,9 +315,9 @@ const SubscriptionPage = () => {
                   Pinnacle excellence, VIP support.
                 </span>
                 <h2 className="mb-0 fw-bold d-block text-gradient">
-                  $29.99/
+                  $125/
                   <span className="fs-12 text-default fw-medium ms-1">
-                    Price Per Month
+                    Price for 6 months
                   </span>
                 </h2>
               </div>
@@ -252,10 +329,7 @@ const SubscriptionPage = () => {
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
                     <span className="ms-2 my-auto flex-fill">
-                      Unicorn Support
-                    </span>
-                    <span className="badge bg-orange rounded-pill">
-                      24/7 Support
+                      Unlimited Support
                     </span>
                   </div>
                 </li>
@@ -264,9 +338,7 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto">
-                      Teleportation Technology
-                    </span>
+                    <span className="ms-2 my-auto">Always Updated Links</span>
                   </div>
                 </li>
                 <li>
@@ -275,11 +347,11 @@ const SubscriptionPage = () => {
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
                     <span className="ms-2 my-auto flex-fill">
-                      Gravity-Defying Speed
+                      Database lookup
                     </span>
                     <span className="badge bg-light text-default rounded-pill border">
                       <i className="ri-flashlight-fill text-warning me-1"></i>
-                      Quantum
+                      coming soon
                     </span>
                   </div>
                 </li>
@@ -288,7 +360,7 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto">Quantum Leap Security</span>
+                    <span className="ms-2 my-auto">Subscriber rank</span>
                   </div>
                 </li>
                 <li>
@@ -296,7 +368,7 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto">Infinite Updates</span>
+                    <span className="ms-2 my-auto">Instant Support</span>
                   </div>
                 </li>
                 <li>
@@ -304,8 +376,10 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto flex-fill">Free Trial</span>
-                    <span className="text-muted fs-12 fw-medium">30 Days</span>
+                    <span className="ms-2 my-auto flex-fill">Url Shortner</span>
+                    <span className="text-muted fs-12 fw-medium">
+                      Coming Soon
+                    </span>
                   </div>
                 </li>
                 <li>
@@ -313,10 +387,10 @@ const SubscriptionPage = () => {
                     <span className="avatar avatar-xs svg-success">
                       <i className="ti ti-check text-success fs-18"></i>
                     </span>
-                    <span className="ms-2 my-auto flex-fill">
-                      Money-Back Guarantee
+                    <span className="ms-2 my-auto flex-fill">Mailer tool</span>
+                    <span className="text-muted fs-12 fw-medium">
+                      Coming Soon
                     </span>
-                    <span className="text-muted fs-12 fw-medium">90 Days</span>
                   </div>
                 </li>
               </ul>
@@ -325,17 +399,62 @@ const SubscriptionPage = () => {
                 variant=""
                 type="button"
                 className="btn btn-lg btn-outline-primary d-grid w-100 btn-wave"
+                onClick={() => updateSubscription("premium", 6)}
               >
-                <span className="ms-4 me-4">Start Today</span>
+                {loading == "premium" ? (
+                  <span className="ms-4 me-4">
+                    {" "}
+                    <FaSpinner className="spinner-border spinner-border-sm" />{" "}
+                    Loading...
+                  </span>
+                ) : (
+                  <span className="ms-4 me-4">Start Today</span>
+                )}
               </Button>
             </div>
           </div>
         </Col>
       </div>
+      <div
+        className="p-0 border-0"
+      >
+        <Card className="custom-card shadow-sm">
+          <Card.Body className="p-4">
+            <li className="list-group-item p-4 my-3">
+              <span className="fw-bold fs-16 d-block mb-4">
+                Redeem Your Code
+              </span>
+              <div className="row gy-3 align-items-center">
+                <Col xl={8} lg={8} md={8} sm={12}>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter your redeem code"
+                    id="redeemCode"
+                  />
+                </Col>
+                <Col xl={4} lg={4} md={4} sm={12}>
+                  <button
+                    type="button"
+                    className="btn btn-primary w-100"
+                    onClick={() => handleRedeemCode()}
+                  >
+                    Submit
+                  </button>
+                </Col>
+              </div>
+            </li>
+            <div className="flex gap-2 py-2">
+              <p>Your redeem code is:</p>
+              <p>896757</p>
+            </div>
+          </Card.Body>
+        </Card>
+      </div>
       {/* End:: row-1 */}
 
       {/* Start:: row-3 */}
-      <Row>
+      {/* <Row>
         <Col xl={12}>
           <Tab.Container defaultActiveKey="first">
             <div className="text-center my-5">
@@ -1042,7 +1161,7 @@ const SubscriptionPage = () => {
             </Tab.Content>
           </Tab.Container>
         </Col>
-      </Row>
+      </Row> */}
       {/* End:: row-3 */}
     </Fragment>
   );

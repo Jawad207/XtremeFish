@@ -20,6 +20,7 @@ import {
   getNotifications,
   ThemeChanger,
 } from "@/shared/Api/dashboard";
+import { editProfile } from "@/shared/Api/auth";
 const Header = ({ local_varaiable }: any) => {
   const dispatch = useDispatch();
   let { basePath } = nextConfig;
@@ -297,7 +298,11 @@ const Header = ({ local_varaiable }: any) => {
   };
 
   // Toggle Dark
-  const logOut = () => {
+  const logOut = async() => {
+    const response = await editProfile({
+      ...user,
+      is2FAverified:false
+    },dispatch)
     dispatch({ type: LOGOUT });
   };
   // End Toggle Dark

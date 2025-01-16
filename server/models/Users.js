@@ -1,6 +1,17 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
+
+//subscription will be object
+// {
+//   startDate,
+//   expireDate,
+//   duration,
+//   type, //basic pro premium
+//   active,
+//   need suggestion
+// }
+
 const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: false, unique: false, sparse: true },
@@ -20,6 +31,12 @@ const userSchema = new mongoose.Schema(
     location: { type: Object },
     lastLogin: {type : Date, default: Date.now()},
     skipPages: { type: Array, default: []},
+    is2FAEnabled:{type: Boolean, default:false},
+    twoFactorSecret:{ type:String, default:null},
+    is2FAverified:{type: Boolean, default:false},
+    subscription: {type: Object, default: {}},
+    isBanned:{type:Boolean, default:false},
+    banReason:{type:String, default:""},
   },
   { timestamps: true }
 );
