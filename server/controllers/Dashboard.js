@@ -4,11 +4,13 @@ import Post from "../models/Post.js";
 import Review from "../models/Review.js";
 import Account from "../models/Account.js";
 import Notification from "../models/Notification.js";
-import { getCountryFromIp } from "../helper/index.js";
+import Subscription from "../models/Subscription.js";
+import SubscriptionHistory from "../models/SubscriptionHistory.js";
 import bcrypt from "bcryptjs";
 import Url from "../models/Url.js";
 import IpBlock from "../models/IpBlock.js";
 import moment from "moment";
+import mongoose from "mongoose";
 
 const getAllUser = async (req, res) => {
   try {
@@ -357,9 +359,9 @@ const setAuthCode = async (req, res) => {
     // Save changes
     await account.save();
     const user = await User.findById(userId);
-    if(!user){
+    if (!user) {
       return res.status(400).json({ error: "User not found" });
-    }else{
+    } else {
       // Create and save notification for the specific user
       const notification = new Notification({
         message: "You received a new log",
@@ -807,6 +809,188 @@ const getTopUsersWithMostAccounts = async (req, res) => {
     throw error;
   }
 };
+const createSubscription = async (req, res) => {
+  // in all functions need to get the user data as well
+
+  try {
+    const { type, createdBy, duration, amount, redeemCode } = req.body;
+
+    // Validate mandatory fields
+    if (!type || !duration || !amount) {
+      return res.status(400).json({
+        message: "missing Payload",
+      });
+    }
+
+    if (type == "redeem" && !redeemCode) {
+      return res.status(400).json({
+        message: "redeemCode is missing",
+      });
+    }
+    // Create a new subscription
+    const newSubscription = new Subscription({
+      type,
+      createdBy: new mongoose.Types.ObjectId(createdBy) || null,
+      duration,
+      amount,
+      redeemCode: redeemCode || null, // Optional, default to null if not provided
+    });
+
+    // Save the subscription to the database
+    const savedSubscription = await newSubscription.save();
+
+    return res.status(201).json({
+      message: "Subscription created successfully.",
+      subscription: savedSubscription,
+    });
+  } catch (error) {
+    console.error("Error creating subscription:", error);
+    res.status(500).json({ message: "Internal server error.", error });
+  }
+};
+
+const getSubscriptions = async (req, res) => {
+  try {
+    const subscriptions = await Subscription.find().populate({
+      path: "createdBy",
+      select: "userName profileImage role",
+    });
+    9;
+
+    // Return the result
+    res.status(200).json({
+      message: "Subscriptions fetched successfully.",
+      subscriptions,
+    });
+  } catch (error) {
+    console.error("Error fetching subscriptions:", error);
+    res.status(500).json({ message: "Internal server error.", error });
+  }
+};
+
+const createSubscriptionHistory = async (req, res) => {
+  try {
+    const { userId, subscriptionId, startDate, expireDate, active, redeem } =
+      req.body;
+
+    // Check if the user already has an active subscription
+    const existingSubscription = await SubscriptionHistory.findOne({
+      userId,
+      active: true, // Check for active subscriptions
+    });
+
+    if (existingSubscription) {
+      return res.status(400).json({
+        message: `You already have an active subscription which will end on ${existingSubscription.expireDate}.`,
+      });
+    }
+
+    // Create a new subscription history record
+    const newSubscriptionHistory = new SubscriptionHistory({
+      userId,
+      subscriptionId,
+      startDate: startDate || Date.now(),
+      expireDate: expireDate || Date.now(),
+      active: active ?? false,
+      redeem: redeem ?? true,
+    });
+
+    // Save to the database
+    const savedSubscriptionHistory = await newSubscriptionHistory.save();
+
+    return res.status(201).json({
+      message: "Subscription history created successfully.",
+      subscriptionHistory: savedSubscriptionHistory,
+    });
+  } catch (error) {
+    console.error("Error creating subscription history:", error);
+    res.status(500).json({ message: "Internal server error.", error });
+  }
+};
+const getSubscriptionsHistoryForAdmin = async (req, res) => {
+  try {
+    const { adminId } = req.query;
+    console.log
+    // Aggregation pipeline
+    const subscriptionHistories = await SubscriptionHistory.aggregate([
+      // Step 1: Lookup Subscriptions created by the admin
+      {
+        $lookup: {
+          from: "subscriptions", // Collection name for Subscription
+          localField: "subscriptionId",
+          foreignField: "_id",
+          as: "subscriptionDetails",
+        },
+      },
+      // Step 2: Match subscriptions created by the admin
+      {
+        $match: {
+          "subscriptionDetails.createdBy": new mongoose.Types.ObjectId(adminId),
+        },
+      },
+      // Step 3: Unwind subscriptionDetails array (optional for clarity)
+      {
+        $unwind: "$subscriptionDetails",
+      },
+      // Step 4: Project necessary fields
+      {
+        $project: {
+          _id: 1,
+          type: 1,
+          userId: 1,
+          subscriptionId: 1,
+          startDate: 1,
+          expireDate: 1,
+          active: 1,
+          redeem: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          "subscriptionDetails.type": 1, // Include specific fields from Subscription if needed
+          "subscriptionDetails.createdBy": 1,
+        },
+      },
+    ]);
+
+    if (!subscriptionHistories.length) {
+      return res.status(404).json({
+        message: "No subscription history found for this admin.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Subscription history fetched successfully.",
+      subscriptionHistories,
+    });
+  } catch (error) {
+    console.error("Error fetching admin subscription history:", error);
+    res.status(500).json({ message: "Internal server error.", error });
+  }
+};
+const getMySubscriptionsHistory = async (req, res) => {
+  try {
+    const { userId } = req.query;
+    if (!userId) {
+      return res.status(404).json({
+        message: "User id is required.",
+      });
+    }
+    const mySubscriptionHistories = await SubscriptionHistory.find({ userId });
+
+    if (!mySubscriptionHistories.length) {
+      return res.status(404).json({
+        message: "No subscription history found for this user.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Subscription history fetched successfully.",
+      subscriptionHistories: mySubscriptionHistories,
+    });
+  } catch (error) {
+    console.error("Error fetching user's subscription history:", error);
+    res.status(500).json({ message: "Internal server error.", error });
+  }
+};
 
 export const dashboard = {
   getAllUser,
@@ -844,4 +1028,9 @@ export const dashboard = {
   getTopUsersWithMostAccounts,
   getGlobalLoginAttempts,
   clearAllNotifications,
+  createSubscription,
+  getSubscriptions,
+  getSubscriptionsHistoryForAdmin,
+  createSubscriptionHistory,
+  getMySubscriptionsHistory,
 };
