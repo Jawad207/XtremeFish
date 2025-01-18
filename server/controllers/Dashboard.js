@@ -910,29 +910,27 @@ const createSubscriptionHistory = async (req, res) => {
 const getSubscriptionsHistoryForAdmin = async (req, res) => {
   try {
     const { adminId } = req.query;
-    console.log
-    // Aggregation pipeline
+    console.log;
+
     const subscriptionHistories = await SubscriptionHistory.aggregate([
-      // Step 1: Lookup Subscriptions created by the admin
       {
         $lookup: {
-          from: "subscriptions", // Collection name for Subscription
+          from: "subscriptions",
           localField: "subscriptionId",
           foreignField: "_id",
           as: "subscriptionDetails",
         },
       },
-      // Step 2: Match subscriptions created by the admin
+
       {
         $match: {
           "subscriptionDetails.createdBy": new mongoose.Types.ObjectId(adminId),
         },
       },
-      // Step 3: Unwind subscriptionDetails array (optional for clarity)
+
       {
         $unwind: "$subscriptionDetails",
       },
-      // Step 4: Project necessary fields
       {
         $project: {
           _id: 1,
@@ -945,7 +943,7 @@ const getSubscriptionsHistoryForAdmin = async (req, res) => {
           redeem: 1,
           createdAt: 1,
           updatedAt: 1,
-          "subscriptionDetails.type": 1, // Include specific fields from Subscription if needed
+          "subscriptionDetails.type": 1,
           "subscriptionDetails.createdBy": 1,
         },
       },
