@@ -37,7 +37,7 @@ import {
   DELETE_NOTIFICATIONS_SUCCESS,
   DELETE_NOTIFICATIONS_FAILURE,
   CLEAR_NOTIFICATIONS_INIT,
-  CLEAR_NOTIFICATIONS_SUCCESS, 
+  CLEAR_NOTIFICATIONS_SUCCESS,
   CLEAR_NOTIFICATIONS_FAILURE,
   DELETE_ACCOUNTS_INIT,
   DELETE_ACCOUNTS_SUCCESS,
@@ -78,6 +78,21 @@ import {
   GET_GLOBAL_LOGINATTEMPT_INIT,
   GET_GLOBAL_LOGINATTEMPT_SUCCESS,
   GET_GLOBAL_LOGINATTEMPT_FAILURE,
+  CREATE_SUBSCRIPTION_INIT,
+  CREATE_SUBSCRIPTION_SUCCESS,
+  CREATE_SUBSCRIPTION_FAILURE,
+  CREATE_SUBSCRIPTIONHISTORY_INIT,
+  CREATE_SUBSCRIPTIONHISTORY_SUCCESS,
+  CREATE_SUBSCRIPTIONHISTORY_FAILURE,
+  GET_SUBSCRIPTIONHISTORY_INIT,
+  GET_SUBSCRIPTIONHISTORY_SUCCESS,
+  GET_SUBSCRIPTIONHISTORY_FAILURE,
+  GET_ADMINSUBSCRIPTIONHISTORY_INIT,
+  GET_ADMINSUBSCRIPTIONHISTORY_FAILURE,
+  GET_ADMINSUBSCRIPTIONHISTORY_SUCCESS,
+  GET_SUBSCRIPTION_INIT,
+  GET_SUBSCRIPTION_SUCCESS,
+  GET_SUBSCRIPTION_FAILURE,
 } from "../types";
 
 interface LoginAttempt {
@@ -131,6 +146,8 @@ interface DashState {
   account_stats: any;
   beep: any;
   globalLoginAttempts: LoginAttempt[];
+  subscriptions: any[];
+  subscriptionLogs: any[];
   reviews: Reviews[];
 }
 
@@ -157,6 +174,8 @@ const initialState: DashState = {
   topUsers: [],
   todaysCount: 0,
   account_stats: [],
+  subscriptions: [],
+  subscriptionLogs: [],
 };
 
 export const dashReducer = (
@@ -679,27 +698,117 @@ export const dashReducer = (
         loading: false,
         error: action.payload,
       };
-      case CLEAR_NOTIFICATIONS_INIT:
-        return {
-          ...state,
-          loading: true, // Set loading to true while the request is in progress
-          error: null,   // Clear any previous errors
-        };
-  
-      case CLEAR_NOTIFICATIONS_SUCCESS:
-        return {
-          ...state,
-          loading: false, // Set loading to false when the request is complete
-          notifications: action.payload, // Clear the notifications (empty array)
-          error: null,    // No error on success
-        };
-  
-      case CLEAR_NOTIFICATIONS_FAILURE:
-        return {
-          ...state,
-          loading: false,  // Set loading to false when an error occurs
-          error: action.payload, // Store the error message
-        };
+    case CLEAR_NOTIFICATIONS_INIT:
+      return {
+        ...state,
+        loading: true, // Set loading to true while the request is in progress
+        error: null, // Clear any previous errors
+      };
+
+    case CLEAR_NOTIFICATIONS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        notifications: action.payload,
+        error: null,
+      };
+
+    case CLEAR_NOTIFICATIONS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case CREATE_SUBSCRIPTION_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case CREATE_SUBSCRIPTION_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      };
+    case CREATE_SUBSCRIPTION_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case CREATE_SUBSCRIPTIONHISTORY_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case CREATE_SUBSCRIPTIONHISTORY_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        
+      };
+    case CREATE_SUBSCRIPTIONHISTORY_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case GET_SUBSCRIPTION_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case GET_SUBSCRIPTION_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        subscriptions: action.payload
+      };
+    case GET_SUBSCRIPTION_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case GET_SUBSCRIPTIONHISTORY_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+
+      };
+    case GET_SUBSCRIPTIONHISTORY_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        subscriptionLogs: action.payload
+      };
+    case GET_SUBSCRIPTIONHISTORY_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case GET_ADMINSUBSCRIPTIONHISTORY_INIT:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case GET_ADMINSUBSCRIPTIONHISTORY_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        
+      };
+    case GET_ADMINSUBSCRIPTIONHISTORY_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
     default:
       return state;
   }

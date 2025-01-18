@@ -1,7 +1,7 @@
 "use client";
 import Pageheader from "@/shared/layout-components/page-header/pageheader";
 import Seo from "@/shared/layout-components/seo/seo";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Button, Col, Nav, Row, Tab, Form, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { editProfile } from "@/shared/Api/auth";
@@ -13,10 +13,19 @@ const SubscriptionPage = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const auth = useSelector((state: any) => state.auth);
+  const subscriptions = useSelector((state: any) => state.dash.subscriptions);
   const [loading, setLoading] = useState(null);
+  const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(
     auth?.user?.subscription?.type ?? "Basic"
   );
+
+  useEffect(() => {
+    const updatedSubscriptions = subscriptions.filter(
+      (sub: any) => sub?.type != "redeem"
+    );
+    setPlans(updatedSubscriptions);
+  }, [subscriptions]);
 
   const updateSubscription = async (type: any, duration: any) => {
     let expireDate;
@@ -40,22 +49,20 @@ const SubscriptionPage = () => {
     if (profile?.status == 200) {
       setOpen(true);
       setTimeout(() => {
-        setOpen(false)
+        setOpen(false);
       }, 2000);
       setLoading(null);
     }
   };
-
-  const handleRedeemCode = ()=> {
-
-  }
 
   return (
     <Fragment>
       <Success
         isOpen={open}
         title={"🎉 Congratulations!"}
-        description={"Your subscription has been activated successfully. Enjoy exclusive features and benefits!"}
+        description={
+          "Your subscription has been activated successfully. Enjoy exclusive features and benefits!"
+        }
       />
       {/* Page Header */}
       <Seo title={"Subscription"} />
@@ -71,121 +78,144 @@ const SubscriptionPage = () => {
 
       {/* Start:: row-1 */}
       <div className="row d-flex align-items-center justify-content-center mb-5">
-        <Col lg={8} xl={4} xxl={4} md={8} sm={12} className="">
-          <div
-            className={`card custom-card pricing-card cursor-pointer ${
-              selectedPlan == "Basic" ? "hover" : ""
-            }`}
-            onClick={() => setSelectedPlan("Basic")}
-          >
-            <div className="card-body p-5">
-              <div className="text-center">
-                <h4 className="fw-medium mb-1">Basic</h4>
-                <span className="mb-1 text-muted d-block">
-                  Essential features for a magical start
-                </span>
-                <h2 className="mb-0 fw-bold d-block text-gradient">
-                  $35/
-                  <span className="fs-12 text-default fw-medium ms-1">
-                    Price Per Month
-                  </span>
-                </h2>
-              </div>
-              <hr className="border-top my-4" />
-              <ul className="list-unstyled pricing-body">
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto flex-fill">
-                      Unlimited Support
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto">Always Updated Links</span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto flex-fill">
-                      Database lookup
-                    </span>
-                    <span className="badge bg-light text-default rounded-pill border">
-                      <i className="ri-flashlight-fill text-warning me-1"></i>
-                      coming soon
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto">Subscriber rank</span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto">Instant Support</span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto flex-fill">Url Shortner</span>
-                    <span className="text-muted fs-12 fw-medium">
-                      Coming Soon
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto flex-fill">Mailer tool</span>
-                    <span className="text-muted fs-12 fw-medium">
-                      Coming Soon
-                    </span>
-                  </div>
-                </li>
-              </ul>
-              <hr className="border-top my-4" />
+        {plans && plans?.length
+          ? plans.map((plan: any) => (
+              <Col lg={8} xl={4} xxl={4} md={8} sm={12} className="">
+                <div
+                  className={`card custom-card pricing-card cursor-pointer ${
+                    selectedPlan == plan?.type ? "hover" : ""
+                  }`}
+                  onClick={() => setSelectedPlan(plan?.type)}
+                >
+                  <div className="card-body p-5">
+                    <div className="text-center">
+                      {plan?.type == "pro" && (
+                        <div className="ribbon-2 ribbon-primary ribbon-right">
+                          Best Plan
+                        </div>
+                      )}
+                      <h4 className="fw-medium mb-1">
+                        {plan?.type?.toUpperCase()}
+                      </h4>
+                      <span className="mb-1 text-muted d-block">
+                        Essential features for a magical start
+                      </span>
+                      <h2 className="mb-0 fw-bold d-block text-gradient">
+                        ${plan?.amount}/
+                        <span className="fs-12 text-default fw-medium ms-1">
+                          {plan?.duration == 1
+                            ? "Price Per Month"
+                            : `Price for ${plan?.duration} Month`}
+                        </span>
+                      </h2>
+                    </div>
+                    <hr className="border-top my-4" />
+                    <ul className="list-unstyled pricing-body">
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto flex-fill">
+                            Unlimited Support
+                          </span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto">
+                            Always Updated Links
+                          </span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto flex-fill">
+                            Database lookup
+                          </span>
+                          <span className="badge bg-light text-default rounded-pill border">
+                            <i className="ri-flashlight-fill text-warning me-1"></i>
+                            coming soon
+                          </span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto">Subscriber rank</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto">Instant Support</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto flex-fill">
+                            Url Shortner
+                          </span>
+                          <span className="text-muted fs-12 fw-medium">
+                            Coming Soon
+                          </span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto flex-fill">
+                            Mailer tool
+                          </span>
+                          <span className="text-muted fs-12 fw-medium">
+                            Coming Soon
+                          </span>
+                        </div>
+                      </li>
+                    </ul>
+                    <hr className="border-top my-4" />
 
-              <Button
-                variant=""
-                type="button"
-                className="btn btn-lg btn-outline-primary d-grid w-100 btn-wave"
-                onClick={() => updateSubscription("basic", 1)}
-              >
-                {loading == "basic" ? (
-                  <span className="ms-4 me-4">
-                    {" "}
-                    <FaSpinner className="spinner-border spinner-border-sm" />{" "}
-                    Loading...
-                  </span>
-                ) : (
-                  <span className="ms-4 me-4">Start Today</span>
-                )}
-              </Button>
-            </div>
-          </div>
-        </Col>
-        <Col lg={8} xl={4} xxl={4} md={8} sm={12} className="">
+                    <Button
+                      variant=""
+                      type="button"
+                      className={`btn btn-lg ${
+                        plan?.type == "pro"
+                          ? "btn-primary-gradient"
+                          : "btn-outline-primary"
+                      } d-grid w-100 btn-wave`}
+                      onClick={() => updateSubscription("basic", 1)}
+                    >
+                      {loading == plan.type ? (
+                        <span className="ms-4 me-4">
+                          {" "}
+                          <FaSpinner className="spinner-border spinner-border-sm" />{" "}
+                          Loading...
+                        </span>
+                      ) : (
+                        <span className="ms-4 me-4">Start Today</span>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </Col>
+            ))
+          : null}
+        {/* <Col lg={8} xl={4} xxl={4} md={8} sm={12} className="">
           <div
             className={`card custom-card pricing-card cursor-pointer ${
               selectedPlan == "Pro" ? "hover" : ""
@@ -413,11 +443,9 @@ const SubscriptionPage = () => {
               </Button>
             </div>
           </div>
-        </Col>
+        </Col> */}
       </div>
-      <div
-        className="p-0 border-0"
-      >
+      <div className="p-0 border-0">
         <Card className="custom-card shadow-sm">
           <Card.Body className="p-4">
             <li className="list-group-item p-4 my-3">
@@ -437,7 +465,7 @@ const SubscriptionPage = () => {
                   <button
                     type="button"
                     className="btn btn-primary w-100"
-                    onClick={() => handleRedeemCode()}
+                    // onClick={() => handleRedeemCode()}
                   >
                     Submit
                   </button>

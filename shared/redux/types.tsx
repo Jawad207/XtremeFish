@@ -644,58 +644,68 @@ interface postSubscriptioninitAction {
 
 interface postSubscriptionsuccessAction {
   type: typeof CREATE_SUBSCRIPTION_SUCCESS;
+  payload: any;
 }
 
 interface postSubscriptionfailureAction {
   type: typeof CREATE_SUBSCRIPTION_FAILURE;
+  payload: any;
 }
 
 interface getSubscriptioninitAction {
-  type: typeof CREATE_SUBSCRIPTION_INIT;
+  type: typeof GET_SUBSCRIPTION_INIT;
 }
 
 interface getSubscriptionsuccessAction {
-  type: typeof CREATE_SUBSCRIPTION_SUCCESS;
+  type: typeof GET_SUBSCRIPTION_SUCCESS;
+  payload: any;
 }
 
 interface getSubscriptionfailureAction {
-  type: typeof CREATE_SUBSCRIPTION_FAILURE;
+  type: typeof GET_SUBSCRIPTION_FAILURE;
+  payload: any;
 }
 
 interface postSubscriptionHistoryinitAction {
-  type: typeof CREATE_SUBSCRIPTION_INIT;
+  type: typeof CREATE_SUBSCRIPTIONHISTORY_INIT;
 }
 
 interface postSubscriptionHistorysuccessAction {
-  type: typeof CREATE_SUBSCRIPTION_SUCCESS;
+  type: typeof CREATE_SUBSCRIPTIONHISTORY_SUCCESS;
+  payload: any;
 }
 
 interface postSubscriptionHistoryfailureAction {
-  type: typeof CREATE_SUBSCRIPTION_FAILURE;
+  type: typeof CREATE_SUBSCRIPTIONHISTORY_FAILURE;
+  payload: any;
 }
 
 interface getSubscriptionHistoryinitAction {
-  type: typeof CREATE_SUBSCRIPTION_INIT;
+  type: typeof GET_SUBSCRIPTIONHISTORY_INIT;
 }
 
 interface getSubscriptionHistorysuccessAction {
-  type: typeof CREATE_SUBSCRIPTION_SUCCESS;
+  type: typeof GET_SUBSCRIPTIONHISTORY_SUCCESS;
+  payload: any;
 }
 
 interface getSubscriptionHistoryfailureAction {
-  type: typeof CREATE_SUBSCRIPTION_FAILURE;
+  type: typeof GET_SUBSCRIPTIONHISTORY_FAILURE;
+  payload: any;
 }
 
 interface getSubscriptionHistoryAdmininitAction {
-  type: typeof CREATE_SUBSCRIPTION_INIT;
+  type: typeof GET_ADMINSUBSCRIPTIONHISTORY_INIT;
 }
 
 interface getSubscriptionHistoryAdminsuccessAction {
-  type: typeof CREATE_SUBSCRIPTION_SUCCESS;
+  type: typeof GET_ADMINSUBSCRIPTIONHISTORY_SUCCESS;
+  payload: any;
 }
 
 interface getSubscriptionHistoryAdminfailureAction {
-  type: typeof CREATE_SUBSCRIPTION_FAILURE;
+  type: typeof GET_ADMINSUBSCRIPTIONHISTORY_FAILURE;
+  payload: any;
 }
 
 export type AuthActionTypes =
@@ -818,4 +828,5 @@ export type DashActionTypes =
   | postSubscriptionHistoryfailureAction
   | getSubscriptionHistoryAdminfailureAction
   | getSubscriptionHistoryAdmininitAction
-  | getSubscriptionHistoryAdminsuccessAction ;
+  | getSubscriptionHistoryfailureAction
+  | getSubscriptionHistoryAdminsuccessAction;

@@ -13,7 +13,6 @@ const Layout = ({ children }: any) => {
   const router = useRouter();
   const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
   const user = useSelector((state:any)=>state.auth.user)
-  console.log("User in here:         ",user)
   const isVerified = user?.is2FAverified
   const isBanned = user?.isBanned
   useEffect(() => {
