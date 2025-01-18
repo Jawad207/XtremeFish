@@ -73,6 +73,14 @@ export const MenuItems: any = [
         dirchange: false,
         title: "Redeem Codes",
       },
+      {
+        path: "/dashboards/chat-box",
+        type: "link",
+        active: false,
+        selected: false,
+        dirchange: false,
+        title: "Chat Box",
+      },
     ],
   },
 
