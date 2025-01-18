@@ -117,30 +117,133 @@
 // //   console.log(`Server running securely on https://localhost:${port}`);
 // // });  
 
+// import express from "express";
+// import authentication from "./routes/authentication.js";
+// import dashboard from "./routes/dashboard.js";
+// import mongoose from "mongoose";
+// import dotenv from "dotenv";
+// import cors from "cors";
+
+// import speakeasy from "speakeasy";
+// import qrcode from "qrcode";
+
+// dotenv.config();
+// const port = process.env.PORT || 8443; // Common HTTPS port
+// const MONGODB_URI = process.env.MONGODB_URI;
+
+// // Initialize Express app
+// const server = express();
+// server.use(cors());
+// server.use(express.json());
+// server.set("trust proxy", true); // Trust proxy headers (important for X-Forwarded-For)
+
+// // Middleware to log the real client IP
+// server.use((req, res, next) => {
+//   const realIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+//   const normalizedIP = realIP.startsWith("::ffff:") ? realIP.substring(7) : realIP; // Strip "::ffff:" if present
+//   next();
+// });
+
+// // MongoDB connection
+// const connectToMongoDB = async () => {
+//   try {
+//     await mongoose.connect(MONGODB_URI, {});
+//     console.log(`Connected to MongoDB`);
+//   } catch (err) {
+//     console.error("Failed to connect to MongoDB", err);
+//     setTimeout(connectToMongoDB, 5000); // Retry after 5 seconds
+//   }
+// };
+// connectToMongoDB();
+
+// // Example custom API route
+// server.get("/api/custom", (req, res) => {
+//   res.json({ message: "Hello from HTTPS server!" });
+// });
+
+// server.get("/", (req, res) => {
+//   const realIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+//   const normalizedIP = realIP.startsWith("::ffff:") ? realIP.substring(7) : realIP;
+//   res.json({ clientIP: normalizedIP });
+// });
+
+
+// server.post("/google-auth/setup", async (req, res) => {
+//   const {username} = req.body
+//   try {
+//     const secret = speakeasy.generateSecret({
+//       name: `${username}`,
+//       length: 16,
+//     });
+
+//     const qrCodeUrl = await qrcode.toDataURL(secret.otpauth_url);
+//     res.json({
+//       secret: secret.base32,
+//       otpauth_url: secret.otpauth_url,
+//       qrCodeUrl,
+//     });
+//   } catch (err) {
+//     console.error("Error generating setup:", err);
+//     res.status(500).json({ error: "Failed to generate setup." });
+//   }
+// });
+
+// server.post("/google-auth/verify", (req, res) => {
+//   const { token, secret } = req.body;
+//   const verified = speakeasy.totp.verify({
+//     secret,
+//     encoding: "base32",
+//     token,
+//     window: 1,
+//   });
+
+//   if (verified) {
+//     res.json({ success: true, message: "Token is valid." });
+//   } else {
+//     res.status(400).json({ success: false, message: "Invalid token." });
+//   }
+// });
+
+// // Add routes
+// server.use("/auth", authentication);
+// server.use("/dashboard", dashboard);
+
+// server.listen(port, () => {
+//   console.log(`Server running on http://localhost:${port} and on uri ${MONGODB_URI}`);
+// });
+
+// // Create and start the HTTPS server
+// // https.createServer(httpsOptions, server).listen(port, (err) => {
+// //   if (err) throw err;
+// //   console.log(`Server running securely on https://localhost:${port}`);
+// // });
+
+
 import express from "express";
+import http from "http"; // For server creation
+import { Server as SocketServer } from "socket.io"; // Import Socket.IO
 import authentication from "./routes/authentication.js";
 import dashboard from "./routes/dashboard.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-
 import speakeasy from "speakeasy";
 import qrcode from "qrcode";
 
 dotenv.config();
-const port = process.env.PORT || 8443; // Common HTTPS port
+const port = process.env.PORT || 8443;
 const MONGODB_URI = process.env.MONGODB_URI;
 
 // Initialize Express app
-const server = express();
-server.use(cors());
-server.use(express.json());
-server.set("trust proxy", true); // Trust proxy headers (important for X-Forwarded-For)
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.set("trust proxy", true);
 
 // Middleware to log the real client IP
-server.use((req, res, next) => {
-  const realIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  const normalizedIP = realIP.startsWith("::ffff:") ? realIP.substring(7) : realIP; // Strip "::ffff:" if present
+app.use((req, res, next) => {
+  const realIP = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+  const normalizedIP = realIP.startsWith("::ffff:") ? realIP.substring(7) : realIP;
   next();
 });
 
@@ -157,19 +260,13 @@ const connectToMongoDB = async () => {
 connectToMongoDB();
 
 // Example custom API route
-server.get("/api/custom", (req, res) => {
+app.get("/api/custom", (req, res) => {
   res.json({ message: "Hello from HTTPS server!" });
 });
 
-server.get("/", (req, res) => {
-  const realIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  const normalizedIP = realIP.startsWith("::ffff:") ? realIP.substring(7) : realIP;
-  res.json({ clientIP: normalizedIP });
-});
-
-
-server.post("/google-auth/setup", async (req, res) => {
-  const {username} = req.body
+// Google Auth setup route
+app.post("/google-auth/setup", async (req, res) => {
+  const { username } = req.body;
   try {
     const secret = speakeasy.generateSecret({
       name: `${username}`,
@@ -188,7 +285,8 @@ server.post("/google-auth/setup", async (req, res) => {
   }
 });
 
-server.post("/google-auth/verify", (req, res) => {
+// Google Auth verify route
+app.post("/google-auth/verify", (req, res) => {
   const { token, secret } = req.body;
   const verified = speakeasy.totp.verify({
     secret,
@@ -205,16 +303,57 @@ server.post("/google-auth/verify", (req, res) => {
 });
 
 // Add routes
-server.use("/auth", authentication);
-server.use("/dashboard", dashboard);
+app.use("/auth", authentication);
+app.use("/dashboard", dashboard);
 
+// Create HTTP server and attach Socket.IO
+const server = http.createServer(app);
+const io = new SocketServer(server, {
+  cors: {
+    origin: "*", // Replace with your frontend origin
+    methods: ["GET", "POST"],
+  },
+});
+
+// Chat messages array (temporary storage)
+let messages = [];
+
+// Real-time chat logic
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
+
+  // Send existing messages to the newly connected user
+  socket.emit("chat:initial", messages);
+
+  // Listen for new messages
+  socket.on("chat:message", (messageData) => {
+    const newMessage = { ...messageData, id: Date.now() };
+    messages.unshift(newMessage); // Add message to the top
+
+    // Limit messages to 10
+    if (messages.length > 10) {
+      messages.pop();
+    }
+
+    // Broadcast new message to all connected clients
+    io.emit("chat:newMessage", newMessage);
+  });
+
+  socket.on('removeMessage', (messageId) => {
+    // Remove message from the server-side messages array
+    messages = messages.filter((msg) => msg.id !== messageId);
+
+    // Broadcast the message removal to all clients
+    io.emit('messageRemoved', messageId); // Emit to all connected clients
+  });
+
+  // Handle disconnection
+  socket.on("disconnect", () => {
+    console.log(`User disconnected: ${socket.id}`);
+  });
+});
+
+// Start server
 server.listen(port, () => {
   console.log(`Server running on http://localhost:${port} and on uri ${MONGODB_URI}`);
 });
-
-// Create and start the HTTPS server
-// https.createServer(httpsOptions, server).listen(port, (err) => {
-//   if (err) throw err;
-//   console.log(`Server running securely on https://localhost:${port}`);
-// });
-
