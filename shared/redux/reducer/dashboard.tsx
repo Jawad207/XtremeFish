@@ -140,6 +140,7 @@ interface DashState {
   currentUrl: any;
   ips: any;
   topUsers: any;
+  adminHistoryLogs: any[];
   globaltotalPages: any;
   globalCurrentPage: any;
   todaysCount: any;
@@ -176,6 +177,7 @@ const initialState: DashState = {
   account_stats: [],
   subscriptions: [],
   subscriptionLogs: [],
+  adminHistoryLogs: [],
 };
 
 export const dashReducer = (
@@ -746,7 +748,6 @@ export const dashReducer = (
       return {
         ...state,
         loading: false,
-        
       };
     case CREATE_SUBSCRIPTIONHISTORY_FAILURE:
       return {
@@ -764,7 +765,7 @@ export const dashReducer = (
       return {
         ...state,
         loading: false,
-        subscriptions: action.payload
+        subscriptions: action.payload,
       };
     case GET_SUBSCRIPTION_FAILURE:
       return {
@@ -777,13 +778,12 @@ export const dashReducer = (
         ...state,
         loading: true,
         error: null,
-
       };
     case GET_SUBSCRIPTIONHISTORY_SUCCESS:
       return {
         ...state,
         loading: false,
-        subscriptionLogs: action.payload
+        subscriptionLogs: action.payload,
       };
     case GET_SUBSCRIPTIONHISTORY_FAILURE:
       return {
@@ -801,7 +801,7 @@ export const dashReducer = (
       return {
         ...state,
         loading: false,
-        
+        adminHistoryLogs: action.payload
       };
     case GET_ADMINSUBSCRIPTIONHISTORY_FAILURE:
       return {

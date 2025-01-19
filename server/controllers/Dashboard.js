@@ -912,7 +912,15 @@ const createSubscriptionHistory = async (req, res) => {
 const getSubscriptionsHistoryForAdmin = async (req, res) => {
   try {
     const { adminId } = req.query;
-    console.log;
+
+
+    if (!adminId || !mongoose.Types.ObjectId.isValid(adminId)) {
+      return res.status(400).json({
+        message: "Valid adminId is required.",
+      });
+    }
+
+    console.log("Admin ID:", adminId);
 
     const subscriptionHistories = await SubscriptionHistory.aggregate([
       {
@@ -933,6 +941,20 @@ const getSubscriptionsHistoryForAdmin = async (req, res) => {
       {
         $unwind: "$subscriptionDetails",
       },
+
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "userDetails",
+        },
+      },
+
+      {
+        $unwind: "$userDetails",
+      },
+
       {
         $project: {
           _id: 1,
@@ -947,16 +969,24 @@ const getSubscriptionsHistoryForAdmin = async (req, res) => {
           updatedAt: 1,
           "subscriptionDetails.type": 1,
           "subscriptionDetails.createdBy": 1,
+          "subscriptionDetails.amount": 1,
+          "subscriptionDetails.duration": 1,
+          "subscriptionDetails.redeemCode": 1,
+          "userDetails.userName": 1,
+          "userDetails.email": 1,
+          "userDetails.role": 1,
         },
       },
     ]);
 
+    // Check if any subscription histories were found
     if (!subscriptionHistories.length) {
       return res.status(404).json({
         message: "No subscription history found for this admin.",
       });
     }
 
+    // Return the subscription histories
     res.status(200).json({
       message: "Subscription history fetched successfully.",
       subscriptionHistories,
@@ -966,6 +996,7 @@ const getSubscriptionsHistoryForAdmin = async (req, res) => {
     res.status(500).json({ message: "Internal server error.", error });
   }
 };
+
 const getMySubscriptionsHistory = async (req, res) => {
   try {
     const { userId } = req.query;
@@ -974,7 +1005,12 @@ const getMySubscriptionsHistory = async (req, res) => {
         message: "User id is required.",
       });
     }
-    const mySubscriptionHistories = await SubscriptionHistory.find({ userId });
+    const mySubscriptionHistories = await SubscriptionHistory.find({
+      userId,
+    }).populate({
+      path: "subscriptionId",
+      select: "type duration amount redeemCode",
+    });
 
     if (!mySubscriptionHistories.length) {
       return res.status(404).json({
@@ -995,7 +1031,7 @@ const getMySubscriptionsHistory = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     // Fetch all users
-    const users = await User.find({}, 'userName _id'); // Fetch only necessary fields (e.g., userName and _id)
+    const users = await User.find({}, "userName _id"); // Fetch only necessary fields (e.g., userName and _id)
 
     if (!users.length) {
       return res.status(404).json({
@@ -1015,7 +1051,6 @@ const getAllUsers = async (req, res) => {
     });
   }
 };
-
 
 export const dashboard = {
   getAllUser,

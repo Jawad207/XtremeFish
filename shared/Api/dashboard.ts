@@ -1053,18 +1053,19 @@ export const getSubscription = async (dispatch: any) => {
   }
 };
 
-export const getSubscriptionHistory = async (dispatch: any) => {
+export const getSubscriptionHistory = async (userId: any, dispatch: any) => {
   try {
     dispatch({ type: GET_SUBSCRIPTIONHISTORY_INIT });
     const response = await apiClient.get(
-      `/dashboard/getMySubscriptionsHistory`
+      `/dashboard/getMySubscriptionsHistory`,
+      { params: { userId } }
     );
 
     // If the request was successful
     if (response.status === 200) {
       dispatch({
         type: GET_SUBSCRIPTIONHISTORY_SUCCESS,
-        payload: response.data,
+        payload: response?.data?.subscriptionHistories,
       });
     }
 
@@ -1088,18 +1089,27 @@ export const getSubscriptionHistory = async (dispatch: any) => {
   }
 };
 
-export const getSubscriptionHistoryAdmin = async (dispatch: any) => {
+export const getSubscriptionHistoryAdmin = async (
+  adminId: any,
+  dispatch: any
+) => {
   try {
     dispatch({ type: GET_ADMINSUBSCRIPTIONHISTORY_INIT });
     const response = await apiClient.get(
-      `/dashboard/getAdminSubscriptionHistory`
+      `/dashboard/getAdminSubscriptionHistory`,
+      {
+        params: {
+          adminId,
+        },
+      }
     );
 
     // If the request was successful
     if (response.status === 200) {
+      console.log('response at the api', response?.data?.subscriptionHistories)
       dispatch({
         type: GET_ADMINSUBSCRIPTIONHISTORY_SUCCESS,
-        payload: response.data,
+        payload: response?.data?.subscriptionHistories,
       });
     }
 
