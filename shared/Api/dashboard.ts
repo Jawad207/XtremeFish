@@ -987,24 +987,28 @@ export const createSubscriptionHistory = async (data: any, dispatch: any) => {
       `/dashboard/createSubscriptionHistory`,
       data
     );
-
-    // If the request was successful
-    if (response.status === 200) {
+    if (response.status === 201) {
       dispatch({
         type: CREATE_SUBSCRIPTIONHISTORY_SUCCESS,
         payload: response.data,
       });
     }
 
-    return response.data;
+    return response;
   } catch (error: any) {
     // Handle server or network errors
+    if (error.status == 409) {
+      return error;
+    }
     if (error.response) {
       dispatch({
         type: CREATE_SUBSCRIPTIONHISTORY_FAILURE,
         payload: error.response.data.message,
       });
-      console.error("Get ACCOUNT STATICS failed:", error.response.data.message);
+      console.error(
+        "create subscription history failed:",
+        error.response.data.message
+      );
       return error.response.data.message;
     } else {
       console.error("Error:", error.message);
@@ -1052,7 +1056,9 @@ export const getSubscription = async (dispatch: any) => {
 export const getSubscriptionHistory = async (dispatch: any) => {
   try {
     dispatch({ type: GET_SUBSCRIPTIONHISTORY_INIT });
-    const response = await apiClient.get(`/dashboard/getMySubscriptionsHistory`);
+    const response = await apiClient.get(
+      `/dashboard/getMySubscriptionsHistory`
+    );
 
     // If the request was successful
     if (response.status === 200) {
@@ -1085,7 +1091,9 @@ export const getSubscriptionHistory = async (dispatch: any) => {
 export const getSubscriptionHistoryAdmin = async (dispatch: any) => {
   try {
     dispatch({ type: GET_ADMINSUBSCRIPTIONHISTORY_INIT });
-    const response = await apiClient.get(`/dashboard/getAdminSubscriptionHistory`);
+    const response = await apiClient.get(
+      `/dashboard/getAdminSubscriptionHistory`
+    );
 
     // If the request was successful
     if (response.status === 200) {
@@ -1113,4 +1121,4 @@ export const getSubscriptionHistoryAdmin = async (dispatch: any) => {
       return error.message;
     }
   }
-}
+};

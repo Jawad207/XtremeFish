@@ -880,8 +880,10 @@ const createSubscriptionHistory = async (req, res) => {
     });
 
     if (existingSubscription) {
-      return res.status(400).json({
-        message: `You already have an active subscription which will end on ${existingSubscription.expireDate}.`,
+      return res.status(409).json({
+        message: `You already have an active subscription which will end on ${moment(
+          existingSubscription.expireDate
+        ).format("d/MM/YYYY")}.`,
       });
     }
 

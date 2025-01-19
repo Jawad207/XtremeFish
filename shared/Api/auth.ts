@@ -167,7 +167,6 @@ export const ResetPassword = async (data: any, dispatch: any) => {
 export const editProfile = async (data: any, dispatch: any) => {
   try {
     dispatch({ type: EDIT_PROFILE_INIT });
-    console.log("data in here brother", data);
     const response = await apiClient.post("/auth/edit-profile", data);
     if (response.status === 200) {
       dispatch({ type: EDIT_PROFILE_SUCCESS, payload: response.data });

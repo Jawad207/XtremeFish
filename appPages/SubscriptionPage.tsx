@@ -8,10 +8,12 @@ import { editProfile } from "@/shared/Api/auth";
 import moment from "moment";
 import { FaSpinner } from "react-icons/fa";
 import Success from "@/components/SuccessPop";
+import { createSubscriptionHistory } from "@/shared/Api/dashboard";
 
 const SubscriptionPage = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const [popUptext, setpopUptext] = useState({ title: "", desc: "" });
   const auth = useSelector((state: any) => state.auth);
   const subscriptions = useSelector((state: any) => state.dash.subscriptions);
   const [loading, setLoading] = useState(null);
@@ -27,45 +29,63 @@ const SubscriptionPage = () => {
     setPlans(updatedSubscriptions);
   }, [subscriptions]);
 
-  const updateSubscription = async (type: any, duration: any) => {
-    let expireDate;
-    let currentDate = new Date();
+  const updateSubscription = async (
+    type: any,
+    duration: any,
+    subscriptionId: any
+  ) => {
+    try {
+      let expireDate;
+      let currentDate = new Date();
 
-    expireDate = new Date(currentDate);
+      expireDate = new Date(currentDate);
 
-    expireDate.setMonth(currentDate.getMonth() + duration);
-    const payload = {
-      startDate: currentDate,
-      expireDate,
-      type,
-      duration,
-      active: true,
-    };
-    setLoading(type);
-    const profile = await editProfile(
-      { ...auth?.user, subscription: payload },
-      dispatch
-    );
-    if (profile?.status == 200) {
-      setOpen(true);
-      setTimeout(() => {
-        setOpen(false);
-      }, 2000);
-      setLoading(null);
+      expireDate.setMonth(currentDate.getMonth() + duration);
+      const payload = {
+        userId: auth?.user?._id,
+        subscriptionId,
+        startDate: currentDate,
+        expireDate,
+        active: true,
+        redeem: false,
+      };
+      setLoading(type);
+      const result: any = await createSubscriptionHistory(payload, dispatch);
+      if (result?.status == 201) {
+        setOpen(true);
+        setpopUptext({
+          title: "🎉 Congratulations",
+          desc: "Your subscription has been activated successfully. Enjoy exclusive features and benefits!",
+        });
+        setTimeout(() => {
+          setOpen(false);
+        }, 2000);
+        setLoading(null);
+      } else if (result?.status == 409) {
+        setOpen(true);
+        setpopUptext({
+          title: "🛑 Data Conflict Alert",
+          desc: result?.response?.data?.message ?? result.message,
+        });
+        setTimeout(() => {
+          setOpen(false);
+        }, 2000);
+        setLoading(null);
+      }
+    } catch (error) {
+      console.log("error while procedding", error);
     }
   };
 
   return (
     <Fragment>
+      <Seo title={"Subscription"} />
       <Success
         isOpen={open}
-        title={"🎉 Congratulations!"}
-        description={
-          "Your subscription has been activated successfully. Enjoy exclusive features and benefits!"
-        }
+        title={popUptext?.title}
+        description={popUptext?.desc}
       />
       {/* Page Header */}
-      <Seo title={"Subscription"} />
       <Pageheader
         Heading="Pricing"
         Pages={[
@@ -198,7 +218,9 @@ const SubscriptionPage = () => {
                           ? "btn-primary-gradient"
                           : "btn-outline-primary"
                       } d-grid w-100 btn-wave`}
-                      onClick={() => updateSubscription("basic", 1)}
+                      onClick={() =>
+                        updateSubscription(plan.type, plan.duration, plan?._id)
+                      }
                     >
                       {loading == plan.type ? (
                         <span className="ms-4 me-4">

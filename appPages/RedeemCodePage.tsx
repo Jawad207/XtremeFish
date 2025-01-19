@@ -12,7 +12,6 @@ const RedeemCodePage = () => {
     const filterCodes = redeemCodes.filter(
       (redeem: any) => redeem?.type == "redeem"
     );
-    console.log("filter codes", filterCodes);
     setFilterRedeemCode(filterCodes);
   }, [redeemCodes]);
   const codes = [
