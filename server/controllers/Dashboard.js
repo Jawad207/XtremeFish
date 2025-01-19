@@ -990,6 +990,31 @@ const getMySubscriptionsHistory = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    // Fetch all users
+    const users = await User.find({}, 'userName _id'); // Fetch only necessary fields (e.g., userName and _id)
+
+    if (!users.length) {
+      return res.status(404).json({
+        message: "No users found.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Users fetched successfully.",
+      users,
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({
+      message: "Internal server error.",
+      error,
+    });
+  }
+};
+
+
 export const dashboard = {
   getAllUser,
   getTodayUsers,
@@ -1031,4 +1056,5 @@ export const dashboard = {
   getSubscriptionsHistoryForAdmin,
   createSubscriptionHistory,
   getMySubscriptionsHistory,
+  getAllUsers,
 };

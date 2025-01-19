@@ -42,5 +42,6 @@ router.post("/postIp", dashboard.postIp);
 router.get("/getIps", dashboard.getIps);
 router.delete("/deleteIp", dashboard.deleteIp);
 router.get("/getTopUsers", dashboard.getTopUsersWithMostAccounts);
+router.get('/users', dashboard.getAllUsers);
 
 export default router;
