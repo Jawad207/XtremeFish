@@ -1122,3 +1122,19 @@ export const getSubscriptionHistoryAdmin = async (dispatch: any) => {
     }
   }
 };
+
+export const fetchUsers = async () => {
+  try {
+    const response = await apiClient.get("/dashboard/users");
+    if (response?.status !== 200) {
+      console.error("Failed to fetch users:", response.statusText);
+      return [];
+    }
+
+    const data = await response.data;
+    return data.users || [];
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return [];
+  }
+};
