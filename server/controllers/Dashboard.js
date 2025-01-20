@@ -663,7 +663,7 @@ const deleteAccount = async (req, res) => {
       account: account,
     });
   } catch (error) {
-    console.log("error in here", error);
+    console.log("error in here at delete account", error);
     res.status(500).json({ error: "Failed to delete account" });
   }
 };
