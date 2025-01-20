@@ -9,6 +9,7 @@ import { FaSpinner } from "react-icons/fa";
 
 import Popup from "@/components/Popup";
 import { deleteProfile, editProfile, getGlobalUser, banUser } from "@/shared/Api/auth";
+import { createSubscriptionHistory } from "@/shared/Api/dashboard";
 
 function page() {
   
@@ -17,6 +18,7 @@ function page() {
   console.log("allUsers: ",allUsers);
   const allUsersCount = useSelector((state: any) => state.auth.allUsersCount);
   const loading = useSelector((state: any) => state.auth.loading);
+  const subscriptions = useSelector((state: any) => state.dash.subscriptions);
   const [showPopup, setShowPopup] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -87,7 +89,37 @@ function page() {
     }
   }
 
-
+  const handleAssignSubscription = async (user: any, subscriptionId: string) => {
+    // if (!subscriptionId) {
+    //   alert("Please select a subscription.");
+    //   return;
+    // }
+  
+    // try {
+    //   // Prepare payload for API call
+    //   const payload = {
+    //     userId: user._id,
+    //     subscriptionId,
+    //     startDate: new Date(),
+    //     expireDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+    //     active: true,
+    //     redeem: false, // Update as required
+    //   };
+  
+    //   // Call the createSubscriptionHistory function
+    //   const response = await createSubscriptionHistory(payload, dispatch);
+  
+    //   if (response.status === 201) {
+    //     alert("Subscription assigned successfully.");
+    //   } else if (response.status === 409) {
+    //     alert(response.data.message);
+    //   }
+    // } catch (error) {
+    //   console.error("Error assigning subscription:", error);
+    //   alert("Failed to assign subscription. Please try again.");
+    // }
+  };
+  
 
   return (
     <Fragment>
@@ -182,77 +214,93 @@ function page() {
                     <th>Email</th>
                     {/* <th>Password</th> */}
                     <th>Date</th>
+                    <th>Subscription History</th>
                     <th>Actions</th>
                     <th>Ban User</th>
                   </thead>
                   <tbody>
                   {allUsers?.slice()
-                      .sort(
-                        (a: any, b: any) => 
-                          new Date(b.createdAt).getTime() -
-                          new Date(a.createdAt).getTime()
-                        )
-                      .map((user: any) => (
-                        <tr
-                          key={user._id}
-                          className={user.role === 'admin' ? 'text-blue-500' : ''}
-                        >
-                          <td>
-                            <img
-                              src={
-                                user?.profileImage ??
-                                "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
-                              }
-                              alt="img"
-                              className="avatar avatar-xs avatar-rounded mb-1"
-                            />
-                          </td>
-                          <td>
-                            {user?.userName}
-                          </td>
-                          <td>{user && <span>{user?.email}</span>}</td>
-                          <td>
-                            <div className="btn-list">
-                              {moment(user?.createdAt).format("ddd, MMM DD, YYYY, hh:mm A")}
-                            </div>
-                          </td>
-                          <td>
-                            <div className="flex py-2 justify-start gap-2 ">
-                              <button
-                                className="text-red-500 mr-2"
-                                onClick={() => filterPosts(user)}
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                              <button
-                                className="text-blue-500"
-                                onClick={() => handleUpdate(user)}
-                              >
-                                <Pencil size={14} />
-                              </button>
-                            </div>
-                          </td>
-                          <td>
-  {user?.role === "basic" && (
-    <Button
-      className={`w-20 ${
-        user?.isBanned ? "btn-success text-white" : "bg-blue-500 text-white"
-      } py-2 rounded`}
-      onClick={() => {
-        if (user?.isBanned) {
-          handleUnban(user);
-        } else {
-          setShowPopup(true);
-          setUserForBan(user);
-        }
-      }}
-    >
-      {user?.isBanned ? "Unban" : "Ban"}
-    </Button>
-  )}
-</td>
-                        </tr>
-                      ))}
+                    .sort(
+                      (a: any, b: any) =>
+                        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                    )
+                    .map((user: any) => (
+                      <tr
+                        key={user._id}
+                        className={user.role === "admin" ? "text-blue-500" : ""}
+                      >
+                        <td>
+                          <img
+                            src={
+                              user?.profileImage ??
+                              "https://firebasestorage.googleapis.com/v0/b/xtremefish-9ceaf.appspot.com/o/images%2Favatar.png?alt=media&token=6b910478-6e58-4c73-8ea9-f4827f2eaa1b"
+                            }
+                            alt="img"
+                            className="avatar avatar-xs avatar-rounded mb-1"
+                          />
+                        </td>
+                        <td>{user?.userName}</td>
+                        <td>{user && <span>{user?.email}</span>}</td>
+                        <td>
+                          <div className="btn-list">
+                            {moment(user?.createdAt).format("ddd, MMM DD, YYYY, hh:mm A")}
+                          </div>
+                        </td>
+                        <td>
+                          {!user?.isBanned && 
+                            <select
+                            className="form-select"
+                            onChange={(e) => handleAssignSubscription(user, e.target.value)}
+                            defaultValue=""
+                          >
+                            <option value="" disabled>
+                              Select Subscription
+                            </option>
+                            {subscriptions?.map((sub: any) => (
+                              <option key={sub._id} value={sub._id}>
+                                {sub.type} - {sub.duration} months - ${sub.amount}
+                              </option>
+                            ))}
+                          </select>
+                          }
+                        </td>
+                        <td>
+                          <div className="flex py-2 justify-start gap-2">
+                            <button
+                              className="text-red-500 mr-2"
+                              onClick={() => filterPosts(user)}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                            <button
+                              className="text-blue-500"
+                              onClick={() => handleUpdate(user)}
+                            >
+                              <Pencil size={14} />
+                            </button>
+                          </div>
+                        </td>
+                        <td>
+                          {user?.role === "basic" && (
+                            <Button
+                              className={`w-20 ${
+                                user?.isBanned ? "btn-success text-white" : "bg-blue-500 text-white"
+                              } py-2 rounded`}
+                              onClick={() => {
+                                if (user?.isBanned) {
+                                  handleUnban(user);
+                                } else {
+                                  setShowPopup(true);
+                                  setUserForBan(user);
+                                }
+                              }}
+                            >
+                              {user?.isBanned ? "Unban" : "Ban"}
+                            </Button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>

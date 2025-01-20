@@ -8,7 +8,7 @@ import { editProfile } from "@/shared/Api/auth";
 import moment from "moment";
 import { FaSpinner } from "react-icons/fa";
 import Success from "@/components/SuccessPop";
-import { createSubscriptionHistory } from "@/shared/Api/dashboard";
+import { createSubscriptionHistory, createSubscription } from "@/shared/Api/dashboard";
 
 const SubscriptionPage = () => {
   const dispatch = useDispatch();
@@ -16,8 +16,12 @@ const SubscriptionPage = () => {
   const [popUptext, setpopUptext] = useState({ title: "", desc: "" });
   const auth = useSelector((state: any) => state.auth);
   const subscriptions = useSelector((state: any) => state.dash.subscriptions);
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [plans, setPlans] = useState([]);
+  const [redeemCode, setRedeemCode] = useState('');
+  const [duration, setDuration] = useState('');
+  const [amount, setAmount] = useState('');
+  const [type, setType] = useState("");
   const [selectedPlan, setSelectedPlan] = useState(
     auth?.user?.subscription?.type ?? "Basic"
   );
@@ -60,7 +64,7 @@ const SubscriptionPage = () => {
         setTimeout(() => {
           setOpen(false);
         }, 2000);
-        setLoading(null);
+        setLoading(false);
       } else if (result?.status == 409) {
         setOpen(true);
         setpopUptext({
@@ -70,11 +74,38 @@ const SubscriptionPage = () => {
         setTimeout(() => {
           setOpen(false);
         }, 2000);
-        setLoading(null);
+        setLoading(false);
       }
     } catch (error) {
       console.log("error while procedding", error);
     }
+  };
+
+  // console.log(auth?.user?._id)
+
+  const handleSubmit = async () => {
+    // // Validate fields before submission
+    // if (!type || !duration || !amount || (type === "redeem" && !redeemCode)) {
+    //   alert("Please fill in all required fields.");
+    //   return;
+    // }
+
+    // const payload = {
+    //   type,
+    //   createdBy: auth?.user?._id,
+    //   duration,
+    //   amount,
+    //   redeemCode: type === "redeem" ? redeemCode : undefined,
+    // };
+
+    // const response = await createSubscription(payload, dispatch);
+    // console.log("Response:", response);
+
+    // if (response.message === "Subscription created successfully.") {
+    //   alert("Subscription created!");
+    // } else {
+    //   alert("Failed to create subscription.");
+    // }
   };
 
   return (
@@ -467,40 +498,93 @@ const SubscriptionPage = () => {
           </div>
         </Col> */}
       </div>
-      <div className="p-0 border-0">
-        <Card className="custom-card shadow-sm">
-          <Card.Body className="p-4">
-            <li className="list-group-item p-4 my-3">
-              <span className="fw-bold fs-16 d-block mb-4">
-                Redeem Your Code
-              </span>
-              <div className="row gy-3 align-items-center">
-                <Col xl={8} lg={8} md={8} sm={12}>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter your redeem code"
-                    id="redeemCode"
-                  />
-                </Col>
-                <Col xl={4} lg={4} md={4} sm={12}>
-                  <button
-                    type="button"
-                    className="btn btn-primary w-100"
-                    // onClick={() => handleRedeemCode()}
-                  >
-                    Submit
-                  </button>
-                </Col>
-              </div>
-            </li>
-            <div className="flex gap-2 py-2">
-              <p>Your redeem code is:</p>
-              <p>896757</p>
-            </div>
-          </Card.Body>
-        </Card>
+      <div className="d-flex justify-content-center align-items-center bg-light">
+  <div className="card custom-card shadow-lg border-0" style={{ maxWidth: "1000px", width: "100%" }}>
+    <div className="card-body p-4">
+      <h4 className="fw-bold text-center mb-4">Create a New Subscription</h4>
+
+      {/* Subscription Type */}
+      {/* <div className="mb-3">
+        <label htmlFor="type" className="form-label fw-semibold">
+          Subscription Type
+        </label>
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="form-select"
+          id="type"
+        >
+          <option value="">Select Type</option>
+          <option value="basic">Basic</option>
+          <option value="pro">Pro</option>
+          <option value="premium">Premium</option>
+        </select>
+      </div> */}
+
+      {/* Duration (in months) */}
+      <div className="mb-3">
+        <label htmlFor="duration" className="form-label fw-semibold">
+          Duration (in months)
+        </label>
+        <input
+          type="number"
+          value={duration}
+          onChange={(e) => setDuration(e.target.value)}
+          className="form-control"
+          placeholder="Enter duration in months"
+          id="duration"
+          min="1"
+        />
       </div>
+
+      {/* Amount */}
+      <div className="mb-3">
+        <label htmlFor="amount" className="form-label fw-semibold">
+          Amount
+        </label>
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="form-control"
+          placeholder="Enter amount"
+          id="amount"
+          min="1"
+        />
+      </div>
+        <div className="mb-3">
+          <label htmlFor="redeemCode" className="form-label fw-semibold">
+            Redeem Code
+          </label>
+          <input
+            type="text"
+            value={redeemCode}
+            onChange={(e) => setRedeemCode(e.target.value)}
+            className="form-control"
+            placeholder="Enter redeem code"
+            id="redeemCode"
+          />
+        </div>
+      <div className="text-center">
+        <button
+          type="button"
+          className="btn btn-primary px-5 py-2"
+          onClick={handleSubmit}
+          disabled={loading} // Disable when loading
+        >
+          {loading ? (
+            <>
+              <i className="spinner-border spinner-border-sm me-2"></i>
+              Processing...
+            </>
+          ) : (
+            "Submit"
+          )}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
       {/* End:: row-1 */}
 
       {/* Start:: row-3 */}

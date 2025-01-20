@@ -1031,7 +1031,7 @@ const getMySubscriptionsHistory = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     // Fetch all users
-    const users = await User.find({}, "userName _id"); // Fetch only necessary fields (e.g., userName and _id)
+    const users = await User.find();
 
     if (!users.length) {
       return res.status(404).json({
