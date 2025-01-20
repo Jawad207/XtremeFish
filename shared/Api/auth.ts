@@ -95,7 +95,6 @@ export const ForgotPassword = async (email: any, dispatch: any) => {
       return response;
     }
   } catch (error: any) {
-    console.log("error in here", error);
     if (error.response) {
       dispatch({
         type: FORGET_FAILURE,
@@ -147,7 +146,6 @@ export const ResetPassword = async (data: any, dispatch: any) => {
       return response;
     }
   } catch (error: any) {
-    console.log("error in here", error);
     if (error.response) {
       dispatch({
         type: RESET_FAILURE,
@@ -167,14 +165,12 @@ export const ResetPassword = async (data: any, dispatch: any) => {
 export const editProfile = async (data: any, dispatch: any) => {
   try {
     dispatch({ type: EDIT_PROFILE_INIT });
-    console.log("data in here brother", data);
     const response = await apiClient.post("/auth/edit-profile", data);
     if (response.status === 200) {
       dispatch({ type: EDIT_PROFILE_SUCCESS, payload: response.data });
       return response;
     }
   } catch (error: any) {
-    console.log("error in here", error);
     if (error.response) {
       dispatch({
         type: EDIT_PROFILE_FAILURE,
@@ -254,14 +250,22 @@ export const getGlobalUser = async (data: any, dispatch: any) => {
   }
 };
 
-export const banUser = async (data:any) => {
+export const banUser = async (data: any) => {
   // console.log("data::::::::      ",data)
   try {
-    const response = await apiClient.post("/auth/ban-user", { userId:data.userId, isBanned:data.isBanned, banReason:data.banReason }, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
+    const response = await apiClient.post(
+      "/auth/ban-user",
+      {
+        userId: data.userId,
+        isBanned: data.isBanned,
+        banReason: data.banReason,
+      },
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      }
+    );
     return { status: response.status, data: response.data };
-  } catch (error:any) {
+  } catch (error: any) {
     console.error("Error banning user:", error.response?.data || error.message);
     throw error;
   }

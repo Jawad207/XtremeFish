@@ -44,7 +44,6 @@ export const CLEAR_NOTIFICATIONS_INIT = "CLEAR_NOTIFICATIONS_INIT";
 export const CLEAR_NOTIFICATIONS_SUCCESS = "CLEAR_NOTIFICATIONS_SUCCESS";
 export const CLEAR_NOTIFICATIONS_FAILURE = "CLEAR_NOTIFICATIONS_FAILURE";
 
-
 export const CREATE_URL_INIT = "CREATE_URL_INIT";
 export const CREATE_URL_SUCCESS = "CREATE_URL_SUCCESS";
 export const CREATE_URL_FAILURE = "CREATE_URL_FAILURE";
@@ -130,6 +129,34 @@ export const GET_TOPUSER_FAILURE = "GET_TOPUSER_FAILURE";
 export const GET_ACCOUNT_STATISTICS_INIT = "GET_ACCOUNT_STATISTICS_INIT";
 export const GET_ACCOUNT_STATISTICS_SUCCESS = "GET_ACCOUNT_STATISTICS_SUCCESS";
 export const GET_ACCOUNT_STATISTICS_FAILURE = "GET_ACCOUNT_STATISTICS_FAILURE";
+
+export const CREATE_SUBSCRIPTION_INIT = "CREATE_SUBSCRIPTION_INIT";
+export const CREATE_SUBSCRIPTION_SUCCESS = "CREATE_SUBSCRIPTION_SUCCESS";
+export const CREATE_SUBSCRIPTION_FAILURE = "CREATE_SUBSCRIPTION_FAILURE";
+
+export const CREATE_SUBSCRIPTIONHISTORY_INIT =
+  "CREATE_SUBSCRIPTIONHISTORY_INIT";
+export const CREATE_SUBSCRIPTIONHISTORY_SUCCESS =
+  "CREATE_SUBSCRIPTIONHISTORY_SUCCESS";
+export const CREATE_SUBSCRIPTIONHISTORY_FAILURE =
+  "CREATE_SUBSCRIPTIONHISTORY_FAILURE";
+
+export const GET_SUBSCRIPTION_INIT = "GET_SUBSCRIPTION_INIT";
+export const GET_SUBSCRIPTION_SUCCESS = "GET_SUBSCRIPTION_SUCCESS";
+export const GET_SUBSCRIPTION_FAILURE = "GET_SUBSCRIPTION_FAILURE";
+
+export const GET_SUBSCRIPTIONHISTORY_INIT = "GET_SUBSCRIPTIONHISTORY_INIT";
+export const GET_SUBSCRIPTIONHISTORY_SUCCESS =
+  "GET_SUBSCRIPTIONHISTORY_SUCCESS";
+export const GET_SUBSCRIPTIONHISTORY_FAILURE =
+  "GET_SUBSCRIPTIONHISTORY_FAILURE";
+
+export const GET_ADMINSUBSCRIPTIONHISTORY_INIT =
+  "GET_ADMINSUBSCRIPTIONHISTORY_INIT";
+export const GET_ADMINSUBSCRIPTIONHISTORY_SUCCESS =
+  "GET_ADMINSUBSCRIPTIONHISTORY_SUCCESS";
+export const GET_ADMINSUBSCRIPTIONHISTORY_FAILURE =
+  "GET_ADMINSUBSCRIPTIONHISTORY_FAILURE";
 
 export const DELETE_PROFILE_INIT = "DELETE_PROFILE_INIT";
 export const DELETE_PROFILE_SUCCESS = "DELETE_PROFILE_SUCCESS";
@@ -610,6 +637,77 @@ interface deleteUserFailureAction {
   type: typeof DELETE_PROFILE_FAILURE;
   payload: any;
 }
+
+interface postSubscriptioninitAction {
+  type: typeof CREATE_SUBSCRIPTION_INIT;
+}
+
+interface postSubscriptionsuccessAction {
+  type: typeof CREATE_SUBSCRIPTION_SUCCESS;
+  payload: any;
+}
+
+interface postSubscriptionfailureAction {
+  type: typeof CREATE_SUBSCRIPTION_FAILURE;
+  payload: any;
+}
+
+interface getSubscriptioninitAction {
+  type: typeof GET_SUBSCRIPTION_INIT;
+}
+
+interface getSubscriptionsuccessAction {
+  type: typeof GET_SUBSCRIPTION_SUCCESS;
+  payload: any;
+}
+
+interface getSubscriptionfailureAction {
+  type: typeof GET_SUBSCRIPTION_FAILURE;
+  payload: any;
+}
+
+interface postSubscriptionHistoryinitAction {
+  type: typeof CREATE_SUBSCRIPTIONHISTORY_INIT;
+}
+
+interface postSubscriptionHistorysuccessAction {
+  type: typeof CREATE_SUBSCRIPTIONHISTORY_SUCCESS;
+  payload: any;
+}
+
+interface postSubscriptionHistoryfailureAction {
+  type: typeof CREATE_SUBSCRIPTIONHISTORY_FAILURE;
+  payload: any;
+}
+
+interface getSubscriptionHistoryinitAction {
+  type: typeof GET_SUBSCRIPTIONHISTORY_INIT;
+}
+
+interface getSubscriptionHistorysuccessAction {
+  type: typeof GET_SUBSCRIPTIONHISTORY_SUCCESS;
+  payload: any;
+}
+
+interface getSubscriptionHistoryfailureAction {
+  type: typeof GET_SUBSCRIPTIONHISTORY_FAILURE;
+  payload: any;
+}
+
+interface getSubscriptionHistoryAdmininitAction {
+  type: typeof GET_ADMINSUBSCRIPTIONHISTORY_INIT;
+}
+
+interface getSubscriptionHistoryAdminsuccessAction {
+  type: typeof GET_ADMINSUBSCRIPTIONHISTORY_SUCCESS;
+  payload: any;
+}
+
+interface getSubscriptionHistoryAdminfailureAction {
+  type: typeof GET_ADMINSUBSCRIPTIONHISTORY_FAILURE;
+  payload: any;
+}
+
 export type AuthActionTypes =
   | LogOutAction
   | VerifyInitAction
@@ -715,4 +813,20 @@ export type DashActionTypes =
   | getAccountstatisticsFailureAction
   | clearNotificationsInitAction
   | clearNotificationsSuccessAction
-  | clearNotificationsFailureAction;
+  | clearNotificationsFailureAction
+  | postSubscriptioninitAction
+  | postSubscriptionsuccessAction
+  | postSubscriptionfailureAction
+  | getSubscriptioninitAction
+  | getSubscriptionsuccessAction
+  | getSubscriptionfailureAction
+  | getSubscriptionHistoryinitAction
+  | getSubscriptionHistorysuccessAction
+  | getSubscriptionfailureAction
+  | postSubscriptionHistoryinitAction
+  | postSubscriptionHistorysuccessAction
+  | postSubscriptionHistoryfailureAction
+  | getSubscriptionHistoryAdminfailureAction
+  | getSubscriptionHistoryAdmininitAction
+  | getSubscriptionHistoryfailureAction
+  | getSubscriptionHistoryAdminsuccessAction;

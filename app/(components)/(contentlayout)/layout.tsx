@@ -11,41 +11,37 @@ import { useSelector } from "react-redux";
 const Layout = ({ children }: any) => {
   const [loading, setLoading] = useState(true); // For waiting on auth check
   const router = useRouter();
-  const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
-  const user = useSelector((state:any)=>state.auth.user)
-  console.log("User in here:         ",user)
-  const isVerified = user?.is2FAverified
-  const isBanned = user?.isBanned
+  const isAuthenticated = useSelector(
+    (state: any) => state.auth.isAuthenticated
+  );
+  const user = useSelector((state: any) => state.auth.user);
+  const isVerified = user?.is2FAverified;
+  const isBanned = user?.isBanned;
   useEffect(() => {
-    if(isAuthenticated == undefined) {
-      console.log('still figuring out')
+    if (isAuthenticated == undefined) {
     }
-    if(isVerified == undefined) {
-      console.log('still figuring out')
+    if (isVerified == undefined) {
     }
-    if(isBanned == undefined) {
-      console.log('still figuring out')
+    if (isBanned == undefined) {
     }
 
     if (!isAuthenticated) {
-
       // Redirect to login page if not authenticated
       router.push("/");
     } else {
       // Allow page to load once auth is confirmed
       setLoading(false);
     }
-    if (user?.is2FAEnabled&&!isVerified) {
-
+    if (user?.is2FAEnabled && !isVerified) {
       // Redirect to login page if not authenticated
       router.push("/");
     } else {
       // Allow page to load once auth is confirmed
       setLoading(false);
     }
-    if(isBanned){
+    if (isBanned) {
       router.push("/");
-    }else{
+    } else {
       setLoading(false);
     }
   }, [isAuthenticated, router, isVerified]);

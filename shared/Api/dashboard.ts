@@ -46,8 +46,8 @@ import {
   DELETE_NOTIFICATIONS_INIT,
   DELETE_NOTIFICATIONS_SUCCESS,
   DELETE_NOTIFICATIONS_FAILURE,
-  CLEAR_NOTIFICATIONS_INIT, 
-  CLEAR_NOTIFICATIONS_SUCCESS, 
+  CLEAR_NOTIFICATIONS_INIT,
+  CLEAR_NOTIFICATIONS_SUCCESS,
   CLEAR_NOTIFICATIONS_FAILURE,
   DELETE_ACCOUNTS_INIT,
   DELETE_ACCOUNTS_FAILURE,
@@ -73,6 +73,21 @@ import {
   GET_GLOBAL_LOGINATTEMPT_INIT,
   GET_GLOBAL_LOGINATTEMPT_SUCCESS,
   GET_GLOBAL_LOGINATTEMPT_FAILURE,
+  CREATE_SUBSCRIPTION_INIT,
+  CREATE_SUBSCRIPTION_SUCCESS,
+  CREATE_SUBSCRIPTION_FAILURE,
+  CREATE_SUBSCRIPTIONHISTORY_INIT,
+  CREATE_SUBSCRIPTIONHISTORY_SUCCESS,
+  CREATE_SUBSCRIPTIONHISTORY_FAILURE,
+  GET_SUBSCRIPTIONHISTORY_INIT,
+  GET_SUBSCRIPTIONHISTORY_SUCCESS,
+  GET_SUBSCRIPTIONHISTORY_FAILURE,
+  GET_SUBSCRIPTION_INIT,
+  GET_SUBSCRIPTION_SUCCESS,
+  GET_SUBSCRIPTION_FAILURE,
+  GET_ADMINSUBSCRIPTIONHISTORY_INIT,
+  GET_ADMINSUBSCRIPTIONHISTORY_SUCCESS,
+  GET_ADMINSUBSCRIPTIONHISTORY_FAILURE,
 } from "../redux/types";
 
 export const getAlluserCount = async (dispatch: any) => {
@@ -586,7 +601,10 @@ export const getGlobalLoginAttempts = async (data: any, dispatch: any) => {
 
     // If the request was successful
     if (response.status === 200) {
-      dispatch({ type: GET_GLOBAL_LOGINATTEMPT_SUCCESS, payload: response.data });
+      dispatch({
+        type: GET_GLOBAL_LOGINATTEMPT_SUCCESS,
+        payload: response.data,
+      });
     }
     return response.data.loginAttempts;
   } catch (error: any) {
@@ -922,5 +940,211 @@ export const getAccountsStatistics = async (dispatch: any) => {
       });
       return error.message;
     }
+  }
+};
+
+export const createSubscription = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: CREATE_SUBSCRIPTION_INIT });
+    const response = await apiClient.post(
+      `/dashboard/createSubscription`,
+      data
+    );
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({
+        type: CREATE_SUBSCRIPTION_SUCCESS,
+        payload: response.data,
+      });
+    }
+
+    return response.data;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: CREATE_SUBSCRIPTION_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error("Get ACCOUNT STATICS failed:", error.response.data.message);
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: CREATE_SUBSCRIPTION_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const createSubscriptionHistory = async (data: any, dispatch: any) => {
+  try {
+    dispatch({ type: CREATE_SUBSCRIPTIONHISTORY_INIT });
+    const response = await apiClient.post(
+      `/dashboard/createSubscriptionHistory`,
+      data
+    );
+    if (response.status === 201) {
+      dispatch({
+        type: CREATE_SUBSCRIPTIONHISTORY_SUCCESS,
+        payload: response.data,
+      });
+    }
+
+    return response;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.status == 409) {
+      return error;
+    }
+    if (error.response) {
+      dispatch({
+        type: CREATE_SUBSCRIPTIONHISTORY_FAILURE,
+        payload: error.response.data.message,
+      });
+      console.error(
+        "create subscription history failed:",
+        error.response.data.message
+      );
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: CREATE_SUBSCRIPTIONHISTORY_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const getSubscription = async (dispatch: any) => {
+  try {
+    dispatch({ type: GET_SUBSCRIPTION_INIT });
+    const response = await apiClient.get(`/dashboard/getSubscriptions`);
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({
+        type: GET_SUBSCRIPTION_SUCCESS,
+        payload: response?.data?.subscriptions,
+      });
+    }
+    return response.data;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_SUBSCRIPTION_FAILURE,
+        payload: error.response.data.message,
+      });
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_SUBSCRIPTION_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const getSubscriptionHistory = async (userId: any, dispatch: any) => {
+  try {
+    dispatch({ type: GET_SUBSCRIPTIONHISTORY_INIT });
+    const response = await apiClient.get(
+      `/dashboard/getMySubscriptionsHistory`,
+      { params: { userId } }
+    );
+
+    // If the request was successful
+    if (response.status === 200) {
+      dispatch({
+        type: GET_SUBSCRIPTIONHISTORY_SUCCESS,
+        payload: response?.data?.subscriptionHistories,
+      });
+    }
+
+    return response.data;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_SUBSCRIPTIONHISTORY_FAILURE,
+        payload: error.response.data.message,
+      });
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_SUBSCRIPTIONHISTORY_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const getSubscriptionHistoryAdmin = async (
+  adminId: any,
+  dispatch: any
+) => {
+  try {
+    dispatch({ type: GET_ADMINSUBSCRIPTIONHISTORY_INIT });
+    const response = await apiClient.get(
+      `/dashboard/getAdminSubscriptionHistory`,
+      {
+        params: {
+          adminId,
+        },
+      }
+    );
+
+    // If the request was successful
+    if (response.status === 200) {
+      console.log('response at the api', response?.data?.subscriptionHistories)
+      dispatch({
+        type: GET_ADMINSUBSCRIPTIONHISTORY_SUCCESS,
+        payload: response?.data?.subscriptionHistories,
+      });
+    }
+
+    return response.data;
+  } catch (error: any) {
+    // Handle server or network errors
+    if (error.response) {
+      dispatch({
+        type: GET_ADMINSUBSCRIPTIONHISTORY_FAILURE,
+        payload: error.response.data.message,
+      });
+      return error.response.data.message;
+    } else {
+      console.error("Error:", error.message);
+      dispatch({
+        type: GET_ADMINSUBSCRIPTIONHISTORY_FAILURE,
+        payload: error.message,
+      });
+      return error.message;
+    }
+  }
+};
+
+export const fetchUsers = async () => {
+  try {
+    const response = await apiClient.get("/dashboard/users");
+    if (response?.status !== 200) {
+      console.error("Failed to fetch users:", response.statusText);
+      return [];
+    }
+
+    const data = await response.data;
+    return data.users || [];
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return [];
   }
 };

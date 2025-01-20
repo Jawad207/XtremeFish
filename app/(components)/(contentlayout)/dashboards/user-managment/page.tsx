@@ -2,21 +2,20 @@
 import Seo from "@/shared/layout-components/seo/seo";
 import React, { Fragment, useEffect, useState } from "react";
 import { Card, Col, Row, Pagination, Button } from "react-bootstrap";
-import { SquarePlus, Trash2, Pencil } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { FaSpinner } from "react-icons/fa";
-
 import Popup from "@/components/Popup";
-import { deleteProfile, editProfile, getGlobalUser, banUser } from "@/shared/Api/auth";
+import { deleteProfile, getGlobalUser, banUser } from "@/shared/Api/auth";
+import { createSubscriptionHistory } from "@/shared/Api/dashboard";
 
 function page() {
-  
   const dispatch = useDispatch();
   const allUsers = useSelector((state: any) => state.auth.allUsers);
-  console.log("allUsers: ",allUsers);
   const allUsersCount = useSelector((state: any) => state.auth.allUsersCount);
   const loading = useSelector((state: any) => state.auth.loading);
+  const subscriptions = useSelector((state: any) => state.dash.subscriptions);
   const [showPopup, setShowPopup] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -27,9 +26,7 @@ function page() {
   const [postPopup, setPostPopup] = useState(true);
   const [userValue, setUserValue] = useState({});
   const [userForBan, setUserForBan] = useState({});
-  console.log("user for ban:      ",userForBan)
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
 
   const getAllUser = async (data: any) => {
     await getGlobalUser(data, dispatch);
@@ -53,28 +50,33 @@ function page() {
 
   const handleUpdate = (user: any) => {
     setUpdate(user?._id);
-    setUserValue({userName: user?.userName, email: user?.email, password: "", bio: user?.bio});
+    setUserValue({
+      userName: user?.userName,
+      email: user?.email,
+      password: "",
+      bio: user?.bio,
+    });
     handleOpenPopup();
   };
 
-  const handleReasonValue = (e:any) => {
+  const handleReasonValue = (e: any) => {
     setReasonValue(e.target.value);
   };
 
-  const handleSubmit = async (user:any) => {
+  const handleSubmit = async (user: any) => {
     const response = await banUser({
       userId: user?._id,
       banReason: reasonValue,
       isBanned: true,
     });
     // console.log(response.status)
-      if(response?.status===200){
-        setShowPopup(false);
-        window.location.reload();
-      }
+    if (response?.status === 200) {
+      setShowPopup(false);
+      window.location.reload();
+    }
   };
 
-  const handleUnban = async (user:any) => {
+  const handleUnban = async (user: any) => {
     // console.log("user for unban:          ",user)
     const response = await banUser({
       userId: user?._id,
@@ -82,69 +84,105 @@ function page() {
       banReason: "", // Clear the ban reason
     });
     // console.log("response:     ",response.status)
-    if(response?.status===200){
+    if (response?.status === 200) {
       window.location.reload();
     }
-  }
+  };
 
+  const handleAssignSubscription = async (user: any, subscriptionId: any) => {
+    let selectedSubscription = subscriptions.filter(
+      (sub: any) => sub?._id == subscriptionId
+    );
+    selectedSubscription = selectedSubscription[0];
+    // if (!subscriptionId) {
+    //   alert("Please select a subscription.");
+    //   return;
+    // }
 
+    try {
+      const payload = {
+        userId: user._id,
+        subscriptionId,
+        startDate: new Date(),
+        expireDate: new Date(
+          new Date().setMonth(
+            new Date().getMonth() + selectedSubscription.duration
+          )
+        ),
+        active: true,
+        redeem: selectedSubscription?.type == "redeem" ? true : false, // Update as required
+      };
+      const response = await createSubscriptionHistory(payload, dispatch);
+
+      if (response.status === 201) {
+        alert("Subscription assigned successfully.");
+      } else if (response.status === 409) {
+        alert(response.response.data.message);
+        return;
+      }
+    } catch (error: any) {
+      alert("Failed to assign subscription. Please try again.");
+    }
+  };
 
   return (
     <Fragment>
-      {showPopup&&<div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center  z-50">
-              <div className="bg-white rounded-lg w-full max-w-xl p-6 relative shadow-lg">
-                  <button
-                    onClick={() => setShowPopup(false)}
-                    className="absolute top-4 right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 h-8 w-8 flex items-center justify-center rounded-full shadow z-50"
-                  >
-                    &times;
-                  </button>
-                  <div
-                    className="p-0 border-0"
-                  >
-                    <Card className="custom-card overflow-hidden">
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center  z-50">
+          <div className="bg-white rounded-lg w-full max-w-xl p-6 relative shadow-lg">
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-4 right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 h-8 w-8 flex items-center justify-center rounded-full shadow z-50"
+            >
+              &times;
+            </button>
+            <div className="p-0 border-0">
+              <Card className="custom-card overflow-hidden">
                 <div className="verify-token-section py-4 px-5">
-                    <form>
-                      <div className="mb-3">
-                        <label htmlFor="banReason">Enter ban reason</label>
-                        <input
-                          type="text"
-                          id="banReason"
-                          className="form-control"
-                          value={reasonValue}
-                          onChange={handleReasonValue}
-                          placeholder="Enter ban reason"
-                        />
-                      </div>
-                      {error && (
-                        <p className="text-danger text-center mb-4">{error}</p>
-                      )}
-                      <div className="d-flex justify-content-center">
-                        {loading?(<button
+                  <form>
+                    <div className="mb-3">
+                      <label htmlFor="banReason">Enter ban reason</label>
+                      <input
+                        type="text"
+                        id="banReason"
+                        className="form-control"
+                        value={reasonValue}
+                        onChange={handleReasonValue}
+                        placeholder="Enter ban reason"
+                      />
+                    </div>
+                    {error && (
+                      <p className="text-danger text-center mb-4">{error}</p>
+                    )}
+                    <div className="d-flex justify-content-center">
+                      {loading ? (
+                        <button
                           className="btn btn-primary"
                           type="button"
                           disabled
                         >
                           <FaSpinner className="spinner-border spinner-border-sm" />{" "}
                           loading...
-                        </button>):
-                        (<button
+                        </button>
+                      ) : (
+                        <button
                           type="button"
                           className="btn btn-success w-auto"
-                          onClick={()=>{
-                            handleSubmit(userForBan)
+                          onClick={() => {
+                            handleSubmit(userForBan);
                           }}
                         >
                           Submit
                         </button>
-                        )}
-                      </div>
-                    </form>
-                  </div>
-                    </Card>
-                  </div>
+                      )}
+                    </div>
+                  </form>
                 </div>
-              </div>}
+              </Card>
+            </div>
+          </div>
+        </div>
+      )}
       <Seo title={"user-management"} />
       <Row>
         <Col xl={12}>
@@ -182,20 +220,24 @@ function page() {
                     <th>Email</th>
                     {/* <th>Password</th> */}
                     <th>Date</th>
+                    <th>Subscription History</th>
                     <th>Actions</th>
                     <th>Ban User</th>
                   </thead>
                   <tbody>
-                  {allUsers?.slice()
+                    {allUsers
+                      ?.slice()
                       .sort(
-                        (a: any, b: any) => 
+                        (a: any, b: any) =>
                           new Date(b.createdAt).getTime() -
                           new Date(a.createdAt).getTime()
-                        )
+                      )
                       .map((user: any) => (
                         <tr
                           key={user._id}
-                          className={user.role === 'admin' ? 'text-blue-500' : ''}
+                          className={
+                            user.role === "admin" ? "text-blue-500" : ""
+                          }
                         >
                           <td>
                             <img
@@ -207,17 +249,38 @@ function page() {
                               className="avatar avatar-xs avatar-rounded mb-1"
                             />
                           </td>
-                          <td>
-                            {user?.userName}
-                          </td>
+                          <td>{user?.userName}</td>
                           <td>{user && <span>{user?.email}</span>}</td>
                           <td>
                             <div className="btn-list">
-                              {moment(user?.createdAt).format("ddd, MMM DD, YYYY, hh:mm A")}
+                              {moment(user?.createdAt).format(
+                                "ddd, MMM DD, YYYY, hh:mm A"
+                              )}
                             </div>
                           </td>
                           <td>
-                            <div className="flex py-2 justify-start gap-2 ">
+                            {!user?.isBanned && (
+                              <select
+                                className="form-select"
+                                onChange={(e) =>
+                                  handleAssignSubscription(user, e.target.value)
+                                }
+                                defaultValue=""
+                              >
+                                <option value="" disabled>
+                                  Select Subscription
+                                </option>
+                                {subscriptions?.map((sub: any) => (
+                                  <option key={sub._id} value={sub._id}>
+                                    {sub.type} - {sub.duration} months - $
+                                    {sub.amount}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                          </td>
+                          <td>
+                            <div className="flex py-2 justify-start gap-2">
                               <button
                                 className="text-red-500 mr-2"
                                 onClick={() => filterPosts(user)}
@@ -233,24 +296,26 @@ function page() {
                             </div>
                           </td>
                           <td>
-  {user?.role === "basic" && (
-    <Button
-      className={`w-20 ${
-        user?.isBanned ? "btn-success text-white" : "bg-blue-500 text-white"
-      } py-2 rounded`}
-      onClick={() => {
-        if (user?.isBanned) {
-          handleUnban(user);
-        } else {
-          setShowPopup(true);
-          setUserForBan(user);
-        }
-      }}
-    >
-      {user?.isBanned ? "Unban" : "Ban"}
-    </Button>
-  )}
-</td>
+                            {user?.role === "basic" && (
+                              <Button
+                                className={`w-20 ${
+                                  user?.isBanned
+                                    ? "btn-success text-white"
+                                    : "bg-blue-500 text-white"
+                                } py-2 rounded`}
+                                onClick={() => {
+                                  if (user?.isBanned) {
+                                    handleUnban(user);
+                                  } else {
+                                    setShowPopup(true);
+                                    setUserForBan(user);
+                                  }
+                                }}
+                              >
+                                {user?.isBanned ? "Unban" : "Ban"}
+                              </Button>
+                            )}
+                          </td>
                         </tr>
                       ))}
                   </tbody>

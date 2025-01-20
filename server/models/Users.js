@@ -2,15 +2,6 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 
-//subscription will be object
-// {
-//   startDate,
-//   expireDate,
-//   duration,
-//   type, //basic pro premium
-//   active,
-//   need suggestion
-// }
 
 const userSchema = new mongoose.Schema(
   {
@@ -19,7 +10,7 @@ const userSchema = new mongoose.Schema(
     coverImage: { type: String },
     userName: { type: String, required: false },
     password: { type: String, required: false, default: null },
-    role: {type: String, default: "basic"},//we can have multiple roles here basic, premium ,admin
+    role: {type: String, default: ""},//we can have multiple roles here basic, premium ,admin
     bio: { type: String, required: false, default: "" },
     isVerified: { type: Boolean, default: false },
     otp: { type: Number, default: 0 },
@@ -34,7 +25,6 @@ const userSchema = new mongoose.Schema(
     is2FAEnabled:{type: Boolean, default:false},
     twoFactorSecret:{ type:String, default:null},
     is2FAverified:{type: Boolean, default:false},
-    subscription: {type: Object, default: {}},
     isBanned:{type:Boolean, default:false},
     banReason:{type:String, default:""},
   },

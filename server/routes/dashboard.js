@@ -3,6 +3,11 @@ import { dashboard } from "../controllers/Dashboard.js";
 
 const router = express.Router();
 router.get("/getAllUser", dashboard.getAllUser);
+router.post("/createSubscription", dashboard.createSubscription);
+router.get("/getSubscriptions", dashboard.getSubscriptions);
+router.post("/createSubscriptionHistory", dashboard.createSubscriptionHistory);
+router.get("/getAdminSubscriptionHistory", dashboard.getSubscriptionsHistoryForAdmin);
+router.get("/getMySubscriptionsHistory", dashboard.getMySubscriptionsHistory);
 router.get("/getTodayUsers", dashboard.getTodayUsers);
 router.get("/getLoginAttempts", dashboard.getAllLoginAttempts);
 router.get("/getGlobalLoginAttempts", dashboard.getGlobalLoginAttempts);
@@ -37,5 +42,6 @@ router.post("/postIp", dashboard.postIp);
 router.get("/getIps", dashboard.getIps);
 router.delete("/deleteIp", dashboard.deleteIp);
 router.get("/getTopUsers", dashboard.getTopUsersWithMostAccounts);
+router.get('/users', dashboard.getAllUsers);
 
 export default router;

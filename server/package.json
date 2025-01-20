@@ -31,6 +31,10 @@
     "passport": "^0.7.0",
     "qrcode": "^1.5.4",
     "request-ip": "^3.3.0",
+    "socket.io": "^4.8.1",
     "speakeasy": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/socket.io": "^3.0.2"
   }
 }

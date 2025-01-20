@@ -14,6 +14,7 @@ import {
   getTodayuserCount,
   getAccountsStatistics,
   getGlobalLoginAttempts,
+  getSubscription
 } from "@/shared/Api/dashboard";
 import moment from "moment";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -99,6 +100,7 @@ const Home = () => {
   };
   const getAllPosts = async () => {
     await getPosts(dispatch);
+    await getSubscription(dispatch)
   };
   const getAllReviews = async () => {
     await getReviews(dispatch);

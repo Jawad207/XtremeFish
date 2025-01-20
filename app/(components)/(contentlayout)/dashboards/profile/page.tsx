@@ -167,7 +167,7 @@ const Profile = () => {
                   <Nav.Item role="presentation">
                     <Dropdown>
                       <Dropdown.Toggle className="nav-link" variant="" id="dropdown-basic">
-                        Skip Pages
+                        Toggle Pages
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         {pages.map((page, index) => (

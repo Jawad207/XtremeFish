@@ -1,64 +1,122 @@
 "use client";
 import Pageheader from "@/shared/layout-components/page-header/pageheader";
 import Seo from "@/shared/layout-components/seo/seo";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Button, Col, Nav, Row, Tab, Form, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { editProfile } from "@/shared/Api/auth";
 import moment from "moment";
 import { FaSpinner } from "react-icons/fa";
 import Success from "@/components/SuccessPop";
+import { createSubscriptionHistory, createSubscription } from "@/shared/Api/dashboard";
 
 const SubscriptionPage = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const [popUptext, setpopUptext] = useState({ title: "", desc: "" });
   const auth = useSelector((state: any) => state.auth);
-  const [loading, setLoading] = useState(null);
+  const subscriptions = useSelector((state: any) => state.dash.subscriptions);
+  const [loading, setLoading] = useState(false);
+  const [plans, setPlans] = useState([]);
+  const [redeemCode, setRedeemCode] = useState('');
+  const [duration, setDuration] = useState('');
+  const [amount, setAmount] = useState('');
+  const [type, setType] = useState("");
   const [selectedPlan, setSelectedPlan] = useState(
     auth?.user?.subscription?.type ?? "Basic"
   );
 
-  const updateSubscription = async (type: any, duration: any) => {
-    let expireDate;
-    let currentDate = new Date();
-
-    expireDate = new Date(currentDate);
-
-    expireDate.setMonth(currentDate.getMonth() + duration);
-    const payload = {
-      startDate: currentDate,
-      expireDate,
-      type,
-      duration,
-      active: true,
-    };
-    setLoading(type);
-    const profile = await editProfile(
-      { ...auth?.user, subscription: payload },
-      dispatch
+  useEffect(() => {
+    const updatedSubscriptions = subscriptions.filter(
+      (sub: any) => sub?.type != "redeem"
     );
-    if (profile?.status == 200) {
-      setOpen(true);
-      setTimeout(() => {
-        setOpen(false)
-      }, 2000);
-      setLoading(null);
+    setPlans(updatedSubscriptions);
+  }, [subscriptions]);
+
+  const updateSubscription = async (
+    type: any,
+    duration: any,
+    subscriptionId: any
+  ) => {
+    try {
+      let expireDate;
+      let currentDate = new Date();
+
+      expireDate = new Date(currentDate);
+
+      expireDate.setMonth(currentDate.getMonth() + duration);
+      const payload = {
+        userId: auth?.user?._id,
+        subscriptionId,
+        startDate: currentDate,
+        expireDate,
+        active: true,
+        redeem: false,
+      };
+      setLoading(type);
+      const result: any = await createSubscriptionHistory(payload, dispatch);
+      if (result?.status == 201) {
+        setOpen(true);
+        setpopUptext({
+          title: "🎉 Congratulations",
+          desc: "Your subscription has been activated successfully. Enjoy exclusive features and benefits!",
+        });
+        setTimeout(() => {
+          setOpen(false);
+        }, 2000);
+        setLoading(false);
+      } else if (result?.status == 409) {
+        setOpen(true);
+        setpopUptext({
+          title: "🛑 Data Conflict Alert",
+          desc: result?.response?.data?.message ?? result.message,
+        });
+        setTimeout(() => {
+          setOpen(false);
+        }, 2000);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log("error while procedding", error);
     }
   };
 
-  const handleRedeemCode = ()=> {
+  // console.log(auth?.user?._id)
 
-  }
+  const handleSubmit = async () => {
+    // // Validate fields before submission
+    // if (!type || !duration || !amount || (type === "redeem" && !redeemCode)) {
+    //   alert("Please fill in all required fields.");
+    //   return;
+    // }
+
+    // const payload = {
+    //   type,
+    //   createdBy: auth?.user?._id,
+    //   duration,
+    //   amount,
+    //   redeemCode: type === "redeem" ? redeemCode : undefined,
+    // };
+
+    // const response = await createSubscription(payload, dispatch);
+    // console.log("Response:", response);
+
+    // if (response.message === "Subscription created successfully.") {
+    //   alert("Subscription created!");
+    // } else {
+    //   alert("Failed to create subscription.");
+    // }
+  };
 
   return (
     <Fragment>
+      <Seo title={"Subscription"} />
       <Success
         isOpen={open}
-        title={"🎉 Congratulations!"}
-        description={"Your subscription has been activated successfully. Enjoy exclusive features and benefits!"}
+        title={popUptext?.title}
+        description={popUptext?.desc}
       />
       {/* Page Header */}
-      <Seo title={"Subscription"} />
       <Pageheader
         Heading="Pricing"
         Pages={[
@@ -71,121 +129,146 @@ const SubscriptionPage = () => {
 
       {/* Start:: row-1 */}
       <div className="row d-flex align-items-center justify-content-center mb-5">
-        <Col lg={8} xl={4} xxl={4} md={8} sm={12} className="">
-          <div
-            className={`card custom-card pricing-card cursor-pointer ${
-              selectedPlan == "Basic" ? "hover" : ""
-            }`}
-            onClick={() => setSelectedPlan("Basic")}
-          >
-            <div className="card-body p-5">
-              <div className="text-center">
-                <h4 className="fw-medium mb-1">Basic</h4>
-                <span className="mb-1 text-muted d-block">
-                  Essential features for a magical start
-                </span>
-                <h2 className="mb-0 fw-bold d-block text-gradient">
-                  $35/
-                  <span className="fs-12 text-default fw-medium ms-1">
-                    Price Per Month
-                  </span>
-                </h2>
-              </div>
-              <hr className="border-top my-4" />
-              <ul className="list-unstyled pricing-body">
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto flex-fill">
-                      Unlimited Support
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto">Always Updated Links</span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto flex-fill">
-                      Database lookup
-                    </span>
-                    <span className="badge bg-light text-default rounded-pill border">
-                      <i className="ri-flashlight-fill text-warning me-1"></i>
-                      coming soon
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto">Subscriber rank</span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto">Instant Support</span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto flex-fill">Url Shortner</span>
-                    <span className="text-muted fs-12 fw-medium">
-                      Coming Soon
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex align-items-center">
-                    <span className="avatar avatar-xs svg-success">
-                      <i className="ti ti-check text-success fs-18"></i>
-                    </span>
-                    <span className="ms-2 my-auto flex-fill">Mailer tool</span>
-                    <span className="text-muted fs-12 fw-medium">
-                      Coming Soon
-                    </span>
-                  </div>
-                </li>
-              </ul>
-              <hr className="border-top my-4" />
+        {plans && plans?.length
+          ? plans.map((plan: any) => (
+              <Col lg={8} xl={4} xxl={4} md={8} sm={12} className="">
+                <div
+                  className={`card custom-card pricing-card cursor-pointer ${
+                    selectedPlan == plan?.type ? "hover" : ""
+                  }`}
+                  onClick={() => setSelectedPlan(plan?.type)}
+                >
+                  <div className="card-body p-5">
+                    <div className="text-center">
+                      {plan?.type == "pro" && (
+                        <div className="ribbon-2 ribbon-primary ribbon-right">
+                          Best Plan
+                        </div>
+                      )}
+                      <h4 className="fw-medium mb-1">
+                        {plan?.type?.toUpperCase()}
+                      </h4>
+                      <span className="mb-1 text-muted d-block">
+                        Essential features for a magical start
+                      </span>
+                      <h2 className="mb-0 fw-bold d-block text-gradient">
+                        ${plan?.amount}/
+                        <span className="fs-12 text-default fw-medium ms-1">
+                          {plan?.duration == 1
+                            ? "Price Per Month"
+                            : `Price for ${plan?.duration} Month`}
+                        </span>
+                      </h2>
+                    </div>
+                    <hr className="border-top my-4" />
+                    <ul className="list-unstyled pricing-body">
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto flex-fill">
+                            Unlimited Support
+                          </span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto">
+                            Always Updated Links
+                          </span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto flex-fill">
+                            Database lookup
+                          </span>
+                          <span className="badge bg-light text-default rounded-pill border">
+                            <i className="ri-flashlight-fill text-warning me-1"></i>
+                            coming soon
+                          </span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto">Subscriber rank</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto">Instant Support</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto flex-fill">
+                            Url Shortner
+                          </span>
+                          <span className="text-muted fs-12 fw-medium">
+                            Coming Soon
+                          </span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-xs svg-success">
+                            <i className="ti ti-check text-success fs-18"></i>
+                          </span>
+                          <span className="ms-2 my-auto flex-fill">
+                            Mailer tool
+                          </span>
+                          <span className="text-muted fs-12 fw-medium">
+                            Coming Soon
+                          </span>
+                        </div>
+                      </li>
+                    </ul>
+                    <hr className="border-top my-4" />
 
-              <Button
-                variant=""
-                type="button"
-                className="btn btn-lg btn-outline-primary d-grid w-100 btn-wave"
-                onClick={() => updateSubscription("basic", 1)}
-              >
-                {loading == "basic" ? (
-                  <span className="ms-4 me-4">
-                    {" "}
-                    <FaSpinner className="spinner-border spinner-border-sm" />{" "}
-                    Loading...
-                  </span>
-                ) : (
-                  <span className="ms-4 me-4">Start Today</span>
-                )}
-              </Button>
-            </div>
-          </div>
-        </Col>
-        <Col lg={8} xl={4} xxl={4} md={8} sm={12} className="">
+                    <Button
+                      variant=""
+                      type="button"
+                      className={`btn btn-lg ${
+                        plan?.type == "pro"
+                          ? "btn-primary-gradient"
+                          : "btn-outline-primary"
+                      } d-grid w-100 btn-wave`}
+                      onClick={() =>
+                        updateSubscription(plan.type, plan.duration, plan?._id)
+                      }
+                    >
+                      {loading == plan.type ? (
+                        <span className="ms-4 me-4">
+                          {" "}
+                          <FaSpinner className="spinner-border spinner-border-sm" />{" "}
+                          Loading...
+                        </span>
+                      ) : (
+                        <span className="ms-4 me-4">Start Today</span>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </Col>
+            ))
+          : null}
+        {/* <Col lg={8} xl={4} xxl={4} md={8} sm={12} className="">
           <div
             className={`card custom-card pricing-card cursor-pointer ${
               selectedPlan == "Pro" ? "hover" : ""
@@ -413,44 +496,95 @@ const SubscriptionPage = () => {
               </Button>
             </div>
           </div>
-        </Col>
+        </Col> */}
       </div>
-      <div
-        className="p-0 border-0"
-      >
-        <Card className="custom-card shadow-sm">
-          <Card.Body className="p-4">
-            <li className="list-group-item p-4 my-3">
-              <span className="fw-bold fs-16 d-block mb-4">
-                Redeem Your Code
-              </span>
-              <div className="row gy-3 align-items-center">
-                <Col xl={8} lg={8} md={8} sm={12}>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter your redeem code"
-                    id="redeemCode"
-                  />
-                </Col>
-                <Col xl={4} lg={4} md={4} sm={12}>
-                  <button
-                    type="button"
-                    className="btn btn-primary w-100"
-                    onClick={() => handleRedeemCode()}
-                  >
-                    Submit
-                  </button>
-                </Col>
-              </div>
-            </li>
-            <div className="flex gap-2 py-2">
-              <p>Your redeem code is:</p>
-              <p>896757</p>
-            </div>
-          </Card.Body>
-        </Card>
+      <div className="d-flex justify-content-center align-items-center bg-light">
+  <div className="card custom-card shadow-lg border-0" style={{ maxWidth: "1000px", width: "100%" }}>
+    <div className="card-body p-4">
+      <h4 className="fw-bold text-center mb-4">Create a New Subscription</h4>
+
+      {/* Subscription Type */}
+      {/* <div className="mb-3">
+        <label htmlFor="type" className="form-label fw-semibold">
+          Subscription Type
+        </label>
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="form-select"
+          id="type"
+        >
+          <option value="">Select Type</option>
+          <option value="basic">Basic</option>
+          <option value="pro">Pro</option>
+          <option value="premium">Premium</option>
+        </select>
+      </div> */}
+
+      {/* Duration (in months) */}
+      <div className="mb-3">
+        <label htmlFor="duration" className="form-label fw-semibold">
+          Duration (in months)
+        </label>
+        <input
+          type="number"
+          value={duration}
+          onChange={(e) => setDuration(e.target.value)}
+          className="form-control"
+          placeholder="Enter duration in months"
+          id="duration"
+          min="1"
+        />
       </div>
+
+      {/* Amount */}
+      <div className="mb-3">
+        <label htmlFor="amount" className="form-label fw-semibold">
+          Amount
+        </label>
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="form-control"
+          placeholder="Enter amount"
+          id="amount"
+          min="1"
+        />
+      </div>
+        <div className="mb-3">
+          <label htmlFor="redeemCode" className="form-label fw-semibold">
+            Redeem Code
+          </label>
+          <input
+            type="text"
+            value={redeemCode}
+            onChange={(e) => setRedeemCode(e.target.value)}
+            className="form-control"
+            placeholder="Enter redeem code"
+            id="redeemCode"
+          />
+        </div>
+      <div className="text-center">
+        <button
+          type="button"
+          className="btn btn-primary px-5 py-2"
+          onClick={handleSubmit}
+          disabled={loading} // Disable when loading
+        >
+          {loading ? (
+            <>
+              <i className="spinner-border spinner-border-sm me-2"></i>
+              Processing...
+            </>
+          ) : (
+            "Submit"
+          )}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
       {/* End:: row-1 */}
 
       {/* Start:: row-3 */}
