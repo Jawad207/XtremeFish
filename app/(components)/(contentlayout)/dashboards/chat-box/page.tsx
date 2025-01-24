@@ -8,6 +8,7 @@ import { Trash2 } from "lucide-react";
 import { fetchUsers, fetchMessages } from "@/shared/Api/dashboard";
 import { Button } from "react-bootstrap";
 import { Smile } from "lucide-react";
+import Pageheader from "@/shared/layout-components/page-header/pageheader";
 
 
 const Chat: React.FC = () => {
@@ -138,12 +139,20 @@ const Chat: React.FC = () => {
 
   return (
     <div className=" mt-3 flex flex-col h-screen bg-transparent">
-        <h2 className="text-2xl">Chat</h2>
+        {/* <h2 className="text-2xl">Chat</h2>
         <div className="flex items-center gap-3 mb-2">
           <h2 className="text-blue-500 text-lg">pages</h2>
           <h2>{">>"}</h2>
           <h2 className="text-lg">Chat</h2>
-        </div>
+        </div> */}
+        <Pageheader
+        Heading="Chat"
+        Pages={[
+          { title: "pages", active: true },
+          { title: "Chat", active: false },
+        ]}
+        v2={false}
+      />
       <div className="w-full bg-[#19191c] rounded-md shadow-md p-6">
       <div className="overflow-y-auto border border-gray-300 p-3 mb-4 h-[calc(100vh-300px)]">
           {messages.map((message, index) => (
