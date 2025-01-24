@@ -1053,13 +1053,49 @@ export const getSubscription = async (dispatch: any) => {
   }
 };
 
-export const getSubscriptionHistory = async (userId: any, dispatch: any) => {
+// export const getSubscriptionHistory = async (userId: any, dispatch: any) => {
+//   try {
+//     dispatch({ type: GET_SUBSCRIPTIONHISTORY_INIT });
+//     const response = await apiClient.get(
+//       `/dashboard/getMySubscriptionsHistory`,
+//       { params: { userId } }
+//     );
+
+//     // If the request was successful
+//     if (response.status === 200) {
+//       dispatch({
+//         type: GET_SUBSCRIPTIONHISTORY_SUCCESS,
+//         payload: response?.data?.subscriptionHistories,
+//       });
+//     }
+
+//     return response.data;
+//   } catch (error: any) {
+//     // Handle server or network errors
+//     if (error.response) {
+//       dispatch({
+//         type: GET_SUBSCRIPTIONHISTORY_FAILURE,
+//         payload: error.response.data.message,
+//       });
+//       return error.response.data.message;
+//     } else {
+//       console.error("Error:", error.message);
+//       dispatch({
+//         type: GET_SUBSCRIPTIONHISTORY_FAILURE,
+//         payload: error.message,
+//       });
+//       return error.message;
+//     }
+//   }
+// };
+
+export const getSubscriptionHistory = async (userIds: string[], dispatch: any) => {
   try {
     dispatch({ type: GET_SUBSCRIPTIONHISTORY_INIT });
-    const response = await apiClient.get(
-      `/dashboard/getMySubscriptionsHistory`,
-      { params: { userId } }
-    );
+
+    const response = await apiClient.get(`/dashboard/getMySubscriptionsHistory`, {
+      params: { userIds }, // Pass array of userIds as a query parameter
+    });
 
     // If the request was successful
     if (response.status === 200) {
@@ -1145,6 +1181,22 @@ export const fetchUsers = async () => {
     return data.users || [];
   } catch (error) {
     console.error("Error fetching users:", error);
+    return [];
+  }
+};
+
+export const fetchMessages = async () => {
+  try {
+    const response = await apiClient.get("/dashboard/messages");  // API endpoint for fetching messages
+    if (response?.status !== 200) {
+      console.error("Failed to fetch messages:", response.statusText);
+      return [];
+    }
+
+    const data = response.data;
+    return data.messages || [];
+  } catch (error) {
+    console.error("Error fetching messages:", error);
     return [];
   }
 };

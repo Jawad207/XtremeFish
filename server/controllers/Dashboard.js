@@ -6,6 +6,7 @@ import Account from "../models/Account.js";
 import Notification from "../models/Notification.js";
 import Subscription from "../models/Subscription.js";
 import SubscriptionHistory from "../models/SubscriptionHistory.js";
+import Message from "../models/Message.js";
 import bcrypt from "bcryptjs";
 import Url from "../models/Url.js";
 import IpBlock from "../models/IpBlock.js";
@@ -997,16 +998,50 @@ const getSubscriptionsHistoryForAdmin = async (req, res) => {
   }
 };
 
+// const getMySubscriptionsHistory = async (req, res) => {
+//   try {
+//     const { userId } = req.query;
+//     if (!userId) {
+//       return res.status(404).json({
+//         message: "User id is required.",
+//       });
+//     }
+//     const mySubscriptionHistories = await SubscriptionHistory.find({
+//       userId,
+//     }).populate({
+//       path: "subscriptionId",
+//       select: "type duration amount redeemCode",
+//     });
+
+//     if (!mySubscriptionHistories.length) {
+//       return res.status(404).json({
+//         message: "No subscription history found for this user.",
+//       });
+//     }
+
+//     res.status(200).json({
+//       message: "Subscription history fetched successfully.",
+//       subscriptionHistories: mySubscriptionHistories,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching user's subscription history:", error);
+//     res.status(500).json({ message: "Internal server error.", error });
+//   }
+// };
+
 const getMySubscriptionsHistory = async (req, res) => {
   try {
-    const { userId } = req.query;
-    if (!userId) {
-      return res.status(404).json({
-        message: "User id is required.",
+    const { userIds } = req.query;
+    // console.log("userIds:  ", userIds);
+
+    if (!userIds || !Array.isArray(userIds)) {
+      return res.status(400).json({
+        message: "An array of user IDs is required.",
       });
     }
+
     const mySubscriptionHistories = await SubscriptionHistory.find({
-      userId,
+      userId: { $in: userIds }, // Find all histories where userId matches any in the array
     }).populate({
       path: "subscriptionId",
       select: "type duration amount redeemCode",
@@ -1014,16 +1049,16 @@ const getMySubscriptionsHistory = async (req, res) => {
 
     if (!mySubscriptionHistories.length) {
       return res.status(404).json({
-        message: "No subscription history found for this user.",
+        message: "No subscription histories found for the provided user IDs.",
       });
     }
 
     res.status(200).json({
-      message: "Subscription history fetched successfully.",
+      message: "Subscription histories fetched successfully.",
       subscriptionHistories: mySubscriptionHistories,
     });
   } catch (error) {
-    console.error("Error fetching user's subscription history:", error);
+    console.error("Error fetching subscription histories:", error);
     res.status(500).json({ message: "Internal server error.", error });
   }
 };
@@ -1051,6 +1086,32 @@ const getAllUsers = async (req, res) => {
     });
   }
 };
+
+// Fetch messages from the database
+const getAllMessages = async (req, res) => {
+  try {
+    // Fetch all messages sorted by timestamp (latest first)
+    const messages = await Message.find().sort({ timestamp: -1 });
+
+    if (!messages.length) {
+      return res.status(404).json({
+        message: "No messages found.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Messages fetched successfully.",
+      messages,
+    });
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({
+      message: "Internal server error.",
+      error,
+    });
+  }
+};
+
 
 export const dashboard = {
   getAllUser,
@@ -1094,4 +1155,5 @@ export const dashboard = {
   createSubscriptionHistory,
   getMySubscriptionsHistory,
   getAllUsers,
+  getAllMessages,
 };

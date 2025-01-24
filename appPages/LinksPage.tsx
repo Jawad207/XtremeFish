@@ -10,7 +10,7 @@ function LinksPage() {
   return (
     <Fragment>
       <Seo title={"Links"} />
-      <Row>
+      <Row className="mt-2">
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
