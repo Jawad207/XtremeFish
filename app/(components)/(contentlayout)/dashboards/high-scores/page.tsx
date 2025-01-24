@@ -32,7 +32,7 @@ const page = () => {
   return (
     <Fragment>
       <Seo title={"high-scores"} />
-      <Row>
+      <Row className="mt-2">
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">

@@ -229,6 +229,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import speakeasy from "speakeasy";
 import qrcode from "qrcode";
+import Message from "./models/Message.js";
 
 dotenv.config();
 const port = process.env.PORT || 8443;
@@ -315,43 +316,67 @@ const io = new SocketServer(server, {
   },
 });
 
-// Chat messages array (temporary storage)
-let messages = [];
+// const userSocketMap = new Map(); // Map to store user-to-socket connections
+
 
 // Real-time chat logic
-io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
-
-  // Send existing messages to the newly connected user
-  socket.emit("chat:initial", messages);
-
-  // Listen for new messages
+io.on("connection", async(socket) => {
+  const userId = socket.handshake.query.userId
+  socket.id = userId;
+  // console.log(`User connected: ${socket.id}`);
+  try {
+    const messages = await Message.find().sort({ timestamp: -1 }).limit(10); // Get the latest 10 messages
+    socket.emit("chat:initial", messages);
+  } catch (err) {
+    console.error("Error fetching messages:", err);
+  }
+  // Listen for new messages and store them in the database
   socket.on("chat:message", (messageData) => {
-    const newMessage = { ...messageData, id: Date.now() };
-    messages.unshift(newMessage); // Add message to the top
+    const newMessage = new Message({ 
+      username: messageData.username, 
+      content: messageData.content 
+    });
 
-    // Limit messages to 10
-    if (messages.length > 10) {
-      messages.pop();
-    }
-
-    // Broadcast new message to all connected clients
-    io.emit("chat:newMessage", newMessage);
+    newMessage.save()
+      .then(savedMessage => {
+        // Broadcast the new message to all connected clients
+        io.emit("chat:newMessage", savedMessage);
+      })
+      .catch(err => {
+        console.error("Error saving message:", err);
+      });
   });
 
-  socket.on('removeMessage', (messageId) => {
-    // Remove message from the server-side messages array
-    messages = messages.filter((msg) => msg.id !== messageId);
-
-    // Broadcast the message removal to all clients
-    io.emit('messageRemoved', messageId); // Emit to all connected clients
+  // Handle message removal
+  socket.on("removeMessage", (messageId) => {
+    // Remove message from the database
+    Message.findByIdAndDelete(messageId)
+      .then(() => {
+        // Broadcast the message removal to all clients
+        io.emit("messageRemoved", messageId);
+      })
+      .catch(err => {
+        console.error("Error removing message:", err);
+      });
   });
+
+  // socket.on("disconnect", () => {
+  //   // Handle cleanup if necessary
+  //   const userId = [...userSocketMap.entries()]
+  //     .find(([, socketId]) => socketId === socket.id)?.[0];
+  //   if (userId) {
+  //     userSocketMap.delete(userId);
+  //     // console.log(`User ${userId} disconnected.`);
+  //   }
+  // });
 
   // Handle disconnection
   socket.on("disconnect", () => {
-    console.log(`User disconnected: ${socket.id}`);
+    // console.log(`User disconnected: ${socket.id}`);
   });
 });
+
+
 
 // Start server
 server.listen(port, () => {

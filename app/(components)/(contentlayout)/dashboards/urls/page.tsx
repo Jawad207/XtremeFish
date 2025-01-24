@@ -136,7 +136,7 @@ function page() {
       {user?.subscription && Object.keys(user?.subscription)?.length ? (
         <Fragment>
           <Seo title={"Links"} />
-          <Row>
+          <Row  className="mt-2">
             <Col xl={12}>
               <Card className="custom-card">
                 <Card.Header className="justify-content-between">

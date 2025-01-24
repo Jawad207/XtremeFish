@@ -8,7 +8,8 @@ import moment from "moment";
 import { FaSpinner } from "react-icons/fa";
 import Popup from "@/components/Popup";
 import { deleteProfile, getGlobalUser, banUser } from "@/shared/Api/auth";
-import { createSubscriptionHistory } from "@/shared/Api/dashboard";
+import { createSubscriptionHistory, getSubscriptionHistory } from "@/shared/Api/dashboard";
+import Success from "@/components/SuccessPop";
 
 function page() {
   const dispatch = useDispatch();
@@ -26,6 +27,9 @@ function page() {
   const [postPopup, setPostPopup] = useState(true);
   const [userValue, setUserValue] = useState({});
   const [userForBan, setUserForBan] = useState({});
+  const [open, setOpen] = useState(false);
+  const [title, setTittle] = useState("");
+  const [userSubscriptionHistories, setUserSubscriptionHistories] = useState<any[]>([]);
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const getAllUser = async (data: any) => {
@@ -115,18 +119,59 @@ function page() {
       const response = await createSubscriptionHistory(payload, dispatch);
 
       if (response.status === 201) {
-        alert("Subscription assigned successfully.");
+        setTittle("Subscription assigned successfully.");
+        setOpen(true);
+        setTimeout(() => {
+          setOpen(false);
+        }, 2000);
       } else if (response.status === 409) {
-        alert(response.response.data.message);
+        setTittle(response.response.data.message);
+        setOpen(true);
+        setTimeout(() => {
+          setOpen(false);
+        }, 2000);
         return;
       }
     } catch (error: any) {
-      alert("Failed to assign subscription. Please try again.");
+      setTittle("Failed to assign subscription. Please try again.");
+      setOpen(true);
+      setTimeout(() => {
+        setOpen(false);
+      }, 2000);
     }
   };
 
+  // console.log("userSubscriptionHistories: ", userSubscriptionHistories);
+
+
+  const fetchSubscriptionHistories = async () => {
+    if (allUsers && allUsers.length > 0) {
+      // Extract array of user IDs
+      const userIds = allUsers.map((user: any) => user.id || user._id); // Adjust based on your user object structure
+
+      try {
+        const histories = await getSubscriptionHistory(userIds, dispatch);
+        if (histories) {
+          // console.log("Fetched subscription histories:", histories);
+          setUserSubscriptionHistories(histories.subscriptionHistories);
+        } else {
+          console.error("Failed to fetch subscription histories");
+        }
+      } catch (error) {
+        console.error("Error while fetching subscription histories:", error);
+      }
+    } else {
+      console.warn("No users available to fetch subscription histories.");
+    }
+  };
+
+  useEffect(() => {
+    fetchSubscriptionHistories();
+  }, [allUsers, dispatch]);
+
   return (
     <Fragment>
+      <Success isOpen={open} title={title} />
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center  z-50">
           <div className="bg-white rounded-lg w-full max-w-xl p-6 relative shadow-lg">
@@ -184,7 +229,7 @@ function page() {
         </div>
       )}
       <Seo title={"user-management"} />
-      <Row>
+      <Row className="mt-2">
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
@@ -236,7 +281,11 @@ function page() {
                         <tr
                           key={user._id}
                           className={
-                            user.role === "admin" ? "text-blue-500" : ""
+                            user.role === "admin"
+                              ? "text-blue-500"
+                              : userSubscriptionHistories.some((id) => id.userId === user._id)
+                              ? "text-red-400"
+                              : ""
                           }
                         >
                           <td>
@@ -260,23 +309,46 @@ function page() {
                           </td>
                           <td>
                             {!user?.isBanned && (
-                              <select
-                                className="form-select"
-                                onChange={(e) =>
-                                  handleAssignSubscription(user, e.target.value)
-                                }
-                                defaultValue=""
-                              >
-                                <option value="" disabled>
-                                  Select Subscription
-                                </option>
-                                {subscriptions?.map((sub: any) => (
-                                  <option key={sub._id} value={sub._id}>
-                                    {sub.type} - {sub.duration} months - $
-                                    {sub.amount}
-                                  </option>
-                                ))}
-                              </select>
+                              <>
+                                {userSubscriptionHistories?.some(
+                                  (history: any) => history.userId === user._id
+                                ) ? (
+                                  <div>
+                                    {
+                                      userSubscriptionHistories.find(
+                                        (history: any) => history.userId === user._id
+                                      )?.subscriptionId?.type
+                                    }{" "}
+                                    -{" "}
+                                    {
+                                      userSubscriptionHistories.find(
+                                        (history: any) => history.userId === user._id
+                                      )?.subscriptionId?.duration
+                                    }{" "}
+                                    months - $
+                                    {
+                                      userSubscriptionHistories.find(
+                                        (history: any) => history.userId === user._id
+                                      )?.subscriptionId?.amount
+                                    }
+                                  </div>
+                                ) : (
+                                  <select
+                                    className="w-48 flex  gap-0 text-center form-select"
+                                    onChange={(e) => handleAssignSubscription(user, e.target.value)}
+                                    defaultValue=""
+                                  >
+                                    <option value="" disabled>
+                                      Select Subscription
+                                    </option>
+                                    {subscriptions?.map((sub: any) => (
+                                      <option key={sub._id} value={sub._id}>
+                                        {sub.type} - {sub.duration} months - ${sub.amount}
+                                      </option>
+                                    ))}
+                                  </select>
+                                )}
+                              </>
                             )}
                           </td>
                           <td>

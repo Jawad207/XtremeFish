@@ -59,7 +59,7 @@ function page() {
   return (
     <Fragment>
       <Seo title={"News"} />
-      <Row>
+      <Row className="mt-2">
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">

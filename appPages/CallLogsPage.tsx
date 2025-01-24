@@ -248,7 +248,7 @@ function CallLogsPage() {
         copied={true}
         description={"Copied to clipboard!"}
       />
-      <Row>
+      <Row className="mt-2">
         <Col xl={12}>
           <Card className="custom-card">
             <Card.Header className="justify-content-between">
