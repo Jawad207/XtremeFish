@@ -1089,7 +1089,7 @@ export const getSubscription = async (dispatch: any) => {
 //   }
 // };
 
-export const getSubscriptionHistory = async (userIds: string[], dispatch: any) => {
+export const getSubscriptionHistory = async (userIds: any[], dispatch: any) => {
   try {
     dispatch({ type: GET_SUBSCRIPTIONHISTORY_INIT });
 
