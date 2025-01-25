@@ -14,9 +14,12 @@ import Success from "@/components/SuccessPop";
 function page() {
   const dispatch = useDispatch();
   const allUsers = useSelector((state: any) => state.auth.allUsers);
+  const user = useSelector((state: any) => state.auth.user);
   const allUsersCount = useSelector((state: any) => state.auth.allUsersCount);
   const loading = useSelector((state: any) => state.auth.loading);
   const subscriptions = useSelector((state: any) => state.dash.subscriptions);
+  const userSubscription = useSelector((state: any) => state.dash.subscriptionLogs);
+  console.log("userSubscription: ", userSubscription);
   const [showPopup, setShowPopup] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -141,8 +144,6 @@ function page() {
     }
   };
 
-  // console.log("userSubscriptionHistories: ", userSubscriptionHistories);
-
 
   const fetchSubscriptionHistories = async () => {
     if (allUsers && allUsers.length > 0) {
@@ -153,7 +154,7 @@ function page() {
         const histories = await getSubscriptionHistory(userIds, dispatch);
         if (histories) {
           // console.log("Fetched subscription histories:", histories);
-          setUserSubscriptionHistories(histories.subscriptionHistories);
+          // setUserSubscriptionHistories(histories.subscriptionHistories);
         } else {
           console.error("Failed to fetch subscription histories");
         }
@@ -283,7 +284,7 @@ function page() {
                           className={
                             user.role === "admin"
                               ? "text-blue-500"
-                              : userSubscriptionHistories.some((id) => id.userId === user._id)
+                              : userSubscription.some((id:any) => id.userId === user._id)
                               ? "text-red-400"
                               : ""
                           }
@@ -310,24 +311,24 @@ function page() {
                           <td>
                             {!user?.isBanned && (
                               <>
-                                {userSubscriptionHistories?.some(
+                                {userSubscription?.some(
                                   (history: any) => history.userId === user._id
                                 ) ? (
                                   <div>
                                     {
-                                      userSubscriptionHistories.find(
+                                      userSubscription.find(
                                         (history: any) => history.userId === user._id
                                       )?.subscriptionId?.type
                                     }{" "}
                                     -{" "}
                                     {
-                                      userSubscriptionHistories.find(
+                                      userSubscription.find(
                                         (history: any) => history.userId === user._id
                                       )?.subscriptionId?.duration
                                     }{" "}
                                     months - $
                                     {
-                                      userSubscriptionHistories.find(
+                                      userSubscription.find(
                                         (history: any) => history.userId === user._id
                                       )?.subscriptionId?.amount
                                     }

@@ -22,6 +22,7 @@ function page() {
   const [urls, setUrls] = useState<any>();
   const Urls = useSelector((state: any) => state.dash.urls);
   const Ips = useSelector((state: any) => state.dash.ips);
+  const userSubscription = useSelector((state: any) => state.dash.subscriptionLogs);
   const dispatch = useDispatch();
 
   const handleOpenPopup = () => {
@@ -125,6 +126,14 @@ function page() {
     );
   };
 
+    if(userSubscription && userSubscription.length){
+      userSubscription.find((sub: any) => {
+        if(sub.userId === user?._id){
+          user.subscription = sub.active;
+        }
+      });
+    }
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentUrls = Urls.slice(indexOfFirstItem, indexOfLastItem);
@@ -133,7 +142,7 @@ function page() {
 
   return (
     <>
-      {user?.subscription && Object.keys(user?.subscription)?.length ? (
+      {user?.subscription ? (
         <Fragment>
           <Seo title={"Links"} />
           <Row  className="mt-2">

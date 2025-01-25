@@ -14,7 +14,8 @@ import {
   getTodayuserCount,
   getAccountsStatistics,
   getGlobalLoginAttempts,
-  getSubscription
+  getSubscription,
+  getSubscriptionHistory,
 } from "@/shared/Api/dashboard";
 import moment from "moment";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -142,6 +143,23 @@ const Home = () => {
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
+
+  const getUserSubscriptionHistory = async () => {
+    try {
+      const histories = await getSubscriptionHistory([auth?._id], dispatch);
+      if (histories) {
+        console.log("Fetched subscription histories:", histories);
+      } else {
+        console.error("Failed to fetch subscription histories");
+      }
+    } catch (error) {
+      console.error("Error while fetching subscription histories:", error);
+    }
+  };
+
+  useEffect(() => {
+    getUserSubscriptionHistory();
+  }, []);
 
   return (
     <Fragment>
